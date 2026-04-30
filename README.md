@@ -9,6 +9,29 @@ Este es el repositorio central de tu **Centro de Comando Personal**. Diseñado p
 
 ---
 
+## 🔄 Sincronización entre Equipos (Oficina ↔ Casa)
+
+Para mantener este proyecto disponible en múltiples computadoras, utilizamos **Git**:
+
+1. **En la PC de la Oficina (ya iniciado)**:
+   - Crea un repositorio nuevo en GitHub (vacío).
+   - Ejecuta estos comandos en esta carpeta:
+     ```bash
+     git remote add origin https://github.com/TU_USUARIO/centro-comando-financiero.git
+     git branch -M main
+     git push -u origin main
+     ```
+
+2. **En la PC de Casa**:
+   - Abre la terminal y clona el proyecto:
+     ```bash
+     git clone https://github.com/TU_USUARIO/centro-comando-financiero.git
+     cd centro-comando-financiero
+     npm install
+     ```
+
+---
+
 ## 🛠️ Configuración Técnica (Entorno Local)
 
 ### 1. Inicialización del Proyecto

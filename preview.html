@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centro de Comando Financiero | Búnker Bimont</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <style>
+        :root {
+            --irish-cream-bg: #E8DFD1;
+            --irish-cream-accent: #8B735B;
+            --irish-cream-dark: #5D4D3F;
+            --irish-cream-light: #F5F1EA;
+        }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--irish-cream-bg);
+            color: var(--irish-cream-dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .glass {
+            background: rgba(245, 241, 234, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 115, 91, 0.2);
+            border-radius: 24px;
+        }
+        .wood-shadow {
+            box-shadow: 0 10px 30px -10px rgba(93, 77, 63, 0.3);
+        }
+        .peace-gradient {
+            background: linear-gradient(135deg, #8B735B 0%, #5D4D3F 100%);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { motion, AnimatePresence } = window.Motion;
+
+        const App = () => {
+            const [view, setView] = useState('dashboard');
+            const [peacePoint, setPeacePoint] = useState(78);
+            
+            return (
+                <div className="min-h-screen p-4 md:p-8">
+                    {/* Header */}
+                    <header className="max-w-6xl mx-auto mb-10 flex justify-between items-center">
+                        <div>
+                            <h1 className="text-3xl font-bold tracking-tight text-[#5D4D3F]">
+                                CENTRO DE COMANDO <span className="text-[#8B735B] font-light">BIMONT</span>
+                            </h1>
+                            <p className="text-sm opacity-60 uppercase tracking-widest">Digital Bunker v1.0</p>
+                        </div>
+                        <div className="flex gap-4">
+                            <button 
+                                onClick={() => setView('dashboard')}
+                                className={`px-6 py-2 rounded-full transition-all ${view === 'dashboard' ? 'bg-[#8B735B] text-white' : 'glass hover:bg-[#8B735B] hover:text-white'}`}
+                            >
+                                Dashboard
+                            </button>
+                            <button 
+                                onClick={() => setView('scanner')}
+                                className={`px-6 py-2 rounded-full transition-all ${view === 'scanner' ? 'bg-[#8B735B] text-white' : 'glass hover:bg-[#8B735B] hover:text-white'}`}
+                            >
+                                Scanner
+                            </button>
+                        </div>
+                    </header>
+
+                    <main className="max-w-6xl mx-auto">
+                        <AnimatePresence mode="wait">
+                            {view === 'dashboard' ? (
+                                <motion.div 
+                                    key="dash"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                                >
+                                    {/* Peace Point Card */}
+                                    <div className="md:col-span-2 glass p-8 wood-shadow relative overflow-hidden">
+                                        <div className="relative z-10">
+                                            <h2 className="text-xl font-semibold mb-2">Punto de Paz Financiera</h2>
+                                            <div className="flex items-baseline gap-2 mb-6">
+                                                <span className="text-7xl font-bold text-[#8B735B]">{peacePoint}%</span>
+                                                <span className="text-sm opacity-60 italic">Sustento familiar garantizado</span>
+                                            </div>
+                                            <div className="w-full bg-[#D1C7B7] h-4 rounded-full overflow-hidden">
+                                                <motion.div 
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${peacePoint}%` }}
+                                                    transition={{ duration: 1.5, ease: "easeOut" }}
+                                                    className="h-full peace-gradient"
+                                                />
+                                            </div>
+                                            <p className="mt-4 text-sm">
+                                                Faltan <strong>$145.000 ARS</strong> para alcanzar el 100% este mes.
+                                            </p>
+                                        </div>
+                                        <div className="absolute -right-10 -bottom-10 opacity-5">
+                                            <svg width="200" height="200" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                                        </div>
+                                    </div>
+
+                                    {/* Status Card */}
+                                    <div className="glass p-8 wood-shadow flex flex-col justify-between">
+                                        <div>
+                                            <h3 className="text-sm uppercase tracking-widest opacity-60 mb-4">Estado del Búnker</h3>
+                                            <div className="space-y-4">
+                                                <div className="flex justify-between items-center">
+                                                    <span>Bimont S.A. (Ingreso)</span>
+                                                    <span className="font-semibold text-green-600">+$850.000</span>
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <span>Janlu Velas (Excedente)</span>
+                                                    <span className="font-semibold text-[#8B735B]">+$120.000</span>
+                                                </div>
+                                                <hr className="border-[#8B735B]/20" />
+                                                <div className="flex justify-between items-center font-bold">
+                                                    <span>Total Disponible</span>
+                                                    <span>$970.000</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button className="w-full py-3 mt-6 border border-[#8B735B] rounded-xl hover:bg-[#8B735B] hover:text-white transition-all uppercase text-xs font-bold tracking-widest">
+                                            Ver Reporte Detallado
+                                        </button>
+                                    </div>
+
+                                    {/* Triage Section */}
+                                    <div className="md:col-span-3 glass p-8 wood-shadow">
+                                        <h2 className="text-xl font-semibold mb-6">Triaje Financiero (Prioridades)</h2>
+                                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                                            {[
+                                                { n: 5, t: 'Intocables', d: 'Alquiler, comida base, salud', c: 'border-red-200 bg-red-50/30' },
+                                                { n: 4, t: 'Logística', d: 'Combustible, internet, celular', c: 'border-orange-200 bg-orange-50/30' },
+                                                { n: 3, t: 'Educación', d: 'Cursos, libros, Janlu Academy', c: 'border-amber-200 bg-amber-50/30' },
+                                                { n: 2, t: 'Confort', d: 'Streaming, salidas menores', c: 'border-blue-200 bg-blue-50/30' },
+                                                { n: 1, t: 'Congelables', d: 'Lujos, compras impulsivas', c: 'border-slate-200 bg-slate-50/30' },
+                                            ].map(level => (
+                                                <div key={level.n} className={`p-4 rounded-2xl border ${level.c}`}>
+                                                    <div className="text-2xl font-bold opacity-30">L{level.n}</div>
+                                                    <div className="font-bold text-sm mb-1">{level.t}</div>
+                                                    <div className="text-[10px] opacity-70 leading-tight">{level.d}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ) : (
+                                <motion.div 
+                                    key="scan"
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 1.05 }}
+                                    className="max-w-2xl mx-auto glass p-10 wood-shadow text-center"
+                                >
+                                    <div className="w-24 h-24 bg-[#8B735B]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8B735B" strokeWidth="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                                    </div>
+                                    <h2 className="text-2xl font-bold mb-2">OCR Receipt Parser</h2>
+                                    <p className="opacity-60 mb-8">Arrastra aquí tus tickets para inyectarlos al sistema automáticamente.</p>
+                                    
+                                    <div className="border-2 border-dashed border-[#8B735B]/30 rounded-3xl p-12 hover:border-[#8B735B] transition-all cursor-pointer bg-[#F5F1EA]/50">
+                                        <div className="text-4xl mb-4">📸</div>
+                                        <p className="text-sm font-medium">Click para subir o arrastrar archivos</p>
+                                        <p className="text-[10px] opacity-40 mt-2">Formatos aceptados: JPG, PNG, PDF</p>
+                                    </div>
+
+                                    <div className="mt-8 grid grid-cols-2 gap-4 text-left">
+                                        <div className="p-4 glass rounded-xl border-l-4 border-l-green-500">
+                                            <div className="text-[10px] uppercase opacity-50">Última Carga</div>
+                                            <div className="font-bold">YPF - $45.200</div>
+                                            <div className="text-[9px]">Clasificado como L4 (Logística)</div>
+                                        </div>
+                                        <div className="p-4 glass rounded-xl border-l-4 border-l-[#8B735B]">
+                                            <div className="text-[10px] uppercase opacity-50">Pendientes</div>
+                                            <div className="font-bold">3 tickets sin procesar</div>
+                                            <div className="text-[9px]">Esperando validación humana</div>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </main>
+
+                    {/* Footer / Status Bar */}
+                    <footer className="fixed bottom-0 left-0 w-full p-4 flex justify-center">
+                        <div className="glass px-6 py-2 wood-shadow flex items-center gap-6 text-[10px] uppercase tracking-widest font-bold">
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                                <span>Firebase Online</span>
+                            </div>
+                            <div className="w-px h-4 bg-[#8B735B]/20"></div>
+                            <div>Bimont Security Layer Active</div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

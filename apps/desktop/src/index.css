@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-irish-cream-bg text-irish-cream-dark;
+  }
+}
+
+.glass {
+  @apply bg-white/70 backdrop-blur-md border border-irish-cream-accent/20 rounded-[24px];
+}
+
+.wood-shadow {
+  @apply shadow-[0_10px_30px_-10px_rgba(93,77,63,0.3)];
+}
+
+.peace-gradient {
+  @apply bg-gradient-to-br from-irish-cream-accent to-irish-cream-dark;
+}
