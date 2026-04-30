@@ -1,21 +1,31 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-irish-cream-bg: #E8DFD1;
+  --color-irish-cream-accent: #8B735B;
+  --color-irish-cream-dark: #5D4D3F;
+  --font-outfit: "Outfit", sans-serif;
+}
 
 @layer base {
   body {
-    @apply bg-irish-cream-bg text-irish-cream-dark;
+    background-color: var(--color-irish-cream-bg);
+    color: var(--color-irish-cream-dark);
+    font-family: var(--font-outfit);
   }
 }
 
-.glass {
-  @apply bg-white/70 backdrop-blur-md border border-irish-cream-accent/20 rounded-[24px];
+@utility glass {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(139, 115, 91, 0.2);
+  border-radius: 24px;
 }
 
-.wood-shadow {
-  @apply shadow-[0_10px_30px_-10px_rgba(93,77,63,0.3)];
+@utility wood-shadow {
+  box-shadow: 0 10px 30px -10px rgba(93, 77, 63, 0.3);
 }
 
-.peace-gradient {
-  @apply bg-gradient-to-br from-irish-cream-accent to-irish-cream-dark;
+@utility peace-gradient {
+  background-image: linear-gradient(to bottom right, var(--color-irish-cream-accent), var(--color-irish-cream-dark));
 }
