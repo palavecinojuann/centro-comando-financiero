@@ -1,260 +1,162 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ServicioLectorTickets } from './ServicioLectorTickets';
 
 const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'scanner' | 'janlu' | 'settings'>('dashboard');
-  const [peacePoint, setPeacePoint] = useState(78);
-  const [janluIncome, setJanluIncome] = useState(156000);
-  const [bimontIncome] = useState(1240000);
-  const [vitalExpenses] = useState(845000);
-  const [scanner] = useState(new ServicioLectorTickets());
-  const [scannedResult, setScannedResult] = useState<any>(null);
-
-  const handleJanluInjection = () => {
-    const amount = 15000; // Simulación
-    setJanluIncome(prev => prev + amount);
-    // El punto de paz se recalcula (simplificado)
-    setPeacePoint(prev => Math.min(100, prev + 2));
-  };
-
-  const handleSimulatedScan = () => {
-    const mockText = "YPF GASOLINERA\nFECHA: 29/04/2026\nTOTAL: $45.200,00\nGRACIAS POR SU COMPRA";
-    const result = scanner.procesarTexto(mockText);
-    setScannedResult(result);
-  };
+  const [activeTab, setActiveTab] = useState<'resumen' | 'metas' | 'inversiones' | 'reportes'>('resumen');
+  const [peacePoint] = useState(820);
+  const [totalAccounts] = useState(117364.00);
 
   const sidebarItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'scanner', label: 'Escanear Ticket', icon: '📸' },
-    { id: 'janlu', label: 'Inyección Janlu', icon: '🕯️' },
-    { id: 'settings', label: 'Configuración', icon: '⚙️' },
+    { id: 'resumen', label: 'Mi Resumen', icon: '📝' },
+    { id: 'metas', label: 'Metas', icon: '🎯' },
+    { id: 'inversiones', label: 'Inversiones', icon: '📈' },
+    { id: 'reportes', label: 'Reportes', icon: '📊' },
   ];
 
   return (
-    <div className="flex h-screen bg-irish-cream-bg text-irish-cream-dark font-sans overflow-hidden">
+    <div className="flex h-screen bg-[#F5F1E9] text-[#4A3F35] font-sans overflow-hidden">
       
-      {/* SIDEBAR NATIVO (App Feel) */}
-      <aside className="w-64 bg-irish-cream-dark text-white flex flex-col p-6 shadow-2xl z-20">
-        <div className="mb-12">
-          <h1 className="text-xl font-bold tracking-tighter leading-tight">
-            BÚNKER <span className="text-irish-cream-accent font-light italic">BIMONT</span>
-          </h1>
-          <p className="text-[9px] uppercase tracking-[0.3em] opacity-40 font-bold mt-1">Centro de Comando</p>
+      {/* SIDEBAR MINIMALISTA */}
+      <aside className="w-28 flex flex-col items-center py-10 border-r border-[#8B735B]/10 z-20">
+        <div className="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-16">
+          <div className="w-6 h-1 bg-[#8B735B] rounded-full mb-1"></div>
+          <div className="w-4 h-1 bg-[#8B735B]/60 rounded-full"></div>
         </div>
 
-        <nav className="flex-1 space-y-2">
+        <nav className="flex-1 space-y-8">
           {sidebarItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id as any)}
-              className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300 text-sm font-medium ${
-                activeTab === item.id 
-                  ? 'bg-irish-cream-accent text-white shadow-lg translate-x-2' 
-                  : 'hover:bg-white/10 opacity-60 hover:opacity-100'
-              }`}
+              className="group flex flex-col items-center gap-2 relative"
             >
-              <span className="text-lg">{item.icon}</span>
-              {item.label}
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 ${
+                activeTab === item.id 
+                  ? 'neumo-button text-xl' 
+                  : 'opacity-40 group-hover:opacity-100 text-lg'
+              }`}>
+                {item.icon}
+              </div>
+              <span className={`text-[10px] font-bold uppercase tracking-tighter transition-opacity duration-500 ${
+                activeTab === item.id ? 'opacity-100' : 'opacity-0'
+              }`}>
+                {item.label}
+              </span>
+              {activeTab === item.id && (
+                <motion.div 
+                  layoutId="active-pill"
+                  className="absolute -left-6 w-1 h-8 bg-[#8B735B] rounded-r-full"
+                />
+              )}
             </button>
           ))}
         </nav>
-
-        <div className="pt-6 border-t border-white/10">
-          <div className="glass bg-white/5 p-4 rounded-2xl">
-            <p className="text-[10px] uppercase opacity-40 font-bold mb-2">Punto de Paz</p>
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-irish-cream-accent" style={{ width: `${peacePoint}%` }}></div>
-              </div>
-              <span className="text-xs font-bold">{peacePoint}%</span>
-            </div>
-          </div>
-        </div>
       </aside>
 
-      {/* MAIN CONTENT AREA */}
-      <main className="flex-1 relative flex flex-col overflow-hidden">
+      {/* MAIN VIEWPORT */}
+      <main className="flex-1 flex flex-col relative overflow-hidden p-8">
         
-        {/* Top Header Bar */}
-        <header className="h-16 flex items-center justify-between px-10 border-b border-irish-cream-accent/10 bg-irish-cream-bg/50 backdrop-blur-sm z-10">
-          <h2 className="text-sm font-bold uppercase tracking-widest opacity-60">
-            {sidebarItems.find(i => i.id === activeTab)?.label}
-          </h2>
+        {/* TOP BAR */}
+        <header className="flex justify-between items-center mb-10 px-4">
+          <h1 className="text-4xl font-serif tracking-tight text-[#4A3F35]">Command Center</h1>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1 bg-green-500/10 text-green-700 rounded-full text-[10px] font-bold border border-green-500/20">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-              Bimont Secured
+            <div className="text-right">
+              <p className="text-sm font-bold">Joseim Poldaa</p>
+              <p className="text-[10px] opacity-40 uppercase tracking-widest font-bold">SW 7537</p>
             </div>
-            <div className="w-8 h-8 rounded-full bg-irish-cream-accent/20 flex items-center justify-center text-xs font-bold border border-irish-cream-accent/30">
-              JP
+            <div className="w-12 h-12 rounded-full border-2 border-white shadow-lg overflow-hidden">
+              <img src="https://i.pravatar.cc/150?u=joseim" alt="User" />
             </div>
           </div>
         </header>
 
-        {/* Dynamic Content View */}
-        <div className="flex-1 overflow-y-auto p-10">
+        {/* CONTENT */}
+        <div className="flex-1 overflow-y-auto px-4 pb-10 custom-scrollbar">
           <AnimatePresence mode="wait">
-            {activeTab === 'dashboard' && (
+            {activeTab === 'resumen' && (
               <motion.div
-                key="dashboard"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+                className="max-w-5xl mx-auto space-y-12"
               >
-                {/* Main Stats Card */}
-                <div className="lg:col-span-2 glass p-10 wood-shadow relative overflow-hidden group">
-                  <div className="relative z-10">
-                    <h3 className="text-3xl font-bold text-irish-cream-accent mb-2">Estado Global</h3>
-                    <p className="opacity-60 text-sm mb-10">Resumen de ingresos unificados y gastos del hogar.</p>
+                {/* CENTRAL PEACE POINT CHART */}
+                <div className="flex justify-center relative py-10">
+                  <div className="relative w-80 h-80 flex items-center justify-center">
+                    {/* SVG DONUT CHART (Simplified representation of the mockup) */}
+                    <svg className="w-full h-full transform -rotate-90">
+                      <circle cx="160" cy="160" r="140" fill="transparent" stroke="white" strokeWidth="30" />
+                      <circle cx="160" cy="160" r="140" fill="transparent" stroke="#A8BC9F" strokeWidth="30" strokeDasharray="880" strokeDashoffset="200" strokeLinecap="round" />
+                      <circle cx="160" cy="160" r="140" fill="transparent" stroke="#D98B6B" strokeWidth="30" strokeDasharray="880" strokeDashoffset="750" strokeLinecap="round" />
+                      <circle cx="160" cy="160" r="140" fill="transparent" stroke="#C8A155" strokeWidth="30" strokeDasharray="880" strokeDashoffset="450" strokeLinecap="round" />
+                    </svg>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                      <div>
-                        <p className="text-[10px] uppercase tracking-widest opacity-40 font-bold mb-2">Ingreso Total Unificado</p>
-                        <p className="text-5xl font-bold tracking-tight">${(bimontIncome + janluIncome).toLocaleString()}</p>
-                        <p className="text-xs mt-2 text-green-600 font-semibold">↑ 12% vs mes pasado</p>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                      <p className="text-sm font-medium opacity-60">Peace Point</p>
+                      <h2 className="text-8xl font-serif tracking-tighter my-2">{peacePoint}</h2>
+                      <p className="text-[10px] font-bold uppercase tracking-widest opacity-40 max-w-[120px]">Financial Security Score</p>
+                    </div>
+                  </div>
+                  {/* Glass Card behind chart effect */}
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-white/20 blur-[80px] rounded-full -z-10"></div>
+                </div>
+
+                {/* MODE BUTTONS */}
+                <div className="flex justify-center gap-10">
+                  {[
+                    { label: 'Modo Blindaje', icon: '🛡️' },
+                    { label: 'Modo Expansión', icon: '🚀' },
+                    { label: 'Modo Disfrute', icon: '✨' }
+                  ].map((mode, i) => (
+                    <button 
+                      key={i}
+                      className="neumo-button px-8 py-5 rounded-[30px] flex items-center gap-4 hover:scale-105 transition-transform group"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm text-sm opacity-60 group-hover:opacity-100 transition-opacity">
+                        {mode.icon}
                       </div>
-                      <div className="flex flex-col justify-end">
-                        <div className="space-y-3">
-                          <div className="flex justify-between text-xs">
-                            <span className="opacity-60">Bimont S.A. (Cimiento)</span>
-                            <span className="font-bold">${bimontIncome.toLocaleString()}</span>
-                          </div>
-                          <div className="flex justify-between text-xs">
-                            <span className="text-irish-cream-accent font-semibold">Janlu Velas (Acelerador)</span>
-                            <span className="font-bold text-irish-cream-accent">${janluIncome.toLocaleString()}</span>
-                          </div>
-                        </div>
+                      <span className="font-bold text-sm tracking-tight">{mode.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* BOTTOM STATS */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="bg-white p-6 rounded-[32px] card-shadow">
+                    <p className="text-[10px] uppercase font-bold opacity-30 mb-2">Total en Cuentas</p>
+                    <p className="text-2xl font-bold font-serif">$ {totalAccounts.toLocaleString('es-AR')}</p>
+                    <div className="mt-4 flex justify-end">
+                      <span className="text-[10px] bg-[#8B735B]/10 px-2 py-1 rounded-full">👆</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-6 rounded-[32px] card-shadow">
+                    <p className="text-[10px] uppercase font-bold opacity-30 mb-2">Crecimiento Cartera</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-2xl font-bold text-green-600">+0,08%</p>
+                      <span className="text-lg">↗</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-6 rounded-[32px] card-shadow col-span-1 md:col-span-1">
+                    <p className="text-[10px] uppercase font-bold opacity-30 mb-4">Próximos Pagos</p>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold">22 de poso</span>
+                        <span className="opacity-40">Próximos en hacho</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold">25 de uso</span>
+                        <div className="w-5 h-5 bg-[#8B735B] rounded-full flex items-center justify-center text-[10px] text-white">→</div>
                       </div>
                     </div>
                   </div>
-                  <div className="absolute -right-16 -top-16 w-64 h-64 border-[30px] border-irish-cream-accent/5 rounded-full"></div>
-                </div>
 
-                {/* Quick Actions */}
-                <div className="glass p-8 wood-shadow flex flex-col gap-4">
-                  <h4 className="text-xs font-bold uppercase tracking-widest opacity-40 mb-2">Inyectar Capital</h4>
-                  <button 
-                    onClick={handleJanluInjection}
-                    className="w-full py-4 bg-irish-cream-accent text-white rounded-2xl font-bold text-sm hover:bg-irish-cream-dark transition-all wood-shadow flex items-center justify-center gap-3"
-                  >
-                    <span>🕯️</span> + $15.000 (Janlu)
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('scanner')}
-                    className="w-full py-4 border-2 border-irish-cream-accent/20 text-irish-cream-accent rounded-2xl font-bold text-sm hover:bg-irish-cream-accent/5 transition-all flex items-center justify-center gap-3"
-                  >
-                    <span>📸</span> Escanear Ticket
-                  </button>
-                </div>
-
-                {/* Triage Summary */}
-                <div className="lg:col-span-3 glass p-10 wood-shadow">
-                  <h4 className="text-xs font-bold uppercase tracking-widest opacity-40 mb-8">Triaje Financiero Actual</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
-                    {[
-                      { l: 5, t: 'Vital', c: 'bg-red-500', p: '100%' },
-                      { l: 4, t: 'Logística', c: 'bg-orange-500', p: '100%' },
-                      { l: 3, t: 'Crecimiento', c: 'bg-amber-500', p: '85%' },
-                      { l: 2, t: 'Confort', c: 'bg-blue-500', p: '40%' },
-                      { l: 1, t: 'Extras', c: 'bg-slate-400', p: '10%' },
-                    ].map(item => (
-                      <div key={item.l} className="p-4 rounded-2xl border border-irish-cream-accent/10">
-                        <div className={`w-6 h-6 ${item.c} rounded flex items-center justify-center text-[10px] text-white font-bold mb-3`}>L{item.l}</div>
-                        <p className="font-bold text-xs mb-1">{item.t}</p>
-                        <p className="text-[10px] opacity-50">{item.p} Cubierto</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === 'scanner' && (
-              <motion.div
-                key="scanner"
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.02 }}
-                className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10"
-              >
-                <div className="glass p-12 wood-shadow flex flex-col items-center justify-center border-2 border-dashed border-irish-cream-accent/30 hover:border-irish-cream-accent transition-all cursor-pointer group">
-                  <div className="w-24 h-24 bg-irish-cream-accent/10 rounded-full flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                    <span className="text-4xl">📸</span>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4">Escanear Nuevo Gasto</h3>
-                  <p className="text-center opacity-60 text-sm mb-10 max-w-xs">Arrastra aquí el ticket o usa la cámara para procesar el gasto automáticamente.</p>
-                  <button 
-                    onClick={handleSimulatedScan}
-                    className="px-12 py-4 bg-irish-cream-accent text-white rounded-2xl font-bold text-xs tracking-widest hover:bg-irish-cream-dark transition-all"
-                  >
-                    INICIAR ESCANEO
-                  </button>
-                </div>
-
-                <div className="glass p-10 wood-shadow">
-                  <h4 className="text-xs font-bold uppercase tracking-widest opacity-40 mb-8">Vista Previa de Lectura</h4>
-                  {scannedResult ? (
-                    <div className="space-y-6">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="text-4xl font-bold text-irish-cream-accent">${scannedResult.montoTotal.toLocaleString()}</p>
-                          <p className="text-xs font-bold uppercase opacity-40 tracking-[0.2em]">{scannedResult.nombreComercio}</p>
-                        </div>
-                        <div className="bg-orange-500 text-white px-4 py-1.5 rounded-full text-[10px] font-bold shadow-lg shadow-orange-500/20">
-                          {scannedResult.categoriaSugerida}
-                        </div>
-                      </div>
-                      <div className="bg-irish-cream-bg/50 p-6 rounded-3xl border border-irish-cream-accent/10">
-                        <p className="text-[10px] italic opacity-70 leading-relaxed">
-                          "Se ha detectado una carga de combustible. Clasificación automática L4 (Logística Laboral). El saldo unificado se actualizará al confirmar."
-                        </p>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <button className="py-4 rounded-2xl border-2 border-irish-cream-accent/20 text-xs font-bold tracking-widest hover:bg-red-50 hover:text-red-600 hover:border-red-100 transition-all">DESCARTAR</button>
-                        <button className="py-4 rounded-2xl bg-irish-cream-accent text-white text-xs font-bold tracking-widest hover:bg-irish-cream-dark transition-all wood-shadow">CONFIRMAR</button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="h-64 flex flex-col items-center justify-center border-2 border-dotted border-irish-cream-accent/10 rounded-3xl text-sm opacity-20 italic">
-                      Esperando escaneo...
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === 'janlu' && (
-              <motion.div
-                key="janlu"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="max-w-2xl mx-auto glass p-12 wood-shadow"
-              >
-                <h3 className="text-2xl font-bold mb-2">Inyección de Capital Janlu</h3>
-                <p className="opacity-60 text-sm mb-10">Suma las ventas de tus velas al flujo de caja familiar.</p>
-                
-                <div className="space-y-8">
-                  <div className="p-8 bg-irish-cream-accent text-white rounded-3xl wood-shadow relative overflow-hidden">
-                    <p className="text-[10px] uppercase opacity-60 font-bold mb-2">Total Inyectado este Mes</p>
-                    <p className="text-5xl font-bold tracking-tight">${janluIncome.toLocaleString()}</p>
-                    <div className="absolute -right-4 -bottom-4 text-7xl opacity-10 rotate-12">🕯️</div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <label className="text-xs font-bold uppercase tracking-widest opacity-40">Monto a Inyectar</label>
-                    <div className="flex gap-4">
-                      <div className="flex-1 glass bg-white/40 p-4 rounded-2xl border-2 border-irish-cream-accent/20">
-                        <span className="text-xl font-bold opacity-30 mr-2">$</span>
-                        <input type="number" placeholder="0.00" className="bg-transparent border-none outline-none text-xl font-bold w-32" />
-                      </div>
-                      <button 
-                        onClick={handleJanluInjection}
-                        className="px-8 bg-irish-cream-accent text-white rounded-2xl font-bold hover:bg-irish-cream-dark transition-all wood-shadow"
-                      >
-                        INYECTAR
-                      </button>
+                  <div className="bg-white p-6 rounded-[32px] card-shadow">
+                    <p className="text-[10px] uppercase font-bold opacity-30 mb-2">Alertas</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-bold">#1</span>
+                      <span className="text-lg text-orange-500">⚠️</span>
                     </div>
                   </div>
                 </div>
@@ -262,14 +164,13 @@ const App: React.FC = () => {
             )}
           </AnimatePresence>
         </div>
-
-        {/* Bottom Status Bar */}
-        <footer className="h-8 bg-irish-cream-dark/5 border-t border-irish-cream-accent/10 flex items-center px-10 justify-between text-[9px] uppercase tracking-[0.2em] font-bold opacity-40">
-          <div>Firebase Database: Online</div>
-          <div>Bimont Command System v1.0.5</div>
-          <div>All assets secured</div>
-        </footer>
       </main>
+      
+      {/* DECORATIVE WOOD ELEMENT (Simulating the mockup sidebar) */}
+      <div className="w-40 bg-[#D2B48C]/20 border-l border-[#8B735B]/5 relative overflow-hidden hidden xl:block">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent to-white/20"></div>
+        <div className="absolute top-20 -right-20 w-80 h-[800px] bg-[#8B735B]/5 rotate-12 blur-3xl"></div>
+      </div>
     </div>
   );
 };

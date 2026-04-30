@@ -1,10 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-irish-cream-bg: #E8DFD1;
+  --color-irish-cream-bg: #F5F1E9;
   --color-irish-cream-accent: #8B735B;
-  --color-irish-cream-dark: #5D4D3F;
+  --color-irish-cream-dark: #4A3F35;
   --font-outfit: "Outfit", sans-serif;
+  --font-serif: "Playfair Display", serif;
 }
 
 @layer base {
@@ -12,20 +13,32 @@
     background-color: var(--color-irish-cream-bg);
     color: var(--color-irish-cream-dark);
     font-family: var(--font-outfit);
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-@utility glass {
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(139, 115, 91, 0.2);
-  border-radius: 24px;
+@utility glass-premium {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 rgba(139, 115, 91, 0.1);
 }
 
-@utility wood-shadow {
-  box-shadow: 0 10px 30px -10px rgba(93, 77, 63, 0.3);
+@utility neumo-button {
+  background: #E8DFD1;
+  box-shadow: 6px 6px 12px #d1c9bc, -6px -6px 12px #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-@utility peace-gradient {
-  background-image: linear-gradient(to bottom right, var(--color-irish-cream-accent), var(--color-irish-cream-dark));
+@utility neumo-inset {
+  background: #E8DFD1;
+  box-shadow: inset 6px 6px 12px #d1c9bc, inset -6px -6px 12px #ffffff;
+}
+
+@utility card-shadow {
+  box-shadow: 0 20px 40px -15px rgba(93, 77, 63, 0.15);
+}
+
+@utility accent-glow {
+  box-shadow: 0 0 20px rgba(139, 115, 91, 0.3);
 }
