@@ -28,12 +28,24 @@ Para mantener este proyecto disponible en múltiples computadoras, utilizamos **
      git push -u origin main
      ```
 
-2. **En la PC de Casa**:
-   - Abre la terminal y clona el proyecto:
+2. **En la PC de Casa (Configuración Única)**:
+   - **Instalar Node.js**: Descárgalo de [nodejs.org](https://nodejs.org/).
+   - **Instalar Git**: Descárgalo de [git-scm.com](https://git-scm.com/).
+   - **Instalar Firebase Tools**: Abre una terminal y ejecuta:
+     ```bash
+     npm install -g firebase-tools
+     ```
+   - **Clonar el proyecto**:
      ```bash
      git clone https://github.com/palavecinojuann/centro-comando-financiero.git
      cd centro-comando-financiero
      npm install
+     cd apps/desktop
+     npm install
+     ```
+   - **Iniciar**:
+     ```bash
+     npm run dev
      ```
 
 ---
