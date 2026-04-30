@@ -7,12 +7,12 @@ import { initializeApp } from "firebase/app";
 import { getFirestore, doc, setDoc, collection } from "firebase/firestore";
 
 const configuracionFirebase = {
-  apiKey: "TU_API_KEY",
-  authDomain: "tu-proyecto.firebaseapp.com",
-  projectId: "tu-proyecto-id",
-  storageBucket: "tu-proyecto.appspot.com",
-  messagingSenderId: "tu-id",
-  appId: "tu-app-id"
+  apiKey: "AIzaSyAVT2RRMOsKIsnCUIN5KeapEOSYb-Bm6TA",
+  authDomain: "app-finanzas-ead64.firebaseapp.com",
+  projectId: "app-finanzas-ead64",
+  storageBucket: "app-finanzas-ead64.firebasestorage.app",
+  messagingSenderId: "711292678518",
+  appId: "1:711292678518:web:71c815382d430148f0ca57"
 };
 
 const app = initializeApp(configuracionFirebase);
