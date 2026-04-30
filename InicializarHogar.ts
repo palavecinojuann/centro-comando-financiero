@@ -20,8 +20,8 @@ const db = getFirestore(app);
 
 async function crearEstructuraFamiliar() {
   const ID_HOGAR = "hogar_bimont_central";
-  const UID_JUAN = "REEMPLAZAR_CON_UID";
-  const UID_SOFIA = "REEMPLAZAR_CON_UID";
+  const UID_JUAN = "evD2gRjWeDdoS4EGZzINKtO2iBQ2";
+  const UID_SOFIA = "REEMPLAZAR_CON_UID_SI_EXISTE";
 
   try {
     await setDoc(doc(db, "hogares", ID_HOGAR), {

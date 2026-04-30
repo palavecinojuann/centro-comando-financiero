@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function esMiembroDelHogar(idHogar) {
+      return request.auth != null && 
+             request.auth.uid in get(/databases/$(database)/documents/hogares/$(idHogar)).data.miembros;
+    }
+    match /{document=**} { allow read, write: if false; }
+    match /hogares/{idHogar} {
+      allow read: if esMiembroDelHogar(idHogar);
+      match /{coleccion}/{documento} {
+        allow read, write: if esMiembroDelHogar(idHogar);
+      }
+    }
+    match /usuarios/{uid} { allow read: if request.auth != null && request.auth.uid == uid; }
+  }
+}
