@@ -3,7 +3,7 @@
  * Procesador de texto OCR para la automatización de carga de gastos.
  */
 
-export interface GastoProcesado {
+export type GastoProcesado = {
   fechaGasto: string;
   nombreComercio: string;
   montoTotal: number;

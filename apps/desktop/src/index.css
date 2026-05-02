@@ -1,44 +1,43 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
-  --color-irish-cream-bg: #F5F1E9;
-  --color-irish-cream-accent: #8B735B;
-  --color-irish-cream-dark: #4A3F35;
-  --font-outfit: "Outfit", sans-serif;
-  --font-serif: "Playfair Display", serif;
+:root {
+  --bg-irish-cream: #E8DFD1;
+  --accent-wood: #8B735B;
 }
 
-@layer base {
-  body {
-    background-color: var(--color-irish-cream-bg);
-    color: var(--color-irish-cream-dark);
-    font-family: var(--font-outfit);
-    -webkit-font-smoothing: antialiased;
-  }
+body {
+  background-color: var(--bg-irish-cream);
+  color: #4A443F;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
-@utility glass-premium {
-  background: rgba(255, 255, 255, 0.6);
+.glass-widget {
+  background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-dock {
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 8px 32px 0 rgba(139, 115, 91, 0.1);
 }
 
-@utility neumo-button {
-  background: #E8DFD1;
-  box-shadow: 6px 6px 12px #d1c9bc, -6px -6px 12px #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+.amber-glow {
+  filter: drop-shadow(0 0 15px rgba(217, 168, 82, 0.6));
 }
 
-@utility neumo-inset {
-  background: #E8DFD1;
-  box-shadow: inset 6px 6px 12px #d1c9bc, inset -6px -6px 12px #ffffff;
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
 }
-
-@utility card-shadow {
-  box-shadow: 0 20px 40px -15px rgba(93, 77, 63, 0.15);
-}
-
-@utility accent-glow {
-  box-shadow: 0 0 20px rgba(139, 115, 91, 0.3);
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(139, 115, 91, 0.2);
+  border-radius: 10px;
 }

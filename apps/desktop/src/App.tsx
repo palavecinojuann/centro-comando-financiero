@@ -1,332 +1,212 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  LayoutDashboard, 
-  Target, 
-  TrendingUp, 
-  BarChart3, 
-  Menu, 
-  Plus, 
-  Bell, 
-  ChevronRight,
-  ShieldCheck,
-  Zap,
-  Heart,
-  Search,
-  Calendar,
-  Filter,
-  ArrowUpRight,
-  ArrowDownRight,
-  Settings as SettingsIcon,
-  LogOut,
-  Camera,
-  Edit3
+  LayoutDashboard, Gauge, Shield, Settings, User, 
+  ChevronLeft, Bell, CheckCircle2, AlertTriangle, 
+  Database, Users, Zap, TrendingUp, Search, Camera,
+  Sparkles, Brain, Lightbulb, Wallet
 } from 'lucide-react';
 
-// --- UTILIDADES ---
+// Motores de Inteligencia
+import { auditarGastosVampiro } from './AuditorGastosVampiro';
+import type { InterfazAlerta as TipoAlerta } from './AuditorGastosVampiro';
+import { ServicioLectorTickets } from './ServicioLectorTickets';
+import type { GastoProcesado } from './ServicioLectorTickets';
+import { ServicioCopilotoGemini } from './ServicioCopilotoGemini';
+import type { InsightIA } from './ServicioCopilotoGemini';
 
-// Función para obtener el 4to día hábil del mes actual o próximo
-const getCuartoDiaHabil = (date: Date) => {
-  let count = 0;
-  let d = new Date(date.getFullYear(), date.getMonth(), 1);
-  while (count < 4) {
-    let dayOfWeek = d.getDay();
-    if (dayOfWeek !== 0 && dayOfWeek !== 6) count++;
-    if (count < 4) d.setDate(d.getDate() + 1);
-  }
-  return d;
-};
+// --- ESTILOS NEUMÓRFICOS ---
+const NEU_SHADOW = "10px 10px 20px #DBCFBF, -10px -10px 20px #F5EFEB";
+const NEU_INSET = "inset 5px 5px 10px #DBCFBF, inset -5px -5px 10px #F5EFEB";
 
-// --- COMPONENTES DE APOYO ---
-
+// --- COMPONENTE: BOTÓN LATERAL ---
 const SidebarItem = ({ icon: Icon, label, active, onClick }: any) => (
   <button 
     onClick={onClick}
-    className={`flex flex-col items-center gap-1 p-4 transition-all ${active ? 'text-[#8B735B]' : 'text-[#4A443F]/40 hover:text-[#4A443F]'}`}
+    style={{
+      width: '100%',
+      padding: '1.4rem 1.8rem',
+      borderRadius: '2rem',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '1.5rem',
+      border: 'none',
+      cursor: 'pointer',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      backgroundColor: active ? '#E8DFD1' : 'transparent',
+      boxShadow: active ? NEU_INSET : 'none',
+      color: active ? '#8B735B' : '#8B735B',
+      transform: active ? 'scale(0.98)' : 'scale(1)'
+    }}
   >
-    <div className={`p-3 rounded-2xl transition-all ${active ? 'bg-white shadow-lg' : ''}`}>
-      <Icon size={24} />
-    </div>
-    <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
+    <Icon size={22} style={{ opacity: active ? 1 : 0.4 }} />
+    <span style={{ fontSize: '14px', fontWeight: active ? 900 : 600, opacity: active ? 1 : 0.6 }}>{label}</span>
   </button>
 );
 
-const CategoryPill = ({ label }: { label: string }) => {
-  const colors: any = {
-    Educación: 'bg-blue-100 text-blue-700',
-    Hogar: 'bg-purple-100 text-purple-700',
-    Logística: 'bg-orange-100 text-orange-700',
-    Sostenimiento: 'bg-green-100 text-green-700',
-    Ocio: 'bg-orange-100 text-orange-700',
-  };
-  return <span className={`px-3 py-1 rounded-full text-[10px] font-bold ${colors[label] || 'bg-gray-100 text-gray-700'}`}>{label}</span>;
-};
-
-// --- APP PRINCIPAL ---
-
-const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'ledger' | 'manager' | 'simulator' | 'nuevo-gasto'>('dashboard');
-  const [activeMode, setActiveMode] = useState<'blindaje' | 'expansion' | 'disfrute'>('blindaje');
-  
-  // Estados de Finanzas
-  const [saldoTotal, setSaldoTotal] = useState(117364);
-  const [gastosComprometidos, setGastosComprometidos] = useState([
-    { id: 1, desc: 'Alquiler', monto: 45000, fecha: '2026-05-05' },
-    { id: 2, desc: 'Colegio', monto: 25000, fecha: '2026-05-10' }
+export default function App() {
+  const [activeTab, setActiveTab] = useState('Panel de Control');
+  const [alertasVampiro, setAlertasVampiro] = useState<TipoAlerta[]>([]);
+  const [insights, setInsights] = useState<InsightIA[]>([]);
+  const [escaneando, setEscaneando] = useState(false);
+  const [notificaciones, setNotificaciones] = useState([
+    { id: 1, text: "Actualización de Core completada", type: 'success' },
+    { id: 2, text: "Búnker sincronizado con Sofi", type: 'success' }
   ]);
-  
-  // Sliders del Simulador
-  const [sliderBlindaje, setSliderBlindaje] = useState(30);
-  const [sliderExpansion, setSliderExpansion] = useState(50);
 
-  // Cálculos Dinámicos
-  const hoy = new Date();
-  const fechaCobro = useMemo(() => getCuartoDiaHabil(hoy), [hoy.getMonth()]);
-  const diasFaltantes = useMemo(() => {
-    const diff = fechaCobro.getTime() - hoy.getTime();
-    return Math.max(1, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-  }, [fechaCobro]);
+  const lectorOCR = new ServicioLectorTickets();
+  const copilotGemini = new ServicioCopilotoGemini();
 
-  const disponibleHoy = useMemo(() => {
-    const totalComprometido = gastosComprometidos.reduce((acc, g) => acc + g.monto, 0);
-    const disponibleReal = saldoTotal - totalComprometido;
-    return Math.max(0, Math.floor(disponibleReal / diasFaltantes));
-  }, [saldoTotal, gastosComprometidos, diasFaltantes]);
-
-  const peacePointPercentage = useMemo(() => {
-    const sueldoBimont = 150000; // Mock
-    const gastosVitales = 85000; // Mock
-    return Math.round((sueldoBimont / gastosVitales) * 100);
+  useEffect(() => {
+    // Carga inicial de auditoría
+    const gastosMock = [
+        { id: '1', nombreComercio: 'Netflix', montoTotal: 15.99, fechaGasto: new Date(), categoria: 'Entretenimiento' },
+        { id: '2', nombreComercio: 'Netflix', montoTotal: 15.99, fechaGasto: new Date(Date.now() - 1000 * 60 * 60), categoria: 'Entretenimiento' }
+    ];
+    setAlertasVampiro(auditarGastosVampiro(gastosMock as any));
+    
+    // Insights de Gemini
+    copilotGemini.analizarPatrones([], 15000).then(setInsights);
   }, []);
 
+  const dispararOCR = () => {
+    setEscaneando(true);
+    setTimeout(() => {
+      const resultado = lectorOCR.procesarTexto("YPF ESTACION DE SERVICIO\nTOTAL: $45.800,00");
+      setNotificaciones(prev => [{
+        id: Date.now(),
+        text: `Escaneo Exitoso: ${resultado.nombreComercio} $${resultado.montoTotal}`,
+        type: 'success'
+      }, ...prev]);
+      setEscaneando(false);
+    }, 2000);
+  };
+
   return (
-    <div className="min-h-screen bg-[#F2EDE4] text-[#4A443F] font-sans flex overflow-hidden">
+    <div style={{ height: '100vh', width: '100vw', backgroundColor: '#E8DFD1', color: '#8B735B', display: 'flex', padding: '2.5rem', gap: '2.5rem', overflow: 'hidden', boxSizing: 'border-box' }}>
       
-      {/* SIDEBAR */}
-      <aside className="w-24 bg-[#E8DFD1]/50 backdrop-blur-xl border-r border-white/20 flex flex-col items-center py-8 z-20">
-        <div className="mb-12 cursor-pointer">
-          <Menu size={28} className="opacity-40" />
+      {/* 1. SIDEBAR (IZQUIERDA) */}
+      <aside style={{ width: '320px', backgroundColor: '#E8DFD1', borderRadius: '3rem', boxShadow: NEU_SHADOW, padding: '3rem 2rem', display: 'flex', flexDirection: 'column', gap: '3rem', border: '1px solid rgba(255,255,255,0.4)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 1rem' }}>
+          <div style={{ width: '48px', height: '48px', background: '#8B735B', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', boxShadow: '0 10px 20px rgba(139,115,91,0.3)' }}>
+            <Zap size={28} />
+          </div>
+          <button style={{ background: 'transparent', border: 'none', color: '#8B735B', opacity: 0.3 }}><ChevronLeft size={28} /></button>
         </div>
-        <div className="flex-1 flex flex-col gap-4">
-          <SidebarItem icon={LayoutDashboard} label="Búnker" active={currentView === 'dashboard'} onClick={() => setCurrentView('dashboard')} />
-          <SidebarItem icon={TrendingUp} label="Caja" active={currentView === 'ledger'} onClick={() => setCurrentView('ledger')} />
-          <SidebarItem icon={Target} label="Simular" active={currentView === 'simulator'} onClick={() => setCurrentView('simulator')} />
-          <SidebarItem icon={BarChart3} label="Reporte" active={currentView === 'manager'} onClick={() => setCurrentView('manager')} />
+
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <SidebarItem icon={LayoutDashboard} label="Panel de Control" active={activeTab === 'Panel de Control'} onClick={() => setActiveTab('Panel de Control')} />
+          <SidebarItem icon={Gauge} label="Rendimiento" active={activeTab === 'Rendimiento'} onClick={() => setActiveTab('Rendimiento')} />
+          <SidebarItem icon={Shield} label="Seguridad" active={activeTab === 'Seguridad'} onClick={() => setActiveTab('Seguridad')} />
+          <SidebarItem icon={Settings} label="Ajustes" active={activeTab === 'Ajustes'} onClick={() => setActiveTab('Ajustes')} />
+          <SidebarItem icon={User} label="Perfil" active={activeTab === 'Perfil'} onClick={() => setActiveTab('Perfil')} />
+        </nav>
+      </aside>
+
+      {/* 2. MAIN AREA */}
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
+        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+          <h2 style={{ fontSize: '16px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.5em', opacity: 0.5 }}>Performance Motor</h2>
         </div>
-        <div className="mt-auto opacity-20 hover:opacity-100 transition-all cursor-pointer">
-          <LogOut size={24} />
+
+        {/* MOTOR CENTRAL */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10rem' }}>
+          <div style={{ width: '480px', height: '480px', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+             <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', boxShadow: NEU_SHADOW, backgroundColor: '#E8DFD1' }} />
+             <div style={{ position: 'absolute', inset: '12%', borderRadius: '50%', boxShadow: NEU_INSET }} />
+             
+             <svg viewBox="0 0 500 500" style={{ position: 'absolute', width: '90%', height: '90%', transform: 'rotate(-90deg)' }}>
+                <circle cx="250" cy="250" r="210" fill="transparent" stroke="rgba(139,115,91,0.04)" strokeWidth="40" />
+                <motion.circle
+                  cx="250" cy="250" r="210" fill="transparent" stroke="#D9A852" strokeWidth="40"
+                  strokeDasharray="1320"
+                  animate={{ strokeDashoffset: 1320 - (1320 * 85 / 100) }}
+                  transition={{ duration: 2.5, ease: "easeOut" }}
+                  strokeLinecap="round"
+                />
+                <circle cx="460" cy="250" r="10" fill="#D9A852" style={{ filter: 'drop-shadow(0 0 15px #D9A852)' }} transform="rotate(306 250 250)" />
+             </svg>
+
+             <div style={{ textAlign: 'center', zIndex: 10 }}>
+                <h3 style={{ fontSize: '100px', fontWeight: 900, color: '#4A443F', margin: 0, letterSpacing: '-0.05em' }}>85%</h3>
+                <p style={{ fontSize: '12px', fontWeight: 900, color: '#D9A852', letterSpacing: '0.4em', textTransform: 'uppercase', marginTop: '10px' }}>Punto de Paz</p>
+             </div>
+          </div>
+        </div>
+
+        {/* CONTROL CENTER (CONEXIÓN OCR) */}
+        <div style={{ position: 'absolute', bottom: '1rem', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#E8DFD1', padding: '2.5rem 4rem', borderRadius: '3.5rem', boxShadow: NEU_SHADOW, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', minWidth: '600px', border: '1px solid rgba(255,255,255,0.5)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <Sparkles size={16} color="#D9A852" />
+            <p style={{ fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.3em', opacity: 0.6 }}>Control Center</p>
+          </div>
+          <div style={{ display: 'flex', gap: '3rem' }}>
+             {[
+               { label: 'Blindaje', icon: Shield, action: dispararOCR },
+               { label: 'Expansión', icon: TrendingUp },
+               { label: 'Disfrute', icon: Users }
+             ].map((item, idx) => (
+               <motion.div 
+                 key={idx} 
+                 whileTap={{ scale: 0.95 }}
+                 onClick={item.action}
+                 style={{ textAlign: 'center', cursor: 'pointer' }}
+               >
+                  <div style={{ width: '100px', height: '100px', backgroundColor: '#E8DFD1', borderRadius: '25px', boxShadow: NEU_SHADOW, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', border: '1px solid rgba(255,255,255,0.2)' }}>
+                    {escaneando && item.label === 'Blindaje' ? <Camera className="animate-pulse text-[#D9A852]" size={32} /> : <item.icon size={36} color="#8B735B" />}
+                  </div>
+                  <span style={{ fontSize: '12px', fontWeight: 900, opacity: 0.8 }}>{item.label}</span>
+               </motion.div>
+             ))}
+          </div>
+        </div>
+      </main>
+
+      {/* 3. NOTIFICATION PANEL (INTELIGENCIA) */}
+      <aside style={{ width: '380px', backgroundColor: '#E8DFD1', borderRadius: '3rem', boxShadow: NEU_SHADOW, padding: '3.5rem 2rem', display: 'flex', flexDirection: 'column', gap: '2.5rem', border: '1px solid rgba(255,255,255,0.4)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{ fontSize: '18px', fontWeight: 900, color: '#8B735B' }}>Notification Panel</h2>
+          <Bell size={20} style={{ opacity: 0.4 }} />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', overflowY: 'auto' }}>
+          {/* ALERTAS DE AUDITOR (DINÁMICAS) */}
+          {alertasVampiro.map((alerta, i) => (
+            <div key={`alert-${i}`} style={{ padding: '1.8rem', borderRadius: '2rem', boxShadow: NEU_SHADOW, background: 'rgba(217,168,82,0.05)', border: '1px solid rgba(217,168,82,0.1)', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '6px', background: '#D9A852' }} />
+              <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                <AlertTriangle size={20} color="#D9A852" />
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', color: '#D9A852', marginBottom: '4px' }}>Gasto Vampiro Detectado</p>
+                  <p style={{ fontSize: '13px', fontWeight: 700, color: '#4A443F', lineHeight: '1.3' }}>{alerta.comercio} duplicado</p>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* NOTIFICACIONES DE SISTEMA */}
+          {notificaciones.map((notif) => (
+            <div key={notif.id} style={{ padding: '1.8rem', borderRadius: '2rem', boxShadow: NEU_SHADOW, display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+              <CheckCircle2 size={20} color="#8B735B" style={{ opacity: 0.6 }} />
+              <p style={{ fontSize: '13px', fontWeight: 600, color: '#8B735B', lineHeight: '1.4', margin: 0 }}>{notif.text}</p>
+            </div>
+          ))}
+          
+          {/* INSIGHT DE GEMINI */}
+          {insights.length > 0 && (
+            <div style={{ padding: '2rem', borderRadius: '2rem', backgroundColor: 'rgba(255,255,255,0.4)', border: '1px solid white', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <Brain size={18} color="#D9A852" />
+                    <span style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', color: '#D9A852' }}>IA Copilot</span>
+                </div>
+                <p style={{ fontSize: '12px', fontWeight: 700, color: '#4A443F', fontStyle: 'italic', lineHeight: '1.5' }}>
+                    "{insights[0].mensaje}"
+                </p>
+            </div>
+          )}
         </div>
       </aside>
 
-      {/* CONTENIDO PRINCIPAL */}
-      <main className="flex-1 relative overflow-y-auto custom-scrollbar">
-        
-        <header className="px-8 py-6 flex justify-between items-center sticky top-0 bg-[#F2EDE4]/80 backdrop-blur-md z-10">
-          <div className="flex items-center gap-4">
-            <h1 className="text-3xl font-serif opacity-90">
-              {currentView === 'dashboard' ? 'Centro de Mando' : 
-               currentView === 'simulator' ? 'Simulador de Capital' : 
-               currentView === 'ledger' ? 'Libro Diario' : 'Análisis Gerencial'}
-            </h1>
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3 bg-white/40 px-4 py-2 rounded-2xl border border-white/50">
-              <Calendar size={16} className="text-[#8B735B]" />
-              <span className="text-xs font-bold opacity-60">Próximo Cobro: {fechaCobro.toLocaleDateString()}</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="text-right hidden sm:block">
-                <p className="font-bold text-xs">Familia Bimont</p>
-                <p className="text-[9px] opacity-40 uppercase font-bold tracking-widest">SW 7537 Cream</p>
-              </div>
-              <img src="https://i.pravatar.cc/150?u=bimont" className="w-10 h-10 rounded-full border-2 border-white shadow-sm" alt="Profile" />
-            </div>
-          </div>
-        </header>
-
-        <AnimatePresence mode="wait">
-          
-          {/* DASHBOARD */}
-          {currentView === 'dashboard' && (
-            <motion.div key="dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-8 pb-12 space-y-12">
-              <section className="flex flex-col items-center justify-center relative pt-4">
-                <div className="relative w-[380px] h-[380px] flex items-center justify-center">
-                  <svg width="380" height="380" className="transform -rotate-90">
-                    <circle cx="190" cy="190" r="160" fill="transparent" stroke="rgba(139, 115, 91, 0.05)" strokeWidth="40" />
-                    <circle cx="190" cy="190" r="160" fill="transparent" stroke="#8B735B" strokeWidth="40" strokeDasharray="1005" strokeDashoffset={1005 - (1005 * peacePointPercentage / 100)} strokeLinecap="round" className="transition-all duration-1000" />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <p className="text-[10px] opacity-40 font-bold uppercase tracking-widest mb-2">Punto de Paz (Bimont)</p>
-                    <h2 className="text-7xl font-bold tracking-tighter leading-none">{peacePointPercentage}%</h2>
-                    <div className="mt-8 bg-white/60 backdrop-blur-md px-6 py-4 rounded-[32px] border border-white shadow-xl">
-                      <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-40 mb-1">Disponible para Hoy</p>
-                      <p className="text-3xl font-black text-[#8B735B]">$ {disponibleHoy.toLocaleString()}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-4 mt-8">
-                  {[
-                    { id: 'blindaje', label: 'Modo Blindaje', icon: ShieldCheck },
-                    { id: 'expansion', label: 'Modo Expansión', icon: Zap },
-                    { id: 'disfrute', label: 'Modo Disfrute', icon: Heart }
-                  ].map(mode => (
-                    <button key={mode.id} onClick={() => setActiveMode(mode.id as any)} className={`px-8 py-4 rounded-full flex items-center gap-3 transition-all duration-500 shadow-sm border ${activeMode === mode.id ? 'bg-white text-[#4A443F] border-[#8B735B]/20 scale-105' : 'bg-transparent text-[#4A443F]/40 border-transparent hover:border-[#8B735B]/10'}`}>
-                      <mode.icon size={18} className={activeMode === mode.id ? 'text-[#8B735B]' : ''} />
-                      <span className="text-xs font-bold">{mode.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </section>
-
-              <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white rounded-[32px] p-6 shadow-sm border border-white/50">
-                  <p className="text-[10px] uppercase font-bold opacity-30 tracking-widest mb-1">Total en Cuentas</p>
-                  <p className="text-2xl font-bold">$ {saldoTotal.toLocaleString()}</p>
-                  <div className="mt-4 flex items-center gap-1 text-[10px] text-green-600 font-bold"><span>+1.2%</span><ArrowUpRight size={12}/></div>
-                </div>
-                <div className="bg-white rounded-[32px] p-6 shadow-sm border border-white/50">
-                  <p className="text-[10px] uppercase font-bold opacity-30 tracking-widest mb-1">Días para el Cobro</p>
-                  <p className="text-2xl font-bold">{diasFaltantes} días</p>
-                  <p className="text-[9px] opacity-40 mt-1 font-bold">Meta: 4to día hábil</p>
-                </div>
-                <div className="bg-white rounded-[32px] p-6 shadow-sm border border-white/50 space-y-3 col-span-2">
-                  <div className="flex justify-between items-center mb-2">
-                    <p className="text-[10px] uppercase font-bold opacity-30 tracking-widest">Próximos Compromisos</p>
-                    <button className="text-[9px] font-bold text-[#8B735B] uppercase">+ Agregar</button>
-                  </div>
-                  {gastosComprometidos.map(g => (
-                    <div key={g.id} className="flex justify-between items-center text-xs group">
-                      <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#8B735B]"></div>
-                        <p className="font-bold opacity-80">{g.desc}</p>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="opacity-40 font-mono">{g.fecha}</span>
-                        <span className="font-black">$ {g.monto.toLocaleString()}</span>
-                        <ChevronRight size={14} className="opacity-0 group-hover:opacity-20 transition-all" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </motion.div>
-          )}
-
-          {/* SIMULADOR DINÁMICO */}
-          {currentView === 'simulator' && (
-            <motion.div key="sim" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="p-12 max-w-5xl mx-auto space-y-12">
-              <header className="text-center space-y-2">
-                <h2 className="text-4xl font-serif">Simulación de Excedentes</h2>
-                <p className="text-sm opacity-50">Ajusta los sliders para decidir el destino de tu capital de crecimiento.</p>
-              </header>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                
-                {/* Sliders */}
-                <div className="space-y-12 bg-white/40 p-10 rounded-[48px] border border-white">
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-end">
-                      <div>
-                        <h4 className="font-bold text-lg">Blindaje Personal</h4>
-                        <p className="text-xs opacity-50">Fondo de Emergencia (Meta: 3 meses)</p>
-                      </div>
-                      <span className="text-2xl font-black text-[#8B735B]">{sliderBlindaje}%</span>
-                    </div>
-                    <input 
-                      type="range" min="0" max="100" value={sliderBlindaje}
-                      onChange={(e) => setSliderBlindaje(parseInt(e.target.value))}
-                      className="w-full h-2 bg-[#E8DFD1] rounded-lg appearance-none cursor-pointer accent-[#8B735B]"
-                    />
-                  </div>
-
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-end">
-                      <div>
-                        <h4 className="font-bold text-lg">Expansión Janlu</h4>
-                        <p className="text-xs opacity-50">Showroom e Insumos (SW 7537)</p>
-                      </div>
-                      <span className="text-2xl font-black text-[#8B735B]">{sliderExpansion}%</span>
-                    </div>
-                    <input 
-                      type="range" min="0" max="100" value={sliderExpansion}
-                      onChange={(e) => setSliderExpansion(parseInt(e.target.value))}
-                      className="w-full h-2 bg-[#E8DFD1] rounded-lg appearance-none cursor-pointer accent-[#8B735B]"
-                    />
-                  </div>
-                </div>
-
-                {/* Visualización de Impacto */}
-                <div className="flex items-center justify-center">
-                  <div className="relative w-72 h-72">
-                    <svg viewBox="0 0 36 36" className="w-full h-full transform -rotate-90">
-                      <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(0,0,0,0.05)" strokeWidth="4" />
-                      <circle cx="18" cy="18" r="14" fill="none" stroke="#9BB095" strokeWidth="4" strokeDasharray={`${sliderExpansion} 100`} />
-                      <circle cx="18" cy="18" r="14" fill="none" stroke="#8B735B" strokeWidth="4" strokeDasharray={`${sliderBlindaje} 100`} strokeDashoffset={`-${sliderExpansion}`} />
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                      <p className="text-[10px] font-bold opacity-30 uppercase tracking-widest">Inyección Total</p>
-                      <p className="text-4xl font-black">$ {((sliderBlindaje + sliderExpansion) * 500).toLocaleString()}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {/* NUEVO GASTO CON OCR */}
-          {currentView === 'nuevo-gasto' && (
-            <motion.div key="add" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} className="fixed inset-0 bg-[#F2EDE4] z-[100] flex items-center justify-center p-4">
-              <div className="max-w-md w-full bg-white rounded-[60px] p-12 shadow-2xl relative overflow-hidden space-y-8">
-                <button onClick={() => setCurrentView('dashboard')} className="absolute top-10 left-10 text-3xl opacity-20 hover:opacity-100 transition-all">←</button>
-                <header className="text-center">
-                  <div className="flex justify-center mb-4">
-                    <button className="p-4 bg-[#8B735B]/10 rounded-full text-[#8B735B] hover:bg-[#8B735B]/20 transition-all">
-                      <Camera size={32} />
-                    </button>
-                  </div>
-                  <p className="text-sm font-bold opacity-60">Escanear Ticket o Cargar Manual</p>
-                  <div className="mt-6">
-                    <h2 className="text-6xl font-light tracking-tighter text-[#4A443F]">$ 0.00</h2>
-                  </div>
-                </header>
-                
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center px-2">
-                    <p className="text-[10px] font-bold uppercase opacity-30">Categoría</p>
-                    <button className="text-[10px] font-bold text-[#8B735B] uppercase flex items-center gap-1">
-                      <Edit3 size={10} /> Gestionar
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-3 gap-3">
-                    {['Edu', 'Hogar', 'Log', 'Super', 'Ocio', 'Salud'].map((c, i) => (
-                      <button key={i} className={`p-4 rounded-[24px] bg-[#F2EDE4]/40 hover:bg-white border border-transparent hover:border-[#8B735B]/20 transition-all flex flex-col items-center gap-1`}>
-                        <span className="text-[9px] font-bold uppercase opacity-60">{c}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-4 pt-4 border-t border-black/5">
-                  <div className="flex items-center gap-3 bg-[#F2EDE4]/30 p-4 rounded-2xl">
-                    <Calendar size={18} className="opacity-30" />
-                    <input type="date" className="bg-transparent outline-none text-sm font-bold w-full" defaultValue={hoy.toISOString().split('T')[0]} />
-                  </div>
-                  <input type="text" placeholder="Descripción..." className="w-full bg-[#F2EDE4]/30 p-4 rounded-2xl outline-none text-sm font-bold" />
-                </div>
-
-                <button className="w-full py-6 rounded-full bg-[#8B735B] text-white font-black text-lg shadow-xl shadow-[#8B735B]/20 hover:scale-[1.02] active:scale-[0.98] transition-all uppercase tracking-widest">
-                  Confirmar Gasto
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-        </AnimatePresence>
-
-        {/* FAB */}
-        <button onClick={() => setCurrentView('nuevo-gasto')} className="fixed bottom-12 right-12 w-16 h-16 bg-[#8B735B] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-10"><Plus size={32} /></button>
-      </main>
     </div>
   );
-};
-
-export default App;
+}
