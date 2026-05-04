@@ -3,191 +3,452 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finanzas del Hogar | Prototipo Premium</title>
+    <!-- Truco anti-cache para forzar la actualización en el navegador -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Finanzas del Hogar | Luxury Console</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;600;800;900&family=Cinzel:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
     <style>
-        body { font-family: 'Outfit', sans-serif; background-color: #F2EDE4; color: #4A443F; margin: 0; }
+        :root { 
+            --bg: #F2EDE4; 
+            --accent: #8B735B; 
+            --gold: #D9A852; 
+            --dark: #4A443F; 
+        }
+        body { font-family: 'Outfit', sans-serif; background-color: var(--bg); color: var(--dark); margin: 0; overflow: hidden; }
+        
+        .luxury-card { 
+            background: rgba(255, 255, 255, 0.5); 
+            backdrop-filter: blur(30px); 
+            border: 1px solid rgba(255, 255, 255, 0.9); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 40px; 
+            box-shadow: 10px 20px 40px rgba(139, 115, 91, 0.08), -10px -10px 30px rgba(255,255,255,0.8); 
+        }
+        
+        .luxury-btn {
+            background: linear-gradient(145deg, #ffffff, #e6e1d9);
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 5px 10px 20px rgba(139, 115, 91, 0.1), inset 0px 2px 4px rgba(255,255,255,1);
+        }
+        
+        .luxury-btn-dark {
+            background: linear-gradient(145deg, #957d64, #7d6751);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 5px 10px 20px rgba(139, 115, 91, 0.2), inset 0px 2px 4px rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .sidebar-item-active { 
+            background: linear-gradient(90deg, rgba(255,255,255,0.6) 0%, transparent 100%);
+            border-left: 4px solid var(--accent); 
+            color: var(--accent); 
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 0px; }
         .font-serif { font-family: 'Cinzel', serif; }
-        .glass { background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.6); }
-        .neu-shadow { box-shadow: 20px 20px 60px #ded9d1, -20px -20px 60px #ffffff; }
-        .inner-shadow { box-shadow: inset 4px 4px 8px rgba(0,0,0,0.05), inset -4px -4px 8px rgba(255,255,255,0.8); }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(139, 115, 91, 0.2); border-radius: 10px; }
+        input[type="number"]::-webkit-inner-spin-button, input[type="date"]::-webkit-calendar-picker-indicator { display: none; -webkit-appearance: none; }
+        
+        .label-micro { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4em; opacity: 0.35; }
+        .data-macro { font-size: 38px; font-weight: 900; letter-spacing: -0.03em; line-height: 1; }
     </style>
 </head>
-<body className="overflow-hidden">
+<body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect, useMemo } = React;
         const { motion, AnimatePresence } = window.Motion;
 
-        const Icon = ({ name, size = 24 }) => {
-            const icons = {
-                dashboard: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>,
-                ledger: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
-                zap: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
-                wallet: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>,
-                phone: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>,
-                shield: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            };
-            return icons[name] || icons.dashboard;
+        const Icons = {
+            Dashboard: () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>,
+            History: () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>,
+            Shield: () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+            Target: () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
+            Home: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
+            Wallet: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>,
+            Calendar: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+            Check: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
+            Edit: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+            Repeat: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>,
+            Close: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+            Layers: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
         };
 
+        const avatars = [
+            "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+            "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+            "https://i.pravatar.cc/150?u=a04258114e29026702d"
+        ];
+
         const App = () => {
-            const [mode, setMode] = useState('desktop'); // 'desktop' or 'mobile'
-            const sustainability = 85;
+            const [view, setView] = useState('dashboard');
+            const [transactions, setTransactions] = useState([]);
+            const [showModal, setShowModal] = useState(false);
+            const [isMobileMode, setIsMobileMode] = useState(false);
+            const [avatarIdx, setAvatarIdx] = useState(0);
+
+            // Modal State
+            const [newAmt, setNewAmt] = useState("");
+            const [newDesc, setNewDesc] = useState("");
+            const [newType, setNewType] = useState("expense"); // expense, income, commitment, recurring
+            const [newSource, setNewSource] = useState("salary");
+            const [newDueDate, setNewDueDate] = useState("");
+            const [newInstallments, setNewInstallments] = useState(1);
+            const [newDueDay, setNewDueDay] = useState(1);
+
+            useEffect(() => {
+                const data = localStorage.getItem('finanzas_v8_luxury');
+                if (data) setTransactions(JSON.parse(data));
+                if (window.innerWidth < 768) setIsMobileMode(true);
+                
+                const handleResize = () => setIsMobileMode(window.innerWidth < 768);
+                window.addEventListener('resize', handleResize);
+                return () => window.removeEventListener('resize', handleResize);
+            }, []);
+
+            const sustainability = useMemo(() => {
+                const salary = transactions.filter(t => t.type === 'income' && t.source === 'salary').reduce((a, b) => a + Number(b.amount), 0);
+                const expenses = transactions.filter(t => t.type === 'expense').reduce((a, b) => a + Number(b.amount), 0);
+                return expenses === 0 ? 100 : Math.min(100, Math.floor((salary / expenses) * 100));
+            }, [transactions]);
+
+            const peacePoint = 800 + (sustainability * 2);
+
+            const pendingCommitments = useMemo(() => {
+                // Combinamos compromisos a plazos (cuotas) y gastos fijos (recurring)
+                return transactions.filter(t => (t.type === 'commitment' || t.type === 'recurring') && !t.paid)
+                                   .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+            }, [transactions]);
+
+            const handleSave = () => {
+                if (!newAmt) return;
+                
+                let calculatedDueDate = newDueDate;
+                if (newType === 'recurring') {
+                    // Si es fijo, el vencimiento es el dia indicado del mes actual/siguiente
+                    const today = new Date();
+                    let targetDate = new Date(today.getFullYear(), today.getMonth(), newDueDay);
+                    if (targetDate < today) targetDate.setMonth(targetDate.getMonth() + 1);
+                    calculatedDueDate = targetDate.toISOString();
+                }
+
+                const entry = { 
+                    id: Date.now(), 
+                    amount: newAmt,
+                    description: newDesc, 
+                    type: newType, 
+                    source: newSource, 
+                    date: new Date().toISOString(),
+                    dueDate: calculatedDueDate,
+                    totalInstallments: newType === 'commitment' ? parseInt(newInstallments) : null,
+                    currentInstallment: newType === 'commitment' ? 1 : null,
+                    dueDay: newType === 'recurring' ? parseInt(newDueDay) : null,
+                    paid: false
+                };
+                
+                const newList = [entry, ...transactions];
+                setTransactions(newList);
+                localStorage.setItem('finanzas_v8_luxury', JSON.stringify(newList));
+                setShowModal(false);
+                setNewAmt(""); setNewDesc(""); setNewDueDate(""); setNewInstallments(1); setNewDueDay(1);
+            };
+
+            const markAsPaid = (id) => {
+                let expenseEntry = null;
+                const newList = transactions.map(t => {
+                    if (t.id === id) {
+                        // Crear registro del gasto real por este pago
+                        expenseEntry = {
+                            id: Date.now() + 1,
+                            amount: t.amount,
+                            description: t.type === 'recurring' ? `Pago Mensual: ${t.description}` : `Pago (Cuota ${t.currentInstallment}/${t.totalInstallments}): ${t.description}`,
+                            type: 'expense',
+                            source: 'salary', 
+                            date: new Date().toISOString()
+                        };
+
+                        if (t.type === 'commitment') {
+                            if (t.currentInstallment < t.totalInstallments) {
+                                const nextDate = new Date(t.dueDate);
+                                nextDate.setMonth(nextDate.getMonth() + 1);
+                                return { ...t, currentInstallment: t.currentInstallment + 1, dueDate: nextDate.toISOString() };
+                            } else {
+                                return { ...t, paid: true };
+                            }
+                        } else if (t.type === 'recurring') {
+                            // Si es fijo mensual, simplemente avanzamos la fecha de cobro al mes siguiente. ¡Nunca se marca como paid=true permanentemente!
+                            const nextDate = new Date(t.dueDate);
+                            nextDate.setMonth(nextDate.getMonth() + 1);
+                            return { ...t, dueDate: nextDate.toISOString() };
+                        }
+                    }
+                    return t;
+                });
+                
+                const finalTransactions = expenseEntry ? [expenseEntry, ...newList] : newList;
+                setTransactions(finalTransactions);
+                localStorage.setItem('finanzas_v8_luxury', JSON.stringify(finalTransactions));
+            };
+
+            // Editar Tarifa Fija
+            const editAmount = (id, currentAmount, desc) => {
+                const newVal = prompt(`Actualizar tarifa para ${desc}:\n(Ej: Si aumentó el internet, ingresa el nuevo valor)`, currentAmount);
+                if (newVal && !isNaN(newVal)) {
+                    const newList = transactions.map(t => t.id === id ? { ...t, amount: parseFloat(newVal) } : t);
+                    setTransactions(newList);
+                    localStorage.setItem('finanzas_v8_luxury', JSON.stringify(newList));
+                }
+            };
 
             return (
-                <div className="min-h-screen flex items-center justify-center p-4">
-                    {/* Botón Switcher */}
-                    <button 
-                        onClick={() => setMode(mode === 'desktop' ? 'mobile' : 'desktop')}
-                        className="fixed top-8 right-8 z-50 bg-[#8B735B] text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-2 hover:scale-110 transition-all font-black text-xs uppercase tracking-widest"
-                    >
-                        <Icon name={mode === 'desktop' ? 'phone' : 'dashboard'} size={16} />
-                        {mode === 'desktop' ? 'Ver Vista Móvil' : 'Ver Vista Desktop'}
-                    </button>
+                <div className="h-screen w-screen flex bg-[#F2EDE4] overflow-hidden text-[#4A443F]">
+                    
+                    {/* --- SIDEBAR --- */}
+                    <aside className="w-72 bg-[rgba(232,223,209,0.3)] border-r border-white/40 flex flex-col py-12 z-10 relative backdrop-blur-xl">
+                        <div className="px-12 mb-20 flex items-center gap-4">
+                            <div className="w-10 h-10 bg-white rounded-xl shadow-md flex items-center justify-center text-[#8B735B]"><Icons.Shield /></div>
+                            <span className="font-serif text-xl font-bold tracking-widest text-[#8B735B]">CASA</span>
+                        </div>
+                        <nav className="flex-1 space-y-2">
+                            {[
+                                { id: 'dashboard', l: 'Panel Central', Icon: Icons.Dashboard },
+                                { id: 'registros', l: 'Historial', Icon: Icons.History },
+                                { id: 'protocolos', l: 'Protocolos', Icon: Icons.Target }
+                            ].map(m => (
+                                <motion.div key={m.id} whileHover={{ x: 4 }} onClick={() => setView(m.id)} className={`px-12 py-5 flex items-center gap-5 cursor-pointer transition-colors ${view === m.id ? 'sidebar-item-active' : 'opacity-40 hover:opacity-100'}`}>
+                                    <m.Icon /><span className="text-[11px] font-black uppercase tracking-widest">{m.l}</span>
+                                </motion.div>
+                            ))}
+                        </nav>
+                    </aside>
 
-                    <AnimatePresence mode="wait">
-                        {mode === 'desktop' ? (
-                            <motion.div 
-                                key="desktop"
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 1.05 }}
-                                className="w-full h-[90vh] max-w-[1400px] glass rounded-[60px] shadow-2xl flex overflow-hidden border border-white/50"
-                            >
-                                {/* Sidebar */}
-                                <aside className="w-32 bg-[#E8DFD1]/40 border-r border-white/20 flex flex-col items-center py-12">
-                                    <div className="w-16 h-16 bg-[#8B735B] rounded-[24px] flex items-center justify-center text-white shadow-xl mb-12">
-                                        <Icon name="shield" size={32} />
-                                    </div>
-                                    <div className="flex flex-col gap-8 opacity-40">
-                                        <Icon name="dashboard" />
-                                        <Icon name="ledger" />
-                                        <Icon name="zap" />
-                                        <Icon name="wallet" />
-                                    </div>
-                                </aside>
+                    {/* --- MAIN CONTENT --- */}
+                    <main className="flex-1 p-20 overflow-y-auto custom-scrollbar relative">
+                        <header className="flex justify-between items-center mb-20 max-w-6xl mx-auto">
+                            <div>
+                                <h1 className="text-[10px] font-black uppercase tracking-[0.6em] opacity-30 mb-2">Comando Financiero</h1>
+                                <h2 className="text-4xl font-serif opacity-90">{view === 'dashboard' ? 'Resumen Ejecutivo' : view === 'registros' ? 'Libro Mayor' : 'Directrices'}</h2>
+                            </div>
+                            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setShowModal(true)} className="luxury-btn-dark px-10 py-4 rounded-full font-black text-[10px] uppercase tracking-widest flex items-center gap-3">
+                                <Icons.Wallet /><span>Nuevo Registro</span>
+                            </motion.button>
+                        </header>
 
-                                {/* Main */}
-                                <div className="flex-1 p-12 overflow-y-auto custom-scrollbar">
-                                    <header className="flex justify-between items-center mb-12">
-                                        <h1 className="text-3xl font-serif font-black uppercase tracking-[0.2em] opacity-80">Finanzas del Hogar</h1>
-                                        <div className="flex items-center gap-4">
+                        <div className="max-w-6xl mx-auto">
+                            {view === 'dashboard' && (
+                                <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} transition={{duration:0.6}} className="flex flex-col items-center">
+                                    
+                                    <div className="relative w-[450px] h-[450px] flex items-center justify-center mb-10">
+                                        <div className="absolute inset-0 bg-white/20 rounded-full blur-3xl scale-90"></div>
+                                        <svg width="450" height="450" className="transform -rotate-90 relative z-10">
+                                            <circle cx="225" cy="225" r="200" fill="transparent" stroke="rgba(255, 255, 255, 0.6)" strokeWidth="30" />
+                                            <circle cx="225" cy="225" r="200" fill="transparent" stroke="rgba(139, 115, 91, 0.05)" strokeWidth="30" />
+                                            <circle cx="225" cy="225" r="200" fill="transparent" stroke={sustainability >= 100 ? '#9BB095' : '#D9A852'} strokeWidth="30" strokeDasharray="1256" strokeDashoffset={1256 - (1256 * (sustainability/100))} strokeLinecap="round" className="transition-all duration-1000 ease-out" />
+                                        </svg>
+                                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center z-20 mt-4">
+                                            <span className="label-micro mb-2">Peace Point</span>
+                                            <h2 className="text-[120px] font-black tracking-tighter leading-none text-[#4A443F] drop-shadow-sm">{peacePoint}</h2>
+                                            <div className="mt-6 px-5 py-2 bg-white/60 backdrop-blur-md rounded-full border border-white shadow-sm flex items-center gap-2">
+                                                <div className={`w-2 h-2 rounded-full ${sustainability >= 100 ? 'bg-green-500' : 'bg-orange-400'}`}></div>
+                                                <span className={`text-[9px] font-black uppercase tracking-widest ${sustainability >= 100 ? 'text-green-700' : 'text-orange-700'}`}>Sostenibilidad {sustainability}%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-12 gap-10 w-full mt-10">
+                                        
+                                        <div className="col-span-8 grid grid-cols-2 gap-6">
+                                            <motion.div whileHover={{ y: -5 }} className="luxury-card p-10 flex flex-col justify-between h-48">
+                                                <p className="label-micro">Gastos Vitales</p>
+                                                <p className="data-macro text-[#4A443F]">${transactions.filter(t=>t.type==='expense').reduce((a,b)=>a+Number(b.amount),0).toLocaleString()}</p>
+                                            </motion.div>
+                                            <motion.div whileHover={{ y: -5 }} className="luxury-card p-10 flex flex-col justify-between h-48">
+                                                <p className="label-micro">Ingresos Base</p>
+                                                <p className="data-macro text-[#9BB095]">${transactions.filter(t=>t.type==='income' && t.source==='salary').reduce((a,b)=>a+Number(b.amount),0).toLocaleString()}</p>
+                                            </motion.div>
+                                            <motion.div whileHover={{ y: -5 }} className="luxury-card p-10 flex flex-col justify-between h-48 col-span-2 relative overflow-hidden">
+                                                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-100/50 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                                                <div className="flex justify-between items-end relative z-10">
+                                                    <div>
+                                                        <p className="label-micro text-orange-800/50">Refuerzos Externos (JANLU)</p>
+                                                        <p className="data-macro text-[#C88566] mt-4">${transactions.filter(t=>t.source==='janlu').reduce((a,b)=>a+Number(b.amount),0).toLocaleString()}</p>
+                                                    </div>
+                                                    <div className="w-12 h-12 bg-white/50 rounded-full flex items-center justify-center text-orange-500"><Icons.Target /></div>
+                                                </div>
+                                            </motion.div>
+                                        </div>
+
+                                        {/* PANEL DE PAGOS (CUOTAS + FIJOS) */}
+                                        <div className="col-span-4 luxury-card p-8 flex flex-col">
+                                            <div className="flex justify-between items-center mb-6">
+                                                <p className="label-micro">Agenda de Pagos</p>
+                                                <Icons.Calendar />
+                                            </div>
+                                            <div className="flex-1 overflow-y-auto custom-scrollbar space-y-4 pr-2">
+                                                {pendingCommitments.length === 0 ? (
+                                                    <div className="h-full flex flex-col items-center justify-center opacity-30 text-center">
+                                                        <Icons.Shield />
+                                                        <p className="text-[10px] font-black uppercase tracking-widest mt-4">Todo al día</p>
+                                                    </div>
+                                                ) : (
+                                                    pendingCommitments.map(t => (
+                                                        <div key={t.id} className="bg-white/40 p-5 rounded-2xl border border-white/50 hover:bg-white/60 transition-colors group">
+                                                            <div className="flex justify-between items-start mb-2">
+                                                                <p className="font-bold text-sm leading-tight text-[#4A443F] flex items-center gap-2">
+                                                                    {t.type === 'recurring' && <Icons.Repeat />}
+                                                                    {t.description}
+                                                                </p>
+                                                                <div className="flex items-center gap-2">
+                                                                    {t.type === 'recurring' && (
+                                                                        <button onClick={() => editAmount(t.id, t.amount, t.description)} className="w-6 h-6 rounded-full opacity-0 group-hover:opacity-100 hover:bg-orange-100 hover:text-orange-600 transition-all flex items-center justify-center" title="Editar Tarifa">
+                                                                            <Icons.Edit />
+                                                                        </button>
+                                                                    )}
+                                                                    <button onClick={() => markAsPaid(t.id)} className="w-6 h-6 rounded-full bg-[#E8DFD1] hover:bg-green-500 hover:text-white transition-colors flex items-center justify-center text-transparent flex-shrink-0" title="Liquidar pago del mes">
+                                                                        <Icons.Check />
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex justify-between items-end">
+                                                                <div>
+                                                                    <p className="text-[9px] font-black uppercase text-red-500 tracking-wider">Vence: {new Date(t.dueDate).toLocaleDateString()}</p>
+                                                                    {t.type === 'commitment' && t.totalInstallments > 1 && (
+                                                                        <p className="text-[8px] font-black uppercase tracking-[0.2em] opacity-50 mt-1">
+                                                                            CUOTA {t.currentInstallment} DE {t.totalInstallments}
+                                                                        </p>
+                                                                    )}
+                                                                    {t.type === 'recurring' && (
+                                                                        <p className="text-[8px] font-black uppercase tracking-[0.2em] opacity-50 mt-1">GASTO FIJO MENSUAL</p>
+                                                                    )}
+                                                                </div>
+                                                                <p className="font-black text-lg text-[#4A443F]">${Number(t.amount).toLocaleString()}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </motion.div>
+                            )}
+
+                            {view === 'registros' && (
+                                <motion.div initial={{opacity:0}} animate={{opacity:1}} className="space-y-6">
+                                    {transactions.map((t, i) => (
+                                        <motion.div key={t.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className={`luxury-card p-8 flex justify-between items-center hover:bg-white/70 transition-colors cursor-default ${t.type === 'commitment' || t.type === 'recurring' ? 'border-orange-200/50' : ''}`}>
+                                            <div className="flex items-center gap-6">
+                                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm border border-white ${t.type === 'income' ? 'bg-green-50 text-green-600' : (t.type === 'commitment' || t.type === 'recurring') ? 'bg-orange-50 text-orange-500' : 'bg-red-50 text-red-500'}`}>
+                                                    {t.type === 'income' ? <Icons.Home /> : t.type === 'recurring' ? <Icons.Repeat /> : t.type === 'commitment' ? <Icons.Calendar /> : <Icons.Wallet />}
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-xl tracking-tight">{t.description || 'Movimiento no especificado'}</p>
+                                                    <p className="label-micro mt-1">
+                                                        {t.type === 'commitment' 
+                                                            ? (t.paid ? 'DEUDA SALDADA' : `VENCE EL ${new Date(t.dueDate).toLocaleDateString()}`) 
+                                                            : t.type === 'recurring' 
+                                                            ? 'SUSCRIPCIÓN / SERVICIO FIJO'
+                                                            : t.source === 'janlu' ? 'Aporte de JANLU' : 'Flujo Vital'}
+                                                    </p>
+                                                </div>
+                                            </div>
                                             <div className="text-right">
-                                                <p className="text-xs font-black uppercase tracking-widest">Hogar Bimont</p>
-                                                <p className="text-[10px] opacity-40 font-bold uppercase">Octubre 2023</p>
+                                                <p className={`text-3xl font-black tracking-tighter ${t.type === 'income' ? 'text-[#9BB095]' : (t.type === 'commitment' || t.type === 'recurring') && !t.paid ? 'text-orange-500' : 'text-[#4A443F]'}`}>
+                                                    {t.type === 'income' ? '+' : (t.type === 'commitment' || t.type === 'recurring') ? '!' : '-'}${Number(t.amount).toLocaleString()}
+                                                </p>
+                                                {t.type === 'commitment' && t.totalInstallments > 1 && !t.paid && (
+                                                    <p className="text-[9px] font-bold opacity-30 uppercase mt-1">Cuota {t.currentInstallment}/{t.totalInstallments}</p>
+                                                )}
+                                                <p className="label-micro mt-2">{new Date(t.date).toLocaleDateString()}</p>
                                             </div>
-                                            <div className="w-12 h-12 bg-white rounded-full border-2 border-white shadow-sm overflow-hidden">
-                                                <img src="https://i.pravatar.cc/100" alt="Avatar" />
-                                            </div>
-                                        </div>
-                                    </header>
+                                        </motion.div>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </div>
+                    </main>
 
-                                    <div className="grid grid-cols-12 gap-12">
-                                        {/* Gauge Section */}
-                                        <div className="col-span-7 flex flex-col items-center justify-center relative">
-                                            <div className="relative w-[450px] h-[450px] flex items-center justify-center">
-                                                <svg width="450" height="450" className="transform -rotate-90">
-                                                    <circle cx="225" cy="225" r="180" fill="transparent" stroke="rgba(139, 115, 91, 0.03)" strokeWidth="55" />
-                                                    <circle cx="225" cy="225" r="180" fill="transparent" stroke="#9BB095" strokeWidth="55" strokeDasharray="150 1130" strokeDashoffset="0" strokeLinecap="round" />
-                                                    <circle cx="225" cy="225" r="180" fill="transparent" stroke="#C88566" strokeWidth="55" strokeDasharray="250 1130" strokeDashoffset="-170" strokeLinecap="round" />
-                                                    <circle cx="225" cy="225" r="180" fill="transparent" stroke="#D9A852" strokeWidth="55" strokeDasharray="300 1130" strokeDashoffset="-450" strokeLinecap="round" />
-                                                </svg>
-                                                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                                    <p className="text-sm opacity-40 font-black uppercase tracking-[0.3em]">Peace Point</p>
-                                                    <h2 className="text-[140px] font-black tracking-tighter leading-none -mt-4">820</h2>
-                                                    <p className="text-[10px] uppercase font-black tracking-[0.5em] opacity-20 mt-4">Security Score</p>
-                                                </div>
-                                            </div>
+                    {/* --- SMART MODAL --- */}
+                    <AnimatePresence>
+                        {showModal && (
+                            <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 bg-[#F2EDE4]/80 backdrop-blur-md z-[100] flex items-center justify-center p-6">
+                                <motion.div initial={{y:50, scale:0.95}} animate={{y:0, scale:1}} exit={{y:20, opacity:0}} className={`luxury-card flex flex-col relative overflow-hidden ${isMobileMode ? 'w-[390px] h-[800px] p-10 border-[10px] border-[#E8DFD1]' : 'w-full max-w-4xl p-16'}`}>
+                                    <button onClick={()=>setShowModal(false)} className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/80 transition-all text-[#4A443F]"><Icons.Close /></button>
+                                    
+                                    <div className={`flex ${isMobileMode ? 'flex-col text-center mt-10' : 'justify-between items-end border-b border-black/5 pb-12'}`}>
+                                        <div className={isMobileMode ? 'w-full mb-8' : 'w-1/2 pr-10 border-r border-black/5'}>
+                                            <p className="label-micro mb-4">{newType === 'commitment' ? 'Valor por Cuota' : newType === 'recurring' ? 'Tarifa Mensual' : 'Monto Exacto'}</p>
+                                            <input type="number" value={newAmt} onChange={e=>setNewAmt(e.target.value)} className={`font-light bg-transparent outline-none w-full tracking-tighter text-[#4A443F] placeholder:opacity-20 ${isMobileMode ? 'text-6xl text-center' : 'text-8xl'}`} placeholder="0.00" autoFocus />
                                         </div>
+                                        <div className={isMobileMode ? 'w-full' : 'w-1/2 pl-10'}>
+                                            <p className="label-micro mb-4">Concepto / Proveedor</p>
+                                            <input type="text" value={newDesc} onChange={e=>setNewDesc(e.target.value)} className={`font-bold bg-transparent border-b border-black/10 outline-none w-full text-[#4A443F] placeholder:opacity-30 pb-2 ${isMobileMode ? 'text-xl text-center' : 'text-3xl'}`} placeholder="Ej: Internet / Netflix" />
+                                        </div>
+                                    </div>
 
-                                        {/* Info Section */}
-                                        <div className="col-span-5 space-y-8 flex flex-col justify-center">
-                                            <div className="bg-white/60 p-8 rounded-[48px] border border-white shadow-xl space-y-6">
-                                                <h3 className="text-xs font-black uppercase tracking-[0.3em] opacity-30">Estado de Sostenibilidad</h3>
-                                                <div className="space-y-2">
-                                                    <div className="flex justify-between items-end">
-                                                        <span className="text-5xl font-black">{sustainability}%</span>
-                                                        <span className="text-xs font-bold text-green-600 uppercase">Independencia Alta</span>
+                                    <div className={`grid ${isMobileMode ? 'grid-cols-1 mt-10' : 'grid-cols-4 mt-12'} gap-4`}>
+                                        <div className="col-span-4 mb-2">
+                                            <p className={`label-micro ${isMobileMode ? 'text-center' : ''}`}>Naturaleza del Flujo</p>
+                                        </div>
+                                        <button onClick={()=>setNewType('expense')} className={`py-5 rounded-[20px] font-black text-[9px] uppercase tracking-widest transition-all ${newType==='expense' ? 'luxury-btn-dark' : 'luxury-btn text-[#4A443F]/40'}`}>Egreso Único</button>
+                                        <button onClick={()=>setNewType('income')} className={`py-5 rounded-[20px] font-black text-[9px] uppercase tracking-widest transition-all ${newType==='income' ? 'bg-gradient-to-br from-[#9BB095] to-[#7A8F74] text-white shadow-md border border-white/20' : 'luxury-btn text-[#4A443F]/40'}`}>Ingreso</button>
+                                        <button onClick={()=>setNewType('commitment')} className={`py-5 rounded-[20px] font-black text-[9px] uppercase tracking-widest transition-all ${newType==='commitment' ? 'bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-md border border-white/20' : 'luxury-btn text-[#4A443F]/40'}`}>Deuda a Cuotas</button>
+                                        <button onClick={()=>setNewType('recurring')} className={`py-5 rounded-[20px] font-black text-[9px] uppercase tracking-widest transition-all ${newType==='recurring' ? 'bg-gradient-to-br from-[#4A443F] to-[#2A241F] text-white shadow-md border border-white/20' : 'luxury-btn text-[#4A443F]/40 flex items-center justify-center gap-2'}`}>
+                                            {newType==='recurring' && <Icons.Repeat />} Fijo Mensual
+                                        </button>
+                                    </div>
+
+                                    <div className="mt-8">
+                                        <AnimatePresence mode="wait">
+                                            {newType === 'commitment' ? (
+                                                <motion.div key="date-input" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <p className={`label-micro mb-5 ${isMobileMode ? 'text-center' : ''}`}>Vencimiento</p>
+                                                        <div className="luxury-btn py-4 px-6 rounded-[24px] flex items-center justify-between">
+                                                            <input type="date" value={newDueDate} onChange={e=>setNewDueDate(e.target.value)} className="bg-transparent outline-none w-full font-bold text-lg text-[#4A443F] text-center" />
+                                                        </div>
                                                     </div>
-                                                    <div className="w-full h-3 bg-[#F2EDE4] rounded-full overflow-hidden inner-shadow">
-                                                        <div className="h-full bg-[#D9A852]" style={{ width: '85%' }} />
+                                                    <div>
+                                                        <p className={`label-micro mb-5 ${isMobileMode ? 'text-center' : ''}`}>Cant. Cuotas</p>
+                                                        <div className="luxury-btn py-4 px-6 rounded-[24px] flex items-center justify-between">
+                                                            <input type="number" min="1" max="72" value={newInstallments} onChange={e=>setNewInstallments(e.target.value)} className="bg-transparent outline-none w-full font-bold text-lg text-[#4A443F] text-center" />
+                                                            <Icons.Layers />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <p className="text-xs leading-relaxed opacity-60 italic font-medium">"Tu sueldo cubre el 85% de los gastos. Necesitas inyectar un 15% adicional de JANLU para mantener la expansión."</p>
-                                            </div>
-
-                                            <div className="flex gap-4">
-                                                <button className="flex-1 py-6 rounded-[32px] bg-[#8B735B] text-white font-black text-xs uppercase tracking-widest shadow-xl hover:scale-105 transition-all">
-                                                    Cargar Sueldo
-                                                </button>
-                                                <button className="flex-1 py-6 rounded-[32px] bg-white border border-[#D9A852]/30 text-[#D9A852] font-black text-xs uppercase tracking-widest shadow-xl hover:scale-105 transition-all">
-                                                    Inyección JANLU
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ) : (
-                            <motion.div 
-                                key="mobile"
-                                initial={{ opacity: 0, y: 50 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: 50 }}
-                                className="w-[390px] h-[844px] bg-white rounded-[60px] shadow-[0_50px_100px_rgba(0,0,0,0.2)] border-[12px] border-[#4A443F] relative overflow-hidden flex flex-col"
-                            >
-                                {/* Notch */}
-                                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-8 bg-[#4A443F] rounded-b-[20px] z-50"></div>
-                                
-                                {/* Content */}
-                                <div className="flex-1 p-8 pt-20 bg-[#F2EDE4] space-y-12">
-                                    <header className="text-center space-y-2">
-                                        <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-30">Nuevo Registro</p>
-                                        <h2 className="text-6xl font-light tracking-tighter text-[#4A443F]">$ 145.50</h2>
-                                        <p className="text-[9px] opacity-40 uppercase font-black tracking-widest mt-3">01 Oct 2023 • 14:32</p>
-                                    </header>
-
-                                    <div className="grid grid-cols-3 gap-4">
-                                        {[
-                                            { i: '📖', l: 'Educación' }, { i: '🏠', l: 'Hogar', a: true }, { i: '🚚', l: 'Logística' },
-                                            { i: '🌱', l: 'Vital', a: false }, { i: '🍸', l: 'Ocio', a: false }, { i: '💼', l: 'Sueldo', a: false }
-                                        ].map((c, i) => (
-                                            <div key={i} className={`p-5 rounded-[28px] flex flex-col items-center gap-2 transition-all ${c.a ? 'bg-white shadow-xl ring-2 ring-[#8B735B]/10' : 'bg-white/40'}`}>
-                                                <span className="text-2xl">{c.i}</span>
-                                                <span className="text-[7px] font-black uppercase tracking-widest opacity-60">{c.l}</span>
-                                            </div>
-                                        ))}
+                                                </motion.div>
+                                            ) : newType === 'recurring' ? (
+                                                <motion.div key="recurring-input" initial={{opacity:0, x:20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:-20}} className="w-1/2">
+                                                    <p className={`label-micro mb-5 ${isMobileMode ? 'text-center' : ''}`}>¿Qué día del mes vence?</p>
+                                                    <div className="luxury-btn py-4 px-6 rounded-[24px] flex items-center justify-between">
+                                                        <span className="font-bold opacity-40">Día</span>
+                                                        <input type="number" min="1" max="31" value={newDueDay} onChange={e=>setNewDueDay(e.target.value)} className="bg-transparent outline-none w-20 font-bold text-xl text-[#4A443F] text-center" />
+                                                        <Icons.Repeat />
+                                                    </div>
+                                                </motion.div>
+                                            ) : (
+                                                <motion.div key="source-input" initial={{opacity:0, x:-20}} animate={{opacity:1, x:0}} exit={{opacity:0, x:20}} className="space-y-5">
+                                                    <p className={`label-micro ${isMobileMode ? 'text-center' : ''}`}>Origen de Fondos</p>
+                                                    <div className="flex gap-4">
+                                                        <button onClick={()=>setNewSource('salary')} className={`flex-1 py-5 rounded-[20px] font-black text-[10px] uppercase tracking-widest transition-all ${newSource==='salary' ? 'luxury-btn-dark' : 'luxury-btn text-[#4A443F]/40'}`}>Base Hogar</button>
+                                                        <button onClick={()=>setNewSource('janlu')} className={`flex-1 py-5 rounded-[20px] font-black text-[10px] uppercase tracking-widest transition-all ${newSource==='janlu' ? 'bg-gradient-to-br from-[#D9A852] to-[#B88A44] text-white shadow-md border border-white/20' : 'luxury-btn text-[#4A443F]/40'}`}>Capital JANLU</button>
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
                                     </div>
 
-                                    <div className="space-y-6 pt-8 border-t border-[#8B735B]/10">
-                                        <div className="flex justify-between items-end">
-                                            <div className="space-y-1">
-                                                <p className="text-[8px] font-black uppercase opacity-20 tracking-widest">Descripción</p>
-                                                <p className="text-sm font-bold">Alquiler Mayo</p>
-                                            </div>
-                                            <div className="text-right space-y-1">
-                                                <p className="text-[8px] font-black uppercase opacity-20 tracking-widest">Método</p>
-                                                <p className="text-sm font-bold">Visa **** 4902</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <button className="w-full py-6 rounded-full bg-[#4A443F] text-white font-black text-sm uppercase tracking-widest shadow-2xl active:scale-95 transition-all">
-                                        Confirmar Gasto
-                                    </button>
-                                </div>
-                                
-                                {/* Home Indicator */}
-                                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-32 h-1 bg-[#4A443F]/20 rounded-full"></div>
+                                    <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handleSave} className={`w-full py-8 luxury-btn-dark rounded-[32px] font-black text-xs uppercase tracking-[0.3em] mt-auto`}>
+                                        {newType === 'commitment' ? `Registrar Deuda` : newType === 'recurring' ? 'Activar Suscripción' : 'Registrar Movimiento'}
+                                    </motion.button>
+                                </motion.div>
                             </motion.div>
                         )}
                     </AnimatePresence>

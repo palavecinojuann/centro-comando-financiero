@@ -9,108 +9,139 @@ import {
   Menu, 
   Plus, 
   Bell, 
-  ChevronRight,
-  ShieldCheck,
-  Zap,
-  Heart,
-  Search,
-  Calendar,
-  Filter,
-  ArrowUpRight,
-  ArrowDownRight,
+  Shield, 
+  Zap, 
+  Wallet, 
   Settings as SettingsIcon,
   LogOut,
-  Shield,
+  ChevronRight,
+  ArrowUpRight,
+  ArrowDownRight,
   Camera,
-  Sparkles,
-  Brain,
-  AlertTriangle,
-  CheckCircle2,
-  Wallet,
-  Briefcase
+  Search,
+  Calendar,
+  AlertTriangle
 } from 'lucide-react';
 
 // Motores de Inteligencia
-import { auditarGastosVampiro } from './AuditorGastosVampiro';
-import type { InterfazAlerta as TipoAlerta } from './AuditorGastosVampiro';
-import { ServicioLectorTickets } from './ServicioLectorTickets';
-import { ServicioCopilotoGemini } from './ServicioCopilotoGemini';
-import type { InsightIA } from './ServicioCopilotoGemini';
 import { useFinanceData, Transaction } from './useFinanceData';
 
-// --- COMPONENTES DE APOYO ---
+// --- COMPONENTES DE DISEÑO ---
 
-const LoginView = ({ onLogin }: { onLogin: () => void }) => (
-  <div className="min-h-screen bg-[#F2EDE4] flex items-center justify-center p-6">
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-md w-full bg-white rounded-[48px] p-12 shadow-2xl border border-white text-center space-y-8">
-      <div className="flex justify-center"><div className="p-6 bg-[#E8DFD1]/30 rounded-[32px]"><Shield size={48} className="text-[#8B735B]" /></div></div>
-      <div className="space-y-2">
-        <h1 className="text-4xl font-serif text-[#4A443F]">Finanzas del Hogar</h1>
-        <p className="text-sm opacity-40 uppercase font-black tracking-widest">Protocolo de Acceso Seguro</p>
-      </div>
-      <button onClick={onLogin} className="w-full py-5 rounded-full bg-[#8B735B] text-white font-black text-lg shadow-xl uppercase tracking-widest flex items-center justify-center gap-3">
-        <span>Entrar con Google</span>
-      </button>
-      <p className="text-[10px] opacity-20 uppercase font-bold tracking-tighter">Bimont Hogar v1.0 • Acceso Encriptado</p>
-    </motion.div>
-  </div>
-);
-
-const SidebarItem = ({ icon: Icon, label, active, onClick }: any) => (
-  <button onClick={onClick} className={`flex flex-col items-center gap-1 p-4 transition-all w-full ${active ? 'text-[#8B735B]' : 'text-[#4A443F]/40 hover:text-[#4A443F]'}`}>
-    <div className={`p-3 rounded-2xl transition-all ${active ? 'bg-white shadow-lg' : ''}`}><Icon size={24} /></div>
-    <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
+const SidebarItem = ({ label, active, onClick, icon: Icon }: any) => (
+  <button 
+    onClick={onClick} 
+    className={`px-10 py-6 flex items-center gap-4 w-full transition-all border-l-4 ${active ? 'bg-[#F2EDE4] border-[#8B735B] text-[#8B735B] font-bold' : 'border-transparent opacity-40 hover:opacity-100'}`}
+  >
+    <div className={`w-5 h-5 border-2 border-current rounded-md flex items-center justify-center`}>
+        {active && <div className="w-1.5 h-1.5 bg-current rounded-full" />}
+    </div>
+    <span className="text-[10px] uppercase font-black tracking-widest">{label}</span>
   </button>
 );
 
-const TransactionRow = ({ t }: { t: Transaction }) => (
-  <tr className="border-b border-black/5 hover:bg-white/40 transition-colors">
-    <td className="py-6 opacity-60 text-xs">{t.date?.toDate().toLocaleDateString() || '...'}</td>
-    <td className="py-6 font-bold">{t.description}</td>
-    <td className="py-6">
-        <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tighter ${t.source === 'janlu' ? 'bg-orange-100 text-orange-700' : t.source === 'salary' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}>
-            {t.source === 'janlu' ? '🚀 JANLU' : t.source === 'salary' ? '💼 Sueldo' : t.category}
-        </span>
-    </td>
-    <td className={`py-6 font-bold ${t.type === 'income' ? 'text-green-600' : 'text-red-500'}`}>
-        {t.type === 'income' ? '+' : '-'}${t.amount}
-    </td>
-  </tr>
+const ModeButton = ({ label, active, onClick, icon: Icon }: any) => (
+  <button 
+    onClick={onClick}
+    className={`px-10 py-4 rounded-[32px] flex items-center gap-3 transition-all ${active ? 'bg-gradient-to-b from-[#8B735B] to-[#4A443F] text-white shadow-xl scale-105' : 'bg-gradient-to-b from-[#E8DFD1] to-[#C4B9A9] text-[#4A443F]/80 opacity-70 hover:opacity-100'}`}
+  >
+    <Icon size={16} />
+    <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
+  </button>
 );
 
-// --- APP PRINCIPAL ---
+const GlassCard = ({ title, value, subtext, color = "text-[#4A443F]" }: any) => (
+  <div className="bg-white/60 backdrop-blur-xl p-8 rounded-[32px] border border-white/80 shadow-sm">
+    <p className="text-[9px] uppercase font-black opacity-30 tracking-[0.2em] mb-2">{title}</p>
+    <p className={`text-2xl font-black ${color}`}>{value}</p>
+    {subtext && <p className="text-[9px] opacity-40 mt-1 uppercase font-bold">{subtext}</p>}
+  </div>
+);
 
-const CommandCenter: React.FC = () => {
+// --- VISTAS PRINCIPALES ---
+
+const DashboardView = ({ transactions, peacePoint, sustainabilityRatio, activeMode, setActiveMode, onAction }: any) => (
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center">
+    <header className="w-full flex justify-between items-center mb-10">
+      <h1 className="text-4xl font-serif opacity-80 uppercase tracking-tighter">Command Center</h1>
+      <div className="flex items-center gap-4">
+        <div className="text-right">
+          <p className="font-bold text-sm">Hogar Bimont</p>
+          <p className="text-[9px] opacity-40 uppercase font-black tracking-widest">Protocolo Activo</p>
+        </div>
+        <div className="w-12 h-12 bg-white rounded-full border-2 border-white shadow-xl p-0.5"><img src="https://i.pravatar.cc/100" className="rounded-full" alt="Profile" /></div>
+      </div>
+    </header>
+
+    <div className="relative w-[480px] h-[480px] flex items-center justify-center">
+      <svg width="480" height="480" className="transform -rotate-90">
+        <circle cx="240" cy="240" r="200" fill="transparent" stroke="rgba(139, 115, 91, 0.05)" strokeWidth="55" />
+        <circle cx="240" cy="240" r="200" fill="transparent" stroke="#9BB095" strokeWidth="55" strokeDasharray="1256" strokeDashoffset={1256 - (1256 * 0.4)} strokeLinecap="butt" />
+        <circle cx="240" cy="240" r="200" fill="transparent" stroke="#C88566" strokeWidth="55" strokeDasharray="1256" strokeDashoffset={1256 - (1256 * 0.2)} strokeDashoffset="-500" strokeLinecap="butt" />
+        <circle cx="240" cy="240" r="200" fill="transparent" stroke="#D9A852" strokeWidth="55" strokeDasharray="1256" strokeDashoffset={1256 - (1256 * 0.3)} strokeDashoffset="-800" strokeLinecap="butt" />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+        <p className="text-xs opacity-40 font-bold uppercase tracking-[0.3em]">Peace Point</p>
+        <h2 className="text-[120px] font-black tracking-tighter leading-none">{peacePoint}</h2>
+        <p className="text-[9px] uppercase font-black tracking-[0.3em] opacity-40 mt-4">Security Score</p>
+      </div>
+    </div>
+
+    <div className="flex gap-6 mt-16">
+      <ModeButton label="Modo Blindaje" active={activeMode === 'blindaje'} onClick={() => setActiveMode('blindaje')} icon={Shield} />
+      <ModeButton label="Modo Expansión" active={activeMode === 'expansion'} onClick={() => setActiveMode('expansion')} icon={Zap} />
+      <ModeButton label="Modo Disfrute" active={activeMode === 'disfrute'} onClick={() => setActiveMode('disfrute')} icon={Target} />
+    </div>
+
+    <div className="grid grid-cols-4 gap-6 w-full mt-20">
+      <GlassCard title="Sostenibilidad" value={`${sustainabilityRatio}%`} subtext="Cubierto por Sueldo" color={sustainabilityRatio >= 100 ? 'text-green-600' : 'text-orange-600'} />
+      <GlassCard title="Refuerzos JANLU" value={`$${transactions.filter((t: any) => t.source === 'janlu').reduce((a: any, b: any) => a + b.amount, 0).toLocaleString()}`} />
+      <GlassCard title="Gasto Mensual" value={`$${transactions.filter((t: any) => t.type === 'expense').reduce((a: any, b: any) => a + b.amount, 0).toLocaleString()}`} />
+      <GlassCard title="Estatus Búnker" value={sustainabilityRatio >= 100 ? "Independiente" : "Inyección Requerida"} color={sustainabilityRatio >= 100 ? 'text-green-600' : 'text-orange-600'} />
+    </div>
+  </motion.div>
+);
+
+const TransactionView = ({ transactions, onAdd }: any) => (
+  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+     <div className="flex justify-between items-center mb-10">
+        <h2 className="text-2xl font-serif opacity-80">Registros del Búnker</h2>
+        <button onClick={onAdd} className="bg-[#8B735B] text-white px-8 py-3 rounded-full text-xs font-black uppercase tracking-widest shadow-xl flex items-center gap-2"><Plus size={16}/> Nuevo Registro</button>
+     </div>
+     <div className="bg-white/40 rounded-[40px] border border-white overflow-hidden shadow-sm">
+        <table className="w-full text-left">
+            <thead className="bg-[#E8DFD1]/30 text-[10px] uppercase font-black opacity-30">
+                <tr><th className="px-8 py-4">Fecha</th><th className="px-8 py-4">Descripción</th><th className="px-8 py-4">Categoría</th><th className="px-8 py-4">Monto</th></tr>
+            </thead>
+            <tbody>
+                {transactions.map((t: any) => (
+                    <tr key={t.id} className="border-b border-black/5 hover:bg-white/40 transition-all">
+                        <td className="px-8 py-6 opacity-40 text-xs font-bold">{t.date?.toDate().toLocaleDateString() || 'Reciente'}</td>
+                        <td className="px-8 py-6 font-bold">{t.description}</td>
+                        <td className="px-8 py-6">
+                            <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase ${t.source === 'janlu' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'}`}>
+                                {t.source === 'janlu' ? '🚀 JANLU' : t.category}
+                            </span>
+                        </td>
+                        <td className={`px-8 py-6 font-black ${t.type === 'income' ? 'text-green-600' : 'text-red-500'}`}>
+                            {t.type === 'income' ? '+' : '-'}${t.amount.toLocaleString()}
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+     </div>
+  </motion.div>
+);
+
+// --- COMPONENTE APP ---
+
+const CommandCenterContent = () => {
   const { user, logout } = useAuth();
-  const { transactions, peacePoint, addTransaction, loading: dataLoading } = useFinanceData();
-  const [currentView, setCurrentView] = useState<'dashboard' | 'ledger' | 'manager' | 'simulator' | 'nuevo-registro'>('dashboard');
+  const { transactions, peacePoint, addTransaction, loading } = useFinanceData();
+  const [view, setView] = useState<'dashboard' | 'ledger' | 'manager' | 'simulator'>('dashboard');
   const [activeMode, setActiveMode] = useState<'blindaje' | 'expansion' | 'disfrute'>('blindaje');
-  
-  // Inteligencia
-  const [alertasVampiro, setAlertasVampiro] = useState<TipoAlerta[]>([]);
-  const [insights, setInsights] = useState<InsightIA[]>([]);
-  const [escaneando, setEscaneando] = useState(false);
-
-  useEffect(() => {
-    if (transactions.length > 0) {
-      setAlertasVampiro(auditarGastosVampiro(transactions as any));
-    }
-  }, [transactions]);
-
-  // Estado para el nuevo registro
-  const [newReg, setNewReg] = useState<Partial<Transaction>>({ amount: 0, description: '', category: 'Otros', type: 'expense', source: 'other' });
-
-  const handleConfirm = async () => {
-    if (newReg.amount && newReg.amount > 0) {
-        await addTransaction(newReg as any);
-        setCurrentView('dashboard');
-    }
-  };
-
-  const handleJanluInjection = () => {
-    setNewReg({ amount: 500, description: 'Inyección Manual JANLU', category: 'Inyección', type: 'income', source: 'janlu' });
-    setCurrentView('nuevo-registro');
-  };
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const sustainabilityRatio = useMemo(() => {
     const salary = transactions.filter(t => t.type === 'income' && t.source === 'salary').reduce((a, b) => a + b.amount, 0);
@@ -119,159 +150,83 @@ const CommandCenter: React.FC = () => {
     return Math.min(100, Math.floor((salary / expenses) * 100));
   }, [transactions]);
 
-  if (dataLoading) return <div className="min-h-screen bg-[#F2EDE4] flex items-center justify-center font-black opacity-20 uppercase tracking-[0.5em]">Sincronizando Hogar...</div>;
+  if (loading) return <div className="h-screen w-screen flex items-center justify-center font-black uppercase tracking-[0.5em] opacity-20 bg-[#F2EDE4]">Sincronizando Búnker...</div>;
 
   return (
-    <div className="min-h-screen bg-[#F2EDE4] text-[#4A443F] font-sans flex overflow-hidden">
+    <div className="h-screen w-screen flex bg-[#F2EDE4] overflow-hidden text-[#4A443F]">
       
       {/* SIDEBAR */}
-      <aside className="w-24 bg-[#E8DFD1]/50 backdrop-blur-xl border-r border-white/20 flex flex-col items-center py-8 z-20">
-        <div className="mb-12"><Menu size={28} className="opacity-40" /></div>
-        <div className="flex-1 flex flex-col gap-4 w-full">
-          <SidebarItem icon={LayoutDashboard} label="Resumen" active={currentView === 'dashboard'} onClick={() => setCurrentView('dashboard')} />
-          <SidebarItem icon={TrendingUp} label="Ledger" active={currentView === 'ledger'} onClick={() => setCurrentView('ledger')} />
-          <SidebarItem icon={BarChart3} label="Manager" active={currentView === 'manager'} onClick={() => setCurrentView('manager')} />
-          <SidebarItem icon={Target} label="Simulador" active={currentView === 'simulator'} onClick={() => setCurrentView('simulator')} />
+      <aside className="w-72 bg-[#E8DFD1] flex flex-col py-12">
+        <div className="px-10 mb-20">
+          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#8B735B] shadow-sm"><Shield size={24} /></div>
         </div>
-        <div onClick={logout} className="mt-auto opacity-20 hover:opacity-100 transition-all cursor-pointer p-4 hover:text-red-600"><LogOut size={24} /></div>
+        <nav className="flex-1">
+          <SidebarItem label="Mi Resumen" icon={LayoutDashboard} active={view === 'dashboard'} onClick={() => setView('dashboard')} />
+          <SidebarItem label="Registros" icon={TrendingUp} active={view === 'ledger'} onClick={() => setView('ledger')} />
+          <SidebarItem label="Manager" icon={BarChart3} active={view === 'manager'} onClick={() => setView('manager')} />
+          <SidebarItem label="Simulador" icon={Target} active={view === 'simulator'} onClick={() => setView('simulator')} />
+        </nav>
+        <div className="px-10 mt-auto opacity-20 hover:opacity-100 transition-all cursor-pointer" onClick={logout}>
+          <div className="flex items-center gap-4 text-red-600"><LogOut size={20}/><span className="text-[10px] font-black uppercase tracking-widest">Salir del Sistema</span></div>
+        </div>
       </aside>
 
-      <main className="flex-1 relative overflow-y-auto custom-scrollbar">
-        <header className="px-8 py-6 flex justify-between items-center sticky top-0 bg-[#F2EDE4]/80 backdrop-blur-md z-10">
-          <h1 className="text-xl font-bold uppercase tracking-widest opacity-80 font-serif">Finanzas del Hogar</h1>
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-3">
-              <div className="text-right hidden sm:block">
-                <p className="font-bold text-xs">{user?.displayName || 'Usuario'}</p>
-                <p className="text-[9px] opacity-40 uppercase font-black tracking-widest">Hogar Bimont</p>
-              </div>
-              <img src={user?.photoURL || "https://i.pravatar.cc/150"} className="w-10 h-10 rounded-full border-2 border-white shadow-sm" alt="Profile" />
-            </div>
-          </div>
-        </header>
-
+      {/* CONTENIDO PRINCIPAL */}
+      <main className="flex-1 p-20 overflow-y-auto custom-scrollbar relative">
         <AnimatePresence mode="wait">
-          {currentView === 'dashboard' && (
-            <motion.div key="dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="px-8 pb-12 space-y-12">
-              <section className="flex flex-col items-center justify-center pt-4">
-                <div className="relative w-[380px] h-[380px] flex items-center justify-center">
-                  <svg width="380" height="380" className="transform -rotate-90">
-                    <circle cx="190" cy="190" r="150" fill="transparent" stroke="rgba(139, 115, 91, 0.05)" strokeWidth="45" />
-                    <circle cx="190" cy="190" r="150" fill="transparent" stroke={sustainabilityRatio >= 100 ? '#9BB095' : '#D9A852'} strokeWidth="45" strokeDasharray={`${(sustainabilityRatio * 942) / 100} 942`} strokeLinecap="round" />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <p className="text-xs opacity-40 font-bold uppercase tracking-widest">Sostenibilidad</p>
-                    <h2 className="text-8xl font-bold tracking-tighter leading-none">{sustainabilityRatio}%</h2>
-                    <p className="text-[9px] uppercase font-bold tracking-[0.2em] opacity-30 mt-2">Cubierto por Sueldo</p>
-                  </div>
-                </div>
-                
-                <div className="flex gap-4 mt-12">
-                  <button onClick={handleJanluInjection} className="px-8 py-4 rounded-full bg-white border border-orange-100 text-orange-600 shadow-sm flex items-center gap-3 hover:scale-105 transition-all">
-                    <Zap size={18} />
-                    <span className="text-xs font-black uppercase tracking-widest">Inyección JANLU</span>
-                  </button>
-                  <button onClick={() => setCurrentView('nuevo-registro')} className="px-8 py-4 rounded-full bg-[#8B735B] text-white shadow-lg flex items-center gap-3 hover:scale-105 transition-all">
-                    <Wallet size={18} />
-                    <span className="text-xs font-black uppercase tracking-widest">Cargar Sueldo</span>
-                  </button>
-                </div>
-              </section>
-
-              <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white rounded-[32px] p-6 shadow-sm border border-white/50">
-                  <p className="text-[10px] uppercase font-bold opacity-30 mb-1">Gasto Mensual</p>
-                  <p className="text-2xl font-bold">${transactions.filter(t => t.type === 'expense').reduce((a, b) => a + b.amount, 0).toFixed(0)}</p>
-                </div>
-                <div className="bg-white rounded-[32px] p-6 shadow-sm border border-white/50">
-                  <p className="text-[10px] uppercase font-bold opacity-30 mb-1">Punto de Paz</p>
-                  <p className="text-2xl font-bold">{peacePoint}</p>
-                </div>
-                <div className="bg-white rounded-[32px] p-6 shadow-sm border border-white/50">
-                  <p className="text-[10px] uppercase font-bold opacity-30 mb-1">Refuerzos JANLU</p>
-                  <p className="text-2xl font-bold text-orange-600">${transactions.filter(t => t.source === 'janlu').reduce((a, b) => a + b.amount, 0).toFixed(0)}</p>
-                </div>
-                <div className="bg-white rounded-[32px] p-6 shadow-sm border border-white/50">
-                  <p className="text-[10px] uppercase font-bold opacity-30 mb-1">Estatus</p>
-                  <p className={`text-xs font-black uppercase ${sustainabilityRatio >= 100 ? 'text-green-600' : 'text-orange-500'}`}>
-                    {sustainabilityRatio >= 100 ? 'Independencia Total' : 'Inyección Requerida'}
-                  </p>
-                </div>
-              </section>
-            </motion.div>
+          {view === 'dashboard' && (
+            <DashboardView 
+              transactions={transactions} 
+              peacePoint={peacePoint} 
+              sustainabilityRatio={sustainabilityRatio} 
+              activeMode={activeMode} 
+              setActiveMode={setActiveMode}
+            />
           )}
-
-          {currentView === 'ledger' && (
-            <motion.div key="ledger" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="px-8 pb-12">
-               <div className="bg-white/60 rounded-[32px] p-8 shadow-sm border border-white/50">
-                <table className="w-full text-left">
-                  <thead className="text-[10px] uppercase font-bold opacity-30 border-b border-black/5">
-                    <tr><th className="pb-4">Fecha</th><th className="pb-4">Descripción</th><th className="pb-4">Origen</th><th className="pb-4">Monto</th></tr>
-                  </thead>
-                  <tbody className="text-sm">
-                    {transactions.map((t, i) => <TransactionRow key={i} t={t} />)}
-                    {transactions.length === 0 && <tr><td colSpan={4} className="py-20 text-center opacity-20 font-black uppercase tracking-[1em]">Sin movimientos</td></tr>}
-                  </tbody>
-                </table>
-              </div>
-            </motion.div>
-          )}
-
-          {currentView === 'nuevo-registro' && (
-            <motion.div key="add" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} className="fixed inset-0 bg-[#F2EDE4] z-[100] flex items-center justify-center p-4">
-              <div className="max-w-md w-full bg-white rounded-[60px] p-12 shadow-2xl relative overflow-hidden space-y-12">
-                <button onClick={() => setCurrentView('dashboard')} className="absolute top-10 left-10 text-3xl opacity-20">←</button>
-                <header className="text-center pt-4">
-                  <p className="text-sm font-bold opacity-60 uppercase tracking-widest">{newReg.type === 'income' ? 'Registrar Ingreso' : 'Registrar Gasto'}</p>
-                  <div className="mt-8">
-                    <input 
-                        type="number" 
-                        value={newReg.amount} 
-                        onChange={(e) => setNewReg({...newReg, amount: Number(e.target.value)})}
-                        className="text-7xl font-light tracking-tighter text-center bg-transparent border-none outline-none w-full"
-                        placeholder="0.00"
-                    />
-                    <p className="text-[10px] opacity-40 uppercase font-black tracking-widest mt-3">Monto en Pesos</p>
-                  </div>
-                </header>
-                <div className="space-y-4">
-                    <input 
-                        type="text" 
-                        placeholder="Descripción (ej. Sueldo Mayo)" 
-                        value={newReg.description}
-                        onChange={(e) => setNewReg({...newReg, description: e.target.value})}
-                        className="w-full p-6 bg-[#F2EDE4]/40 rounded-3xl text-sm font-bold border-none outline-none"
-                    />
-                    <div className="grid grid-cols-2 gap-4">
-                        <button onClick={() => setNewReg({...newReg, type: 'income', source: 'salary'})} className={`p-4 rounded-3xl text-[10px] font-black uppercase ${newReg.source === 'salary' ? 'bg-[#8B735B] text-white' : 'bg-[#F2EDE4]/40'}`}>Es mi Sueldo</button>
-                        <button onClick={() => setNewReg({...newReg, type: 'income', source: 'janlu'})} className={`p-4 rounded-3xl text-[10px] font-black uppercase ${newReg.source === 'janlu' ? 'bg-orange-500 text-white' : 'bg-[#F2EDE4]/40'}`}>Inyectar JANLU</button>
-                    </div>
-                </div>
-                <button onClick={handleConfirm} className="w-full py-6 rounded-full bg-[#4A443F] text-white font-black text-lg shadow-xl uppercase tracking-widest hover:scale-[1.02] transition-all">Confirmar Registro</button>
-              </div>
-            </motion.div>
+          {view === 'ledger' && (
+            <TransactionView transactions={transactions} onAdd={() => setShowAddModal(true)} />
           )}
         </AnimatePresence>
 
-        <button onClick={() => { setNewReg({amount: 0, description: '', type: 'expense', source: 'other'}); setCurrentView('nuevo-registro'); }} className="fixed bottom-12 right-12 w-16 h-16 bg-[#8B735B] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all z-10"><Plus size={32} /></button>
+        {/* MODAL DE CARGA (Estilo iPhone Mockup) */}
+        <AnimatePresence>
+          {showAddModal && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-[#F2EDE4]/90 backdrop-blur-xl z-50 flex items-center justify-center">
+               <motion.div initial={{ y: 100, scale: 0.9 }} animate={{ y: 0, scale: 1 }} className="w-[390px] h-[844px] bg-[#F2EDE4] rounded-[60px] border-[12px] border-[#4A443F] relative overflow-hidden p-10 flex flex-col shadow-2xl">
+                    <button onClick={() => setShowAddModal(false)} className="absolute top-10 left-10 text-xl opacity-20">←</button>
+                    <header className="text-center space-y-4 pt-10">
+                        <p className="text-[11px] font-black uppercase opacity-30 tracking-[0.4em]">Añadir Gasto</p>
+                        <div className="bg-white/50 p-10 rounded-[40px] border border-white">
+                            <h2 className="text-5xl font-light tracking-tighter">$ 0.00</h2>
+                            <p className="text-[9px] opacity-40 uppercase font-black mt-4 tracking-widest">Hogar Bimont • Real Time</p>
+                        </div>
+                    </header>
+                    <div className="grid grid-cols-3 gap-4 mt-10">
+                        {['🏠', '🚚', '🌱', '🍸', '💼'].map((emoji, i) => (
+                            <div key={i} className="p-5 rounded-[28px] bg-white/40 flex flex-col items-center gap-2 border border-white hover:bg-white transition-all cursor-pointer">
+                                <span className="text-2xl">{emoji}</span>
+                                <span className="text-[8px] font-black uppercase tracking-tighter opacity-40">Categoría</span>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-auto space-y-6">
+                        <button className="w-full py-6 rounded-full bg-[#D9A852] text-white font-black text-xs uppercase tracking-widest shadow-xl">Confirmar Gasto</button>
+                    </div>
+               </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );
 };
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <AuthProvider>
-      <AppContent />
+      <CommandCenterContent />
     </AuthProvider>
   );
-};
-
-const AppContent: React.FC = () => {
-  const { user, loading, login } = useAuth();
-  if (loading) return <div className="min-h-screen bg-[#F2EDE4] flex items-center justify-center font-black uppercase tracking-[0.5em] opacity-20">Iniciando Hogar...</div>;
-  if (!user) return <LoginView onLogin={login} />;
-  return <CommandCenter />;
 };
 
 export default App;
