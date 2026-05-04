@@ -12,44 +12,48 @@ import {
 import { db } from './firebase';
 import { useAuth } from './AuthContext';
 
-export interface Expense {
+export interface Transaction {
   id?: string;
   amount: number;
   description: string;
   category: string;
+  type: 'income' | 'expense';
+  source: 'salary' | 'janlu' | 'other';
   date: any;
-  method: string;
   userId: string;
 }
 
 export const useFinanceData = () => {
   const { user } = useAuth();
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [peacePoint, setPeacePoint] = useState(820); // Valor base
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [peacePoint, setPeacePoint] = useState(820);
   const [loading, setLoading] = useState(true);
 
-  // Escuchar gastos en tiempo real
+  // Escuchar transacciones en tiempo real
   useEffect(() => {
     if (!user) return;
 
     const q = query(
-      collection(db, 'expenses'),
+      collection(db, 'transactions'),
       where('userId', '==', user.uid),
       orderBy('date', 'desc'),
       limit(50)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const expenseList = snapshot.docs.map(doc => ({
+      const list = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      })) as Expense[];
-      setExpenses(expenseList);
+      })) as Transaction[];
+      setTransactions(list);
       
-      // Lógica simple para mover el Peace Point (Ejemplo inicial)
-      // En el futuro esto vendrá de una fórmula más compleja
-      const totalSpent = expenseList.reduce((acc, curr) => acc + curr.amount, 0);
-      setPeacePoint(Math.max(0, 1000 - Math.floor(totalSpent / 10)));
+      // Lógica de Sostenibilidad
+      const totalIncomeSalary = list.filter(t => t.type === 'income' && t.source === 'salary').reduce((a, b) => a + b.amount, 0);
+      const totalExpenses = list.filter(t => t.type === 'expense').reduce((a, b) => a + b.amount, 0);
+      
+      // Peace Point basado en la capacidad de ahorro del sueldo
+      const savingsRatio = totalIncomeSalary > 0 ? (totalIncomeSalary - totalExpenses) / totalIncomeSalary : 0;
+      setPeacePoint(Math.floor(800 + (savingsRatio * 200)));
       
       setLoading(false);
     });
@@ -57,19 +61,14 @@ export const useFinanceData = () => {
     return unsubscribe;
   }, [user]);
 
-  const addExpense = async (expense: Omit<Expense, 'id' | 'userId' | 'date'>) => {
+  const addTransaction = async (t: Omit<Transaction, 'id' | 'userId' | 'date'>) => {
     if (!user) return;
-    
-    try {
-      await addDoc(collection(db, 'expenses'), {
-        ...expense,
-        userId: user.uid,
-        date: serverTimestamp(),
-      });
-    } catch (error) {
-      console.error("Error al añadir gasto:", error);
-    }
+    await addDoc(collection(db, 'transactions'), {
+      ...t,
+      userId: user.uid,
+      date: serverTimestamp(),
+    });
   };
 
-  return { expenses, peacePoint, loading, addExpense };
+  return { transactions, peacePoint, loading, addTransaction };
 };
