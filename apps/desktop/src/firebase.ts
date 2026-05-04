@@ -1,20 +1,21 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
+// Configuración real del proyecto Finanzas Hogar
 const firebaseConfig = {
-  apiKey: "AIzaSyAVT2RRMOsKIsnCUIN5KeapEOSYb-Bm6TA",
-  authDomain: "app-finanzas-ead64.firebaseapp.com",
-  projectId: "app-finanzas-ead64",
-  storageBucket: "app-finanzas-ead64.firebasestorage.app",
-  messagingSenderId: "711292678518",
-  appId: "1:711292678518:web:71c815382d430148f0ca57"
+  apiKey: "AIzaSyCiuoGBkBynB8o28UFdqwLCtQKIa7zSr1A",
+  authDomain: "finanzas-hogar-8129e.firebaseapp.com",
+  projectId: "finanzas-hogar-8129e",
+  storageBucket: "finanzas-hogar-8129e.firebasestorage.app",
+  messagingSenderId: "778909325230",
+  appId: "1:778909325230:web:acc244bca14222a1af5a3f"
 };
 
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 
-// Exportar servicios
+// Inicializar servicios
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-export default app;
+export const googleProvider = new GoogleAuthProvider();
