@@ -51,7 +51,7 @@ const LoginView = ({ onLogin }: { onLogin: () => void }) => (
         </div>
       </div>
       <div className="space-y-2">
-        <h1 className="text-4xl font-serif text-[#4A443F]">Financial Bunker</h1>
+        <h1 className="text-4xl font-serif text-[#4A443F]">Finanzas del Hogar</h1>
         <p className="text-sm opacity-40 uppercase font-black tracking-widest">Protocolo de Acceso Seguro</p>
       </div>
       <button 
@@ -134,7 +134,7 @@ const CommandCenter: React.FC = () => {
     }, 2000);
   };
 
-  if (dataLoading) return <div className="min-h-screen bg-[#F2EDE4] flex items-center justify-center font-black opacity-20 uppercase tracking-[0.5em]">Sincronizando Búnker...</div>;
+  if (dataLoading) return <div className="min-h-screen bg-[#F2EDE4] flex items-center justify-center font-black opacity-20 uppercase tracking-[0.5em]">Sincronizando Hogar...</div>;
 
   return (
     <div className="min-h-screen bg-[#F2EDE4] text-[#4A443F] font-sans flex overflow-hidden">
