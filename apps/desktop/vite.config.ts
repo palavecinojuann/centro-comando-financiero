@@ -1,16 +1,18 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Búnker OS Command Center',
-        short_name: 'BúnkerOS',
+        name: 'Finanzas Control Center',
+        short_name: 'Finanzas',
         description: 'Centro de Inteligencia Financiera Neumórfico',
         theme_color: '#E8DFD1',
         background_color: '#E8DFD1',

@@ -78,13 +78,57 @@ export class ServicioLectorTickets {
     return new Date().toISOString().split('T')[0];
   }
 
-  private clasificarGasto(texto: string): string {
-    for (const cat of this.diccionarioCategorias) {
-      if (cat.palabrasClave.some(p => texto.includes(p))) {
-        return cat.nombre;
+  private calcularDistancia(a: string, b: string): number {
+    if (a.length === 0) return b.length;
+    if (b.length === 0) return a.length;
+
+    const matriz = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null));
+
+    for (let i = 0; i <= a.length; i += 1) { matriz[0][i] = i; }
+    for (let j = 0; j <= b.length; j += 1) { matriz[j][0] = j; }
+
+    for (let j = 1; j <= b.length; j += 1) {
+      for (let i = 1; i <= a.length; i += 1) {
+        const indicadorSustitucion = a[i - 1] === b[j - 1] ? 0 : 1;
+        matriz[j][i] = Math.min(
+          matriz[j][i - 1] + 1, // inserción
+          matriz[j - 1][i] + 1, // borrado
+          matriz[j - 1][i - 1] + indicadorSustitucion // sustitución
+        );
       }
     }
-    return 'Otros Gastos';
+    return matriz[b.length][a.length];
+  }
+
+  private clasificarGasto(texto: string): string {
+    // 1. Limpiamos y separamos el texto del ticket OCR en palabras individuales
+    const palabrasTicket = texto.toUpperCase().split(/\s+/);
+    
+    // 2. Definimos el margen de error permitido (ej. 2 letras equivocadas)
+    const MARGEN_ERROR = 2;
+
+    for (const cat of this.diccionarioCategorias) {
+      for (const palabraClave of cat.palabrasClave) {
+        for (const palabraTicket of palabrasTicket) {
+          
+          // Primero intentamos una coincidencia exacta rápida
+          if (palabraTicket.includes(palabraClave)) {
+            return cat.nombre;
+          }
+
+          // Si falla, aplicamos Fuzzy Matching (Levenshtein)
+          // Solo comparamos si las longitudes son similares para no gastar recursos
+          if (Math.abs(palabraTicket.length - palabraClave.length) <= MARGEN_ERROR) {
+            const distancia = this.calcularDistancia(palabraClave, palabraTicket);
+            if (distancia <= MARGEN_ERROR) {
+              return cat.nombre; // ¡Match difuso exitoso!
+            }
+          }
+        }
+      }
+    }
+    
+    return 'Otros Gastos'; // Fallback si nada coincide
   }
 
   private identificarComercio(texto: string): string {

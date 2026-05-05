@@ -16,11 +16,16 @@ export interface Transaction {
   id?: string;
   amount: number;
   description: string;
-  category: string;
-  type: 'income' | 'expense';
+  category?: string;
+  type: 'income' | 'expense' | 'commitment' | 'recurring';
   source: 'salary' | 'janlu' | 'other';
   date: any;
   userId: string;
+  dueDate?: string;
+  totalInstallments?: number | null;
+  currentInstallment?: number | null;
+  dueDay?: number | null;
+  paid?: boolean;
 }
 
 export const useFinanceData = () => {
@@ -37,7 +42,7 @@ export const useFinanceData = () => {
       collection(db, 'transactions'),
       where('userId', '==', user.uid),
       orderBy('date', 'desc'),
-      limit(50)
+      limit(100)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -47,15 +52,20 @@ export const useFinanceData = () => {
       })) as Transaction[];
       setTransactions(list);
       
-      // Lógica de Sostenibilidad
-      const totalIncomeSalary = list.filter(t => t.type === 'income' && t.source === 'salary').reduce((a, b) => a + b.amount, 0);
-      const totalExpenses = list.filter(t => t.type === 'expense').reduce((a, b) => a + b.amount, 0);
+      // Lógica de Sostenibilidad (solo sueldo base vs gastos)
+      const totalIncomeSalary = list.filter(t => t.type === 'income' && t.source === 'salary').reduce((a, b) => a + Number(b.amount), 0);
+      const totalExpenses = list.filter(t => t.type === 'expense').reduce((a, b) => a + Number(b.amount), 0);
       
-      // Peace Point basado en la capacidad de ahorro del sueldo
       const savingsRatio = totalIncomeSalary > 0 ? (totalIncomeSalary - totalExpenses) / totalIncomeSalary : 0;
       setPeacePoint(Math.floor(800 + (savingsRatio * 200)));
       
       setLoading(false);
+    }, (error) => {
+      console.error("Error en Firestore:", error);
+      setLoading(false); // Evitar carga infinita
+      if (error.code === 'failed-precondition') {
+        console.warn("⚠️ Falta un índice compuesto en Firestore. Revisa el link en la consola de Firebase.");
+      }
     });
 
     return unsubscribe;
@@ -70,5 +80,17 @@ export const useFinanceData = () => {
     });
   };
 
-  return { transactions, peacePoint, loading, addTransaction };
+  const updateTransaction = async (id: string, data: Partial<Transaction>) => {
+    if (!user) return;
+    const { doc, updateDoc } = await import('firebase/firestore');
+    await updateDoc(doc(db, 'transactions', id), data);
+  };
+
+  const deleteTransaction = async (id: string) => {
+    if (!user) return;
+    const { doc, deleteDoc } = await import('firebase/firestore');
+    await deleteDoc(doc(db, 'transactions', id));
+  };
+
+  return { transactions, peacePoint, loading, addTransaction, updateTransaction, deleteTransaction };
 };
