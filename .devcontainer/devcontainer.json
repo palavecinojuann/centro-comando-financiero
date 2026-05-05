@@ -1,0 +1,21 @@
+{
+  "name": "Flutter Finance Copilot",
+  "image": "ghcr.io/cirruslabs/flutter:3.19.6",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dart-code.flutter",
+        "dart-code.dart-code",
+        "felixangelov.bloc",
+        "jeroen-meijer.pubspec-assist",
+        "Nash.awesome-flutter-snippets"
+      ],
+      "settings": {
+        "dart.flutterSdkPath": "/sdks/flutter",
+        "editor.formatOnSave": true
+      }
+    }
+  },
+  "forwardPorts": [8080, 5000],
+  "postCreateCommand": "cd apps/finance_copilot && flutter pub get"
+}
