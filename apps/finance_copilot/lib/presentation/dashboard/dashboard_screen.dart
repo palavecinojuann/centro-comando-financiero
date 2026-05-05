@@ -52,7 +52,7 @@ class DashboardScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                _buildQuickActions(context),
+                _buildQuickActions(),
               ],
             ),
           ),
@@ -124,7 +124,7 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildQuickActions(BuildContext context) {
+  Widget _buildQuickActions() {
     return Row(
       children: [
         Expanded(
@@ -142,8 +142,9 @@ class DashboardScreen extends ConsumerWidget {
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: GestureDetector(
-            onTap: () => GoRouter.of(context).push('/copilot'),
+          child: Builder(
+            builder: (context) => GestureDetector(
+              onTap: () => GoRouter.of(context).push('/copilot'),
             child: GlassCard(
               height: 80,
               child: Row(
