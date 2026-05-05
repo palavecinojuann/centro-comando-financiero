@@ -21,7 +21,6 @@ class AppTheme {
         primary: emeraldAccent,
         secondary: goldAccent,
         surface: darkBackground,
-        background: darkBackground,
       ),
       textTheme: GoogleFonts.interTextTheme(
         ThemeData.dark().textTheme,
@@ -33,14 +32,6 @@ class AppTheme {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
-      ),
-      cardTheme: CardTheme(
-        color: glassBackground,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: glassBorder, width: 1),
-        ),
       ),
     );
   }

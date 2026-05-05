@@ -4,14 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 part 'ai_insight.freezed.dart';
 part 'ai_insight.g.dart';
 
-@freezed
+@Freezed(fieldRename: FieldRename.snake)
 class AiInsight with _$AiInsight {
   const factory AiInsight({
     required String id,
     required String suggestion,
     required DateTime timestamp,
-    @JsonKey(name: 'user_id') required String userId,
-    @JsonKey(name: 'related_category') String? relatedCategory,
+    required String userId,
+    String? relatedCategory,
   }) = _AiInsight;
 
   factory AiInsight.fromJson(Map<String, dynamic> json) => _$AiInsightFromJson(json);

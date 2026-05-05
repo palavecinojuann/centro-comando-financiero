@@ -128,7 +128,7 @@ class _CopilotScreenState extends ConsumerState<CopilotScreen> {
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 hintText: 'Ej. "Añadir gasto de \$10 en café..."',
-                hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+                hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.5)),
                 filled: true,
                 fillColor: AppTheme.glassBackground,
                 border: OutlineInputBorder(

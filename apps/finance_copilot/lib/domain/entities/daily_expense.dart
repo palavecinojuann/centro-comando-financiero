@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 part 'daily_expense.freezed.dart';
 part 'daily_expense.g.dart';
 
-@freezed
+@Freezed(fieldRename: FieldRename.snake)
 class DailyExpense with _$DailyExpense {
   const factory DailyExpense({
     required String id,
@@ -12,8 +12,8 @@ class DailyExpense with _$DailyExpense {
     required String category,
     required DateTime timestamp,
     required String description,
-    @JsonKey(name: 'payment_method') required String paymentMethod,
-    @JsonKey(name: 'user_id') required String userId,
+    required String paymentMethod,
+    required String userId,
   }) = _DailyExpense;
 
   factory DailyExpense.fromJson(Map<String, dynamic> json) => _$DailyExpenseFromJson(json);

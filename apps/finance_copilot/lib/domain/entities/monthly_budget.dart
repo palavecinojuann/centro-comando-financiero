@@ -3,14 +3,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'monthly_budget.freezed.dart';
 part 'monthly_budget.g.dart';
 
-@freezed
+@Freezed(fieldRename: FieldRename.snake)
 class MonthlyBudget with _$MonthlyBudget {
   const factory MonthlyBudget({
     required String id,
     required String category,
     required double limit,
-    @JsonKey(name: 'current_progress') required double currentProgress,
-    @JsonKey(name: 'user_id') required String userId,
+    required double currentProgress,
+    required String userId,
     required String month, // Formato YYYY-MM
   }) = _MonthlyBudget;
 

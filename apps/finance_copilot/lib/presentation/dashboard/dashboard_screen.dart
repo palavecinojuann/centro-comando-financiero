@@ -70,7 +70,7 @@ class DashboardScreen extends ConsumerWidget {
           children: [
             Text(
               'Buenos días,',
-              style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 14),
+              style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 14),
             ),
             const Text(
               'Comandante 🚀',
@@ -98,7 +98,7 @@ class DashboardScreen extends ConsumerWidget {
             children: [
               Text(
                 'Presupuesto Disponible',
-                style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16),
+                style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 16),
               ),
               const Icon(Icons.account_balance_wallet, color: AppTheme.goldAccent),
             ],
@@ -115,7 +115,7 @@ class DashboardScreen extends ConsumerWidget {
               const SizedBox(width: 4),
               Text(
                 '+12% vs mes pasado',
-                style: TextStyle(color: AppTheme.emeraldAccent.withOpacity(0.9), fontSize: 14),
+                style: TextStyle(color: AppTheme.emeraldAccent.withValues(alpha: 0.9), fontSize: 14),
               ),
             ],
           ),
@@ -135,7 +135,7 @@ class DashboardScreen extends ConsumerWidget {
               children: [
                 const Icon(Icons.add, color: AppTheme.emeraldAccent),
                 const SizedBox(width: 8),
-                Text('Añadir Gasto', style: TextStyle(color: Colors.white.withOpacity(0.9), fontWeight: FontWeight.bold)),
+                Text('Añadir Gasto', style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontWeight: FontWeight.bold)),
               ],
             ),
           ),
@@ -151,7 +151,7 @@ class DashboardScreen extends ConsumerWidget {
                 children: [
                   const Icon(Icons.auto_awesome, color: AppTheme.goldAccent),
                   const SizedBox(width: 8),
-                  Text('Copiloto IA', style: TextStyle(color: Colors.white.withOpacity(0.9), fontWeight: FontWeight.bold)),
+                  Text('Copiloto IA', style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontWeight: FontWeight.bold)),
                 ],
               ),
             ),

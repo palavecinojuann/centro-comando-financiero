@@ -57,7 +57,7 @@ class FinanceLineChart extends StatelessWidget {
             dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(
               show: true,
-              color: AppTheme.emeraldAccent.withOpacity(0.15),
+              color: AppTheme.emeraldAccent.withValues(alpha: 0.15),
             ),
           ),
         ],
