@@ -21,7 +21,6 @@ GenerativeModel geminiModel(GeminiModelRef ref) {
     apiKey: apiKey,
     generationConfig: GenerationConfig(
       temperature: 0.2, // Baja temperatura para respuestas lógicas (JSON)
-      responseMimeType: 'application/json', // Fuerzo el formato JSON nativamente si el modelo lo soporta
     ),
   );
 }
