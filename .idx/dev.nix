@@ -23,12 +23,14 @@
       previews = {
         web = {
           # Example: run "flutter run -d web-server --web-port $PORT"
-          command = ["flutter" "run" "--machine" "-d" "web-server" "--web-hostname" "0.0.0.0" "--web-port" "$PORT" "apps/finance_copilot/lib/main.dart"];
+          command = ["flutter" "run" "--machine" "-d" "web-server" "--web-hostname" "0.0.0.0" "--web-port" "$PORT" "lib/main.dart"];
+          cwd = "apps/finance_copilot";
           manager = "flutter";
         };
         android = {
           # Example: run "flutter run --machine -d android"
-          command = ["flutter" "run" "--machine" "-d" "android" "-d" "localhost:5555" "apps/finance_copilot/lib/main.dart"];
+          command = ["flutter" "run" "--machine" "-d" "android" "-d" "localhost:5555" "lib/main.dart"];
+          cwd = "apps/finance_copilot";
           manager = "flutter";
         };
       };
