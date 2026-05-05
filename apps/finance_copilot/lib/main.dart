@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/dashboard/dashboard_screen.dart';
+import 'presentation/copilot/copilot_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +31,10 @@ class FinanceCopilotApp extends ConsumerWidget {
         GoRoute(
           path: '/',
           builder: (context, state) => const DashboardScreen(),
+        ),
+        GoRoute(
+          path: '/copilot',
+          builder: (context, state) => const CopilotScreen(),
         ),
       ],
     );

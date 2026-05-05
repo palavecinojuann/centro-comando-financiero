@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../widgets/glass_card.dart';
 import '../widgets/finance_line_chart.dart';
@@ -141,15 +142,18 @@ class DashboardScreen extends ConsumerWidget {
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: GlassCard(
-            height: 80,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.auto_awesome, color: AppTheme.goldAccent),
-                const SizedBox(width: 8),
-                Text('Copiloto IA', style: TextStyle(color: Colors.white.withOpacity(0.9), fontWeight: FontWeight.bold)),
-              ],
+          child: GestureDetector(
+            onTap: () => GoRouter.of(context).push('/copilot'),
+            child: GlassCard(
+              height: 80,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.auto_awesome, color: AppTheme.goldAccent),
+                  const SizedBox(width: 8),
+                  Text('Copiloto IA', style: TextStyle(color: Colors.white.withOpacity(0.9), fontWeight: FontWeight.bold)),
+                ],
+              ),
             ),
           ),
         ),
