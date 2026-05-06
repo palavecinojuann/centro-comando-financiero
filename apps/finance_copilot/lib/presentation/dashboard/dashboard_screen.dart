@@ -283,7 +283,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       mainAxisSpacing: 20,
       crossAxisSpacing: 20,
       children: [
-        _buildGlassSummaryCard('Total en Cuentas', '$ 117.364,00'),
+        _buildGlassSummaryCard('Total en Cuentas', '\$ 117.364,00'),
         _buildGlassSummaryCard('Crecimiento Cartera', '+0,08% ↗', isAccent: true),
         _buildGlassSummaryCard('Próximos Pagos', '22 de poso / 25 de uso'),
         _buildGlassSummaryCard('Alertas', '#1 ⚠️', isAlert: true),
