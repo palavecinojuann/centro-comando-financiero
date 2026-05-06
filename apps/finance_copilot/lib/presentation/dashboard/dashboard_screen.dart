@@ -1,36 +1,59 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/theme/app_theme.dart';
 import '../../domain/logic/tactical_engine.dart';
+import '../../domain/entities/daily_expense.dart';
 import '../widgets/premium_glass_card.dart';
 import '../widgets/hyper_neumorphic_reactor.dart';
-import 'expenses_provider.dart';
 
-class DashboardScreen extends ConsumerStatefulWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+  State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
+  final String householdId = 'mi-bunker-casa';
 
   @override
   Widget build(BuildContext context) {
-    final expensesAsync = ref.watch(currentMonthExpensesProvider);
-    
-    // Extracción segura de datos para evitar errores de tipo en minificación Web
-    return expensesAsync.when(
-      data: (expenses) => _buildDashboard(context, expenses),
-      loading: () => _buildDashboard(context, []), // Render with empty while loading
-      error: (err, stack) => _buildDashboard(context, []), // Render with empty on error
+    // Calculamos el rango del mes actual
+    final now = DateTime.now();
+    final startOfMonth = DateTime(now.year, now.month, 1);
+    final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59);
+
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('hogares')
+          .doc(householdId)
+          .collection('gastos')
+          .where('timestamp', isGreaterThanOrEqualTo: startOfMonth)
+          .where('timestamp', isLessThanOrEqualTo: endOfMonth)
+          .orderBy('timestamp', descending: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        // Obtenemos los gastos de forma segura, incluso si falla la conexión
+        List<DailyExpense> expenses = [];
+        if (snapshot.hasData) {
+          for (var doc in snapshot.data!.docs) {
+            try {
+              expenses.add(DailyExpense.fromFirestore(doc));
+            } catch (e) {
+              debugPrint('Error parseando gasto: $e');
+            }
+          }
+        }
+
+        return _buildUI(context, expenses);
+      },
     );
   }
 
-  Widget _buildDashboard(BuildContext context, List<DailyExpense> expenses) {
-    final double totalIncome = 450000.0;
+  Widget _buildUI(BuildContext context, List<DailyExpense> expenses) {
+    const double totalIncome = 450000.0;
     final double totalExpenses = expenses.fold(0.0, (sum, e) => sum + e.amount);
     final double liquidSurplus = totalIncome - totalExpenses;
     final double sustainability = (totalIncome > 0) 
@@ -51,7 +74,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       backgroundColor: AppTheme.background,
       body: Stack(
         children: [
-          // Background Glow (Neon Green subtle)
           Positioned(
             top: -100,
             left: -100,
@@ -70,7 +92,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
             ),
           ),
-          
           Row(
             children: [
               _buildSidebar(),
@@ -185,7 +206,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('HOGAR', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                    const Text('HOGAR', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
                     Text('SISTEMA ACTIVO', style: TextStyle(fontSize: 8, color: AppTheme.neonGreen.withOpacity(0.8))),
                   ],
                 ),
@@ -240,7 +261,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               ),
             ],
           ),
-          // Circular progress glow
           SizedBox(
             width: 280,
             height: 280,
@@ -335,7 +355,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             style: TextStyle(
               fontSize: 30,
               fontWeight: FontWeight.bold,
-              color: isAccent ? AppTheme.neonGreen : (isAlert ? Colors.orangeAccent : AppTheme.darkText),
+              color: isAccent ? AppTheme.neonGreen : (isAlert ? Colors.orangeAccent : Colors.white),
               shadows: isAccent ? [const Shadow(color: AppTheme.neonGreen, blurRadius: 10)] : [],
             ),
           ),
