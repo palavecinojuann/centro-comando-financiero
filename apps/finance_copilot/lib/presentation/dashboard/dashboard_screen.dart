@@ -73,14 +73,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'COMANDO FINANCIERO',
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 4.0,
-                color: AppTheme.darkText,
-                opacity: 0.4,
+                color: AppTheme.darkText.withOpacity(0.4),
               ),
             ),
             const SizedBox(height: 4),
@@ -145,14 +144,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
+            Text(
               'PEACE POINT',
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 2.0,
-                color: AppTheme.darkText,
-                opacity: 0.4,
+                color: AppTheme.darkText.withOpacity(0.4),
               ),
             ),
             Text(
@@ -211,7 +209,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'GASTOS TOTALES',
                   style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1.2, color: AppTheme.darkText.withOpacity(0.5)),
                 ),
@@ -232,7 +230,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                Text(
                   'INGRESO NETO',
                   style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1.2, color: AppTheme.darkText.withOpacity(0.5)),
                 ),

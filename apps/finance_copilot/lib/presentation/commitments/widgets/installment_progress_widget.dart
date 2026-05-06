@@ -43,7 +43,7 @@ class InstallmentProgressWidget extends StatelessWidget {
                     color: AppTheme.darkText,
                   ),
                 ),
-                const Text(
+                Text(
                   'CUOTAS',
                   style: TextStyle(
                     fontSize: 8,

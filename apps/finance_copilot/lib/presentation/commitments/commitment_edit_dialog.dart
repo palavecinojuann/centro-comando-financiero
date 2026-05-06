@@ -53,7 +53,7 @@ class CommitmentEditDialog extends ConsumerWidget {
       children: [
         Text(
           exp.type == 'commitment' ? 'GESTIÓN DE DEUDA' : 'SERVICIO MENSUAL',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 10,
             fontWeight: FontWeight.w900,
             letterSpacing: 4.0,
@@ -131,7 +131,7 @@ class CommitmentEditDialog extends ConsumerWidget {
         const SizedBox(height: 16),
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text(
+          child: Text(
             'CANCELAR',
             style: TextStyle(
               fontSize: 10,

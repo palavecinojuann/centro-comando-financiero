@@ -79,7 +79,7 @@ class _TacticalOpsScreenState extends ConsumerState<TacticalOpsScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('EXCEDENTE LÍQUIDO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.darkText.withOpacity(0.6))),
+                  Text('EXCEDENTE LÍQUIDO', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppTheme.darkText.withOpacity(0.6))),
                   Text('\$${surplus.toStringAsFixed(0)}', style: const TextStyle(fontSize: 32, fontWeight: FontWeight.w900)),
                 ],
               ),
@@ -127,13 +127,13 @@ class _TacticalOpsScreenState extends ConsumerState<TacticalOpsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'DIRECTRICES DE CAPITAL',
           style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2.0, color: AppTheme.darkText.withOpacity(0.4)),
         ),
         const SizedBox(height: 16),
         if (distribution.isEmpty)
-          const Text('No hay excedente para distribuir.', style: TextStyle(fontStyle: FontStyle.italic, color: AppTheme.darkText.withOpacity(0.5))),
+          Text('No hay excedente para distribuir.', style: TextStyle(fontStyle: FontStyle.italic, color: AppTheme.darkText.withOpacity(0.5))),
         ...distribution.entries.map((e) => _buildDirectiveItem(e.key, e.value)),
       ],
     );
