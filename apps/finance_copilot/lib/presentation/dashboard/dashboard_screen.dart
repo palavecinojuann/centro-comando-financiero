@@ -19,13 +19,32 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final expensesAsync = ref.watch(currentMonthExpensesProvider);
+    final expenses = expensesAsync.value ?? [];
+    
+    // Cálculos dinámicos
+    final double totalIncome = 450000;
+    final double totalExpenses = expenses.fold(0.0, (sum, e) => sum + e.amount);
+    final double liquidSurplus = totalIncome - totalExpenses;
+    final double sustainability = (liquidSurplus / totalIncome * 100).clamp(0, 100);
+
+    final protocol = TacticalEngine.calculateProtocol(
+      totalIncome: totalIncome,
+      totalExpenses: totalExpenses,
+      sustainability: sustainability,
+    );
+    final peacePoint = TacticalEngine.calculatePeacePoint(
+      sustainability: sustainability,
+      liquidSurplus: liquidSurplus,
+    );
+
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: Row(
         children: [
           _buildSidebar(),
           Expanded(
-            child: _buildMainContent(context),
+            child: _buildMainContent(context, peacePoint, sustainability, protocol, totalIncome, totalExpenses),
           ),
         ],
       ),
@@ -87,10 +106,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildMainContent(BuildContext context) {
+  Widget _buildMainContent(BuildContext context, double peacePoint, double sustainability, FinancialProtocol protocol, double totalIncome, double totalExpenses) {
     return Stack(
       children: [
-        // Glow effect behind the gauge area
+        // Glow effect
         Positioned(
           right: -100,
           top: 100,
@@ -118,11 +137,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 20),
-                    _buildGaugeSection(),
+                    _buildGaugeSection(peacePoint.toInt(), sustainability),
                     const SizedBox(height: 40),
-                    _buildProtocolButtons(),
+                    _buildProtocolButtons(protocol),
                     const SizedBox(height: 60),
-                    _buildBottomGrid(),
+                    _buildBottomGrid(totalIncome, totalExpenses),
                     const SizedBox(height: 40),
                   ],
                 ),
@@ -142,8 +161,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         children: [
           Text(
             'COMMAND CENTER',
-            style: TextStyle(
-              fontFamily: 'Cinzel',
+            style: GoogleFonts.cinzel(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               letterSpacing: 2.0,
@@ -157,16 +175,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 children: [
                   Text(
                     'Josem Poldaa',
-                    style: TextStyle(
-                      fontFamily: 'Outfit',
+                    style: GoogleFonts.outfit(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
                   Text(
                     'SW 7537',
-                    style: TextStyle(
-                      fontFamily: 'Outfit',
+                    style: GoogleFonts.outfit(
                       fontSize: 12,
                       color: Colors.black45,
                       letterSpacing: 1.0,
@@ -186,22 +202,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildGaugeSection() {
+  Widget _buildGaugeSection(int peacePoint, double sustainability) {
     return Column(
       children: [
         SizedBox(
           width: 300,
           height: 300,
           child: CustomPaint(
-            painter: PeacePointPainter(),
+            painter: PeacePointPainter(sustainability: sustainability),
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     'PEACE POINT',
-                    style: TextStyle(
-                      fontFamily: 'Outfit',
+                    style: GoogleFonts.outfit(
                       fontSize: 12,
                       fontWeight: FontWeight.w900,
                       letterSpacing: 3.0,
@@ -210,9 +225,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '820',
-                    style: TextStyle(
-                      fontFamily: 'Outfit',
+                    '$peacePoint',
+                    style: GoogleFonts.outfit(
                       fontSize: 84,
                       fontWeight: FontWeight.bold,
                       letterSpacing: -2.0,
@@ -221,8 +235,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   ),
                   Text(
                     'FINANCIAL SECURITY SCORE',
-                    style: TextStyle(
-                      fontFamily: 'Outfit',
+                    style: GoogleFonts.outfit(
                       fontSize: 10,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 1.0,
@@ -238,15 +251,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildProtocolButtons() {
+  Widget _buildProtocolButtons(FinancialProtocol currentProtocol) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildTacticalButton('Modo Blindaje', Icons.shield_outlined),
+        _buildTacticalButton('Modo Blindaje', Icons.shield_outlined, isSelected: currentProtocol == FinancialProtocol.blindaje),
         const SizedBox(width: 16),
-        _buildTacticalButton('Modo Expansión', Icons.trending_up, isSelected: true),
+        _buildTacticalButton('Modo Expansión', Icons.trending_up, isSelected: currentProtocol == FinancialProtocol.expansion),
         const SizedBox(width: 16),
-        _buildTacticalButton('Modo Disfrute', Icons.celebration_outlined),
+        _buildTacticalButton('Modo Disfrute', Icons.celebration_outlined, isSelected: currentProtocol == FinancialProtocol.disfrute),
       ],
     );
   }
@@ -262,8 +275,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           const SizedBox(width: 8),
           Text(
             label,
-            style: TextStyle(
-              fontFamily: 'Outfit',
+            style: GoogleFonts.outfit(
               fontWeight: FontWeight.bold,
               fontSize: 13,
               color: isSelected ? AppTheme.darkText : Colors.black45,
@@ -274,7 +286,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildBottomGrid() {
+  Widget _buildBottomGrid(double totalIncome, double totalExpenses) {
     return GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -283,9 +295,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       mainAxisSpacing: 20,
       crossAxisSpacing: 20,
       children: [
-        _buildGlassSummaryCard('Total en Cuentas', '\$ 117.364,00'),
-        _buildGlassSummaryCard('Crecimiento Cartera', '+0,08% ↗', isAccent: true),
-        _buildGlassSummaryCard('Próximos Pagos', '22 de poso / 25 de uso'),
+        _buildGlassSummaryCard('Total en Cuentas', '\$ ${totalIncome.toStringAsFixed(0)}'),
+        _buildGlassSummaryCard('Gastos del Mes', '\$ ${totalExpenses.toStringAsFixed(0)}', isAccent: totalExpenses < totalIncome),
+        _buildGlassSummaryCard('Excedente Líquido', '\$ ${(totalIncome - totalExpenses).toStringAsFixed(0)}'),
         _buildGlassSummaryCard('Alertas', '#1 ⚠️', isAlert: true),
       ],
     );
@@ -300,8 +312,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         children: [
           Text(
             title.toUpperCase(),
-            style: TextStyle(
-              fontFamily: 'Outfit',
+            style: GoogleFonts.outfit(
               fontSize: 10,
               fontWeight: FontWeight.w900,
               letterSpacing: 2.0,
@@ -311,8 +322,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           const SizedBox(height: 8),
           Text(
             value,
-            style: TextStyle(
-              fontFamily: 'Outfit',
+            style: GoogleFonts.outfit(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: isAccent ? const Color(0xFF2E7D32) : (isAlert ? const Color(0xFFEF6C00) : AppTheme.darkText),
@@ -325,6 +335,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 }
 
 class PeacePointPainter extends CustomPainter {
+  final double sustainability;
+  PeacePointPainter({required this.sustainability});
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
@@ -351,16 +364,16 @@ class PeacePointPainter extends CustomPainter {
     paintBase.color = AppTheme.mustardColor.withOpacity(0.3);
     canvas.drawArc(rect, math.pi * 0.8, math.pi * 0.7, false, paintBase);
 
-    // Active progress highlight (example)
+    // Active progress highlight
     final paintActive = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth + 2
       ..strokeCap = StrokeCap.round
       ..color = AppTheme.sageColor;
     
-    canvas.drawArc(rect, -math.pi / 2, math.pi * 0.4, false, paintActive);
+    canvas.drawArc(rect, -math.pi / 2, (math.pi * 2) * (sustainability / 100), false, paintActive);
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
