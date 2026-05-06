@@ -10,11 +10,16 @@ class AppTheme {
   static const Color woodAccent = Color(0xFF8B735B);
   static const Color goldTactical = Color(0xFFD9A852);
   static const Color darkText = Color(0xFF4A443F);
-  static const Color glassBackground = Color(0x99FFFFFF);
-  static const Color glassBorder = Color(0x66FFFFFF);
+  static const Color glassBackground = Color(0x66FFFFFF);
+  static const Color glassBorder = Color(0x99FFFFFF);
   static const Color emeraldAccent = Color(0xFF50C878);
   static const Color goldAccent = Color(0xFFD9A852);
-  static const Color darkBackground = Color(0xFF2C2C2C);
+  static const Color darkBackground = Color(0xFF1A1A1A);
+  
+  // Colores de segmentación para el Gauge
+  static const Color sageColor = Color(0xFF9BB095);
+  static const Color terracottaColor = Color(0xFFCD5C5C);
+  static const Color mustardColor = Color(0xFFE1AD01);
 
   static ThemeData get luxuryTheme {
     return ThemeData(
