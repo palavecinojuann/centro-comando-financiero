@@ -49,7 +49,7 @@ class TacticalEngine {
         };
       case FinancialProtocol.expansion:
         return {
-          'Inyección JANLU (50%)': surplus * 0.5,
+          'Inversión Familiar (50%)': surplus * 0.5,
           'Inversión Externa (30%)': surplus * 0.3,
           'Disfrute Libre (20%)': surplus * 0.2,
         };

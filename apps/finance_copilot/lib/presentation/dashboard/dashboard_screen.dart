@@ -148,7 +148,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            'TACTICAL CENTER',
+            'BÚNKER FAMILIAR',
             style: TextStyle(
               fontFamily: 'Cinzel',
               fontSize: 26,
@@ -168,15 +168,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 const CircleAvatar(
                   radius: 18,
                   backgroundColor: AppTheme.slateDark,
-                  child: Icon(Icons.person, color: AppTheme.neonGreen, size: 20),
+                  child: Icon(Icons.home_rounded, color: AppTheme.neonGreen, size: 20),
                 ),
                 const SizedBox(width: 10),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('JP-75', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                    Text('ACTIVE', style: TextStyle(fontSize: 8, color: AppTheme.neonGreen.withOpacity(0.8))),
+                    const Text('HOGAR', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                    Text('SISTEMA ACTIVO', style: TextStyle(fontSize: 8, color: AppTheme.neonGreen.withOpacity(0.8))),
                   ],
                 ),
               ],
@@ -219,7 +219,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 ),
               ),
               Text(
-                'SYSTEM STATUS: OPTIMAL',
+                'SISTEMA: OPTIMIZADO',
                 style: TextStyle(
                   fontFamily: 'Outfit',
                   fontSize: 10,
@@ -250,11 +250,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildTacticalButton('Armor', Icons.shield, isSelected: currentProtocol == FinancialProtocol.blindaje),
+        _buildTacticalButton('Blindaje', Icons.shield, isSelected: currentProtocol == FinancialProtocol.blindaje),
         const SizedBox(width: 25),
-        _buildTacticalButton('Expand', Icons.bolt, isSelected: currentProtocol == FinancialProtocol.expansion),
+        _buildTacticalButton('Expansión', Icons.bolt, isSelected: currentProtocol == FinancialProtocol.expansion),
         const SizedBox(width: 25),
-        _buildTacticalButton('Profit', Icons.diamond, isSelected: currentProtocol == FinancialProtocol.disfrute),
+        _buildTacticalButton('Disfrute', Icons.diamond, isSelected: currentProtocol == FinancialProtocol.disfrute),
       ],
     );
   }
@@ -296,10 +296,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       mainAxisSpacing: 30,
       crossAxisSpacing: 30,
       children: [
-        _buildGlassSummaryCard('Assets', '\$ ${totalIncome.toStringAsFixed(0)}'),
-        _buildGlassSummaryCard('Outflow', '\$ ${totalExpenses.toStringAsFixed(0)}'),
-        _buildGlassSummaryCard('Net Surplus', '\$ ${(totalIncome - totalExpenses).toStringAsFixed(0)}', isAccent: true),
-        _buildGlassSummaryCard('System Alerts', '#0', isAlert: true),
+        _buildGlassSummaryCard('Ingresos', '\$ ${totalIncome.toStringAsFixed(0)}'),
+        _buildGlassSummaryCard('Egresos', '\$ ${totalExpenses.toStringAsFixed(0)}'),
+        _buildGlassSummaryCard('Excedente', '\$ ${(totalIncome - totalExpenses).toStringAsFixed(0)}', isAccent: true),
+        _buildGlassSummaryCard('Alertas', '#0', isAlert: true),
       ],
     );
   }
