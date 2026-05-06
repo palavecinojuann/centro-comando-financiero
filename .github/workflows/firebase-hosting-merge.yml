@@ -18,6 +18,9 @@ jobs:
       - name: Install Dependencies
         run: cd apps/finance_copilot && flutter pub get
         
+      - name: Generate Code (Build Runner)
+        run: cd apps/finance_copilot && flutter pub run build_runner build --delete-conflicting-outputs
+        
       - name: Build Web
         run: |
           cd apps/finance_copilot
