@@ -1,5 +1,6 @@
 import '../entities/daily_expense.dart';
 
+enum FinancialProtocol {
   emergencia,
   blindaje,
   expansion,
