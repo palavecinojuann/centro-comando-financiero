@@ -1,6 +1,7 @@
 # 🛡️ Centro de Comando Financiero: Reporte de Arquitectura y Evolución
 **Fecha:** 6 de Mayo de 2026
 **Versión:** 2.0 (Hito: Sincronización Búnker Casa)
+**User ID Maestro:** `5vROOlanaFOGomixSwMs5h05HzD3`
 
 Este documento sirve como la fuente de verdad definitiva para el análisis en **NotebookLM**, consolidando la visión estratégica, el desarrollo técnico y el rumbo operativo del proyecto.
 
