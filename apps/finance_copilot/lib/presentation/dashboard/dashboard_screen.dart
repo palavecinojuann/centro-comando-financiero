@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/app_theme.dart';
 import '../../domain/logic/tactical_engine.dart';
 import '../widgets/premium_glass_card.dart';
-import '../widgets/neumorphic_container.dart';
+import '../widgets/hyper_neumorphic_reactor.dart';
+import 'expenses_provider.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -18,28 +19,44 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Hardcoded values to prevent minification issues during UI stabilization
-    const double peacePoint = 820.0;
-    const double sustainability = 85.0;
-    const FinancialProtocol protocol = FinancialProtocol.expansion;
-    const double totalIncome = 450000.0;
-    const double totalExpenses = 120000.0;
+    final expensesAsync = ref.watch(currentMonthExpensesProvider);
+    final expenses = expensesAsync.value ?? [];
+    
+    final double totalIncome = 450000;
+    final double totalExpenses = expenses.fold(0.0, (sum, e) => sum + e.amount);
+    final double liquidSurplus = totalIncome - totalExpenses;
+    final double sustainability = (liquidSurplus / totalIncome * 100).clamp(0, 100);
+
+    final protocol = TacticalEngine.calculateProtocol(
+      totalIncome: totalIncome,
+      totalExpenses: totalExpenses,
+      sustainability: sustainability,
+    );
+    final peacePoint = TacticalEngine.calculatePeacePoint(
+      sustainability: sustainability,
+      liquidSurplus: liquidSurplus,
+    );
 
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: Stack(
         children: [
-          Positioned.fill(
+          // Background Glow (Neon Green subtle)
+          Positioned(
+            top: -100,
+            left: -100,
             child: Container(
-              decoration: const BoxDecoration(
-                gradient: RadialGradient(
-                  center: Alignment(0.7, -0.3),
-                  radius: 1.2,
-                  colors: [
-                    Color(0x40D9A852),
-                    AppTheme.background,
-                  ],
-                ),
+              width: 400,
+              height: 400,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.neonGreen.withOpacity(0.05),
+                    blurRadius: 100,
+                    spreadRadius: 50,
+                  ),
+                ],
               ),
             ),
           ),
@@ -48,7 +65,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             children: [
               _buildSidebar(),
               Expanded(
-                child: _buildMainContent(context, peacePoint, sustainability, protocol, totalIncome, totalExpenses),
+                child: _buildMainContent(context, peacePoint.toDouble(), sustainability, protocol, totalIncome, totalExpenses),
               ),
             ],
           ),
@@ -60,14 +77,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget _buildSidebar() {
     return Container(
       width: 110,
-      color: Colors.transparent,
+      padding: const EdgeInsets.symmetric(vertical: 40),
       child: Column(
         children: [
-          const SizedBox(height: 60),
-          NeumorphicContainer(
-            borderRadius: 20,
-            padding: const EdgeInsets.all(12),
-            child: const Icon(Icons.menu, color: AppTheme.woodAccent, size: 28),
+          const HyperNeumorphicReactor(
+            size: 60,
+            child: Icon(Icons.menu, color: AppTheme.mutedText, size: 28),
           ),
           const SizedBox(height: 80),
           _buildSidebarItem(0, Icons.dashboard_outlined),
@@ -75,9 +90,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           _buildSidebarItem(2, Icons.account_balance_wallet_outlined),
           _buildSidebarItem(3, Icons.bar_chart_outlined),
           const Spacer(),
-          const Padding(
-            padding: EdgeInsets.only(bottom: 60),
-            child: Icon(Icons.logout, color: Colors.black26),
+          const HyperNeumorphicReactor(
+            size: 50,
+            child: Icon(Icons.power_settings_new, color: Colors.redAccent, size: 20),
           ),
         ],
       ),
@@ -86,21 +101,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
   Widget _buildSidebarItem(int index, IconData icon) {
     bool isSelected = _selectedIndex == index;
-    return GestureDetector(
-      onTap: () => setState(() => _selectedIndex = index),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: NeumorphicContainer(
-          width: 60,
-          height: 60,
-          borderRadius: 18,
-          isPressed: isSelected,
-          padding: EdgeInsets.zero,
-          child: Icon(
-            icon,
-            color: isSelected ? AppTheme.woodAccent : Colors.black26,
-            size: 24,
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      child: HyperNeumorphicReactor(
+        size: 60,
+        onTap: () => setState(() => _selectedIndex = index),
+        isCircle: false,
+        borderRadius: 15,
+        child: Icon(
+          icon,
+          color: isSelected ? AppTheme.neonGreen : AppTheme.mutedText,
+          shadows: isSelected ? [const Shadow(color: AppTheme.neonGreen, blurRadius: 10)] : [],
         ),
       ),
     );
@@ -116,7 +127,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 30),
-                AdvancedNeumorphicGauge(peacePoint: peacePoint, sustainability: sustainability),
+                _buildReactorGauge(peacePoint, sustainability),
                 const SizedBox(height: 60),
                 _buildProtocolButtons(protocol),
                 const SizedBox(height: 70),
@@ -137,49 +148,97 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text(
-            'COMMAND CENTER',
+            'TACTICAL CENTER',
             style: TextStyle(
               fontFamily: 'Cinzel',
               fontSize: 26,
               fontWeight: FontWeight.bold,
-              letterSpacing: 2.5,
-              color: AppTheme.darkText,
+              letterSpacing: 3.5,
+              color: AppTheme.neonGreen,
+              shadows: [Shadow(color: AppTheme.neonGreen, blurRadius: 20)],
             ),
           ),
-          NeumorphicContainer(
-            borderRadius: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: const Row(
+          HyperNeumorphicReactor(
+            size: 70,
+            isCircle: false,
+            borderRadius: 35,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const CircleAvatar(
+                  radius: 18,
+                  backgroundColor: AppTheme.slateDark,
+                  child: Icon(Icons.person, color: AppTheme.neonGreen, size: 20),
+                ),
+                const SizedBox(width: 10),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Josem Poldaa',
-                      style: TextStyle(
-                        fontFamily: 'Outfit',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: AppTheme.darkText,
-                      ),
-                    ),
-                    Text(
-                      'SW 7537',
-                      style: TextStyle(
-                        fontFamily: 'Outfit',
-                        fontSize: 11,
-                        color: Colors.black45,
-                        letterSpacing: 1.0,
-                      ),
-                    ),
+                    const Text('JP-75', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                    Text('ACTIVE', style: TextStyle(fontSize: 8, color: AppTheme.neonGreen.withOpacity(0.8))),
                   ],
                 ),
-                SizedBox(width: 15),
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: AppTheme.woodAccent,
-                ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReactorGauge(double peacePoint, double sustainability) {
+    return HyperNeumorphicReactor(
+      size: 320,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'PEACE POINT',
+                style: TextStyle(
+                  fontFamily: 'Outfit',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 5.0,
+                  color: AppTheme.mutedText,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                '${peacePoint.toInt()}',
+                style: const TextStyle(
+                  fontFamily: 'Outfit',
+                  fontSize: 100,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -4.0,
+                  color: AppTheme.neonGreen,
+                  shadows: [Shadow(color: AppTheme.neonGreen, blurRadius: 20)],
+                ),
+              ),
+              Text(
+                'SYSTEM STATUS: OPTIMAL',
+                style: TextStyle(
+                  fontFamily: 'Outfit',
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 2.0,
+                  color: AppTheme.neonGreen.withOpacity(0.6),
+                ),
+              ),
+            ],
+          ),
+          // Circular progress glow
+          SizedBox(
+            width: 280,
+            height: 280,
+            child: CircularProgressIndicator(
+              value: sustainability / 100,
+              strokeWidth: 2,
+              backgroundColor: AppTheme.slateDark,
+              color: AppTheme.neonGreen,
             ),
           ),
         ],
@@ -191,32 +250,36 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildTacticalButton('Modo Blindaje', Icons.shield_outlined, isSelected: currentProtocol == FinancialProtocol.blindaje),
+        _buildTacticalButton('Armor', Icons.shield, isSelected: currentProtocol == FinancialProtocol.blindaje),
         const SizedBox(width: 25),
-        _buildTacticalButton('Modo Expansión', Icons.trending_up, isSelected: currentProtocol == FinancialProtocol.expansion),
+        _buildTacticalButton('Expand', Icons.bolt, isSelected: currentProtocol == FinancialProtocol.expansion),
         const SizedBox(width: 25),
-        _buildTacticalButton('Modo Disfrute', Icons.celebration_outlined, isSelected: currentProtocol == FinancialProtocol.disfrute),
+        _buildTacticalButton('Profit', Icons.diamond, isSelected: currentProtocol == FinancialProtocol.disfrute),
       ],
     );
   }
 
   Widget _buildTacticalButton(String label, IconData icon, {bool isSelected = false}) {
-    return NeumorphicContainer(
-      borderRadius: 50,
-      isPressed: isSelected,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Row(
+    return HyperNeumorphicReactor(
+      size: 110,
+      isCircle: false,
+      borderRadius: 20,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 20, color: isSelected ? AppTheme.goldTactical : Colors.black38),
-          const SizedBox(width: 12),
+          Icon(
+            icon, 
+            size: 28, 
+            color: isSelected ? AppTheme.neonGreen : AppTheme.mutedText,
+            shadows: isSelected ? [const Shadow(color: AppTheme.neonGreen, blurRadius: 15)] : [],
+          ),
+          const SizedBox(height: 8),
           Text(
             label.toUpperCase(),
             style: TextStyle(
-              fontFamily: 'Outfit',
+              fontSize: 10,
               fontWeight: FontWeight.w900,
-              fontSize: 11,
-              letterSpacing: 1.2,
-              color: isSelected ? AppTheme.darkText : Colors.black38,
+              color: isSelected ? AppTheme.neonGreen : AppTheme.mutedText,
             ),
           ),
         ],
@@ -229,19 +292,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
-      childAspectRatio: 2.0,
+      childAspectRatio: 2.2,
       mainAxisSpacing: 30,
       crossAxisSpacing: 30,
       children: [
-        _buildPremiumGlassCard('Total en Cuentas', '\$ ${totalIncome.toStringAsFixed(0)}'),
-        _buildPremiumGlassCard('Gastos del Mes', '\$ ${totalExpenses.toStringAsFixed(0)}', isAccent: totalExpenses < totalIncome),
-        _buildPremiumGlassCard('Excedente Líquido', '\$ ${(totalIncome - totalExpenses).toStringAsFixed(0)}'),
-        _buildPremiumGlassCard('Alertas Tácticas', '#1 ⚠️', isAlert: true),
+        _buildGlassSummaryCard('Assets', '\$ ${totalIncome.toStringAsFixed(0)}'),
+        _buildGlassSummaryCard('Outflow', '\$ ${totalExpenses.toStringAsFixed(0)}'),
+        _buildGlassSummaryCard('Net Surplus', '\$ ${(totalIncome - totalExpenses).toStringAsFixed(0)}', isAccent: true),
+        _buildGlassSummaryCard('System Alerts', '#0', isAlert: true),
       ],
     );
   }
 
-  Widget _buildPremiumGlassCard(String title, String value, {bool isAccent = false, bool isAlert = false}) {
+  Widget _buildGlassSummaryCard(String title, String value, {bool isAccent = false, bool isAlert = false}) {
     return PremiumGlassCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,143 +312,25 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         children: [
           Text(
             title.toUpperCase(),
-            style: TextStyle(
-              fontFamily: 'Outfit',
+            style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w900,
               letterSpacing: 2.0,
-              color: AppTheme.woodAccent.withOpacity(0.8),
+              color: AppTheme.mutedText,
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
           Text(
             value,
             style: TextStyle(
-              fontFamily: 'Outfit',
-              fontSize: 28,
+              fontSize: 30,
               fontWeight: FontWeight.bold,
-              color: isAccent ? const Color(0xFF2E7D32) : (isAlert ? const Color(0xFFEF6C00) : AppTheme.darkText),
+              color: isAccent ? AppTheme.neonGreen : (isAlert ? Colors.orangeAccent : AppTheme.darkText),
+              shadows: isAccent ? [const Shadow(color: AppTheme.neonGreen, blurRadius: 10)] : [],
             ),
           ),
         ],
       ),
     );
   }
-}
-
-class AdvancedNeumorphicGauge extends StatelessWidget {
-  final double peacePoint;
-  final double sustainability;
-
-  const AdvancedNeumorphicGauge({
-    super.key,
-    required this.peacePoint,
-    required this.sustainability,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return NeumorphicContainer(
-      width: 320,
-      height: 320,
-      borderRadius: 160,
-      padding: EdgeInsets.zero,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          NeumorphicContainer(
-            width: 240,
-            height: 240,
-            borderRadius: 120,
-            isPressed: true,
-            padding: EdgeInsets.zero,
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'PEACE POINT',
-                    style: TextStyle(
-                      fontFamily: 'Outfit',
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 4.0,
-                      color: Colors.black38,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${peacePoint.toInt()}',
-                    style: const TextStyle(
-                      fontFamily: 'Outfit',
-                      fontSize: 92,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: -3.0,
-                      color: AppTheme.darkText,
-                    ),
-                  ),
-                  const Text(
-                    'FINANCIAL SECURITY SCORE',
-                    style: TextStyle(
-                      fontFamily: 'Outfit',
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.5,
-                      color: AppTheme.woodAccent,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 320,
-            height: 320,
-            child: CustomPaint(
-              painter: GaugePainter(sustainability: sustainability),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class GaugePainter extends CustomPainter {
-  final double sustainability;
-  GaugePainter({required this.sustainability});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = (size.width / 2) - 20;
-    const strokeWidth = 10.0;
-
-    final paintBase = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round;
-
-    final rect = Rect.fromCircle(center: center, radius: radius);
-
-    paintBase.color = AppTheme.sageColor.withOpacity(0.4);
-    canvas.drawArc(rect, -math.pi / 2, math.pi * 0.7, false, paintBase);
-
-    paintBase.color = AppTheme.terracottaColor.withOpacity(0.4);
-    canvas.drawArc(rect, math.pi * 0.2, math.pi * 0.6, false, paintBase);
-
-    paintBase.color = AppTheme.mustardColor.withOpacity(0.4);
-    canvas.drawArc(rect, math.pi * 0.8, math.pi * 0.7, false, paintBase);
-
-    final paintActive = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth + 4
-      ..strokeCap = StrokeCap.round
-      ..color = AppTheme.goldTactical;
-    
-    canvas.drawArc(rect, -math.pi / 2, (math.pi * 2) * (sustainability / 100), false, paintActive);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }

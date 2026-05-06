@@ -6,16 +6,19 @@ import 'package:google_fonts/google_fonts.dart';
 /// preparado para efectos Glassmorphism.
 class AppTheme {
   // Paleta de Colores "Irish Cream"
-  static const Color background = Color(0xFFF2EDE4);
+  static const Color background = Color(0xFF2B2F42);
   static const Color woodAccent = Color(0xFF8B735B);
   static const Color goldTactical = Color(0xFFD9A852);
-  static const Color darkText = Color(0xFF2D2D2D);
-  static const Color glassBackground = Color(0x33FFFFFF); // Ultra-transparent
-  static const Color glassBorder = Color(0x80FFFFFF);
+  static const Color darkText = Color(0xFFF2F2F2); // Lighter text for dark theme
+  static const Color glassBackground = Color(0x1AFFFFFF);
+  static const Color glassBorder = Color(0x33FFFFFF);
   
-  // Neumorphism shadows
-  static const Color neuLight = Color(0xFFFFFFFF);
-  static const Color neuShadow = Color(0xFFD1CDC7);
+  // Hiper-Neumorphism (Dark Slate & Neon)
+  static const Color slateBase = Color(0xFF2B2F42);
+  static const Color slateLight = Color(0xFF3B405A);
+  static const Color slateDark = Color(0xFF1B1D2A);
+  static const Color neonGreen = Color(0xFF2ECC71);
+  static const Color mutedText = Color(0xFF8A93A6);
   static const Color emeraldAccent = Color(0xFF50C878);
   static const Color goldAccent = Color(0xFFD9A852);
   static const Color darkBackground = Color(0xFF1A1A1A);
