@@ -43,7 +43,7 @@ class PremiumGlassCard extends StatelessWidget {
                 Colors.white.withOpacity(0.05),
               ],
             ),
-          ],
+          ),
           child: child,
         ),
       ),
