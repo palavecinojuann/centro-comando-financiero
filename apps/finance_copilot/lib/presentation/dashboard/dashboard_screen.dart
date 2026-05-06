@@ -213,7 +213,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               children: [
                 const Text(
                   'GASTOS TOTALES',
-                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1.2, opacity: 0.5),
+                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1.2, color: AppTheme.darkText.withOpacity(0.5)),
                 ),
                 Text(
                   '\$${expenses.toStringAsFixed(0)}',
@@ -234,7 +234,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               children: [
                 const Text(
                   'INGRESO NETO',
-                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1.2, opacity: 0.5),
+                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1.2, color: AppTheme.darkText.withOpacity(0.5)),
                 ),
                 Text(
                   '\$${income.toStringAsFixed(0)}',
@@ -259,9 +259,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           children: [
             Text(
               'AGENDA DE PAGOS',
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2.0, opacity: 0.4),
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2.0, color: AppTheme.darkText.withOpacity(0.4)),
             ),
-            Icon(Icons.calendar_today, size: 14, opacity: 0.4),
+            Icon(Icons.calendar_today, size: 14, color: AppTheme.darkText.withOpacity(0.4)),
           ],
         ),
         const SizedBox(height: 16),
@@ -271,7 +271,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             if (commitments.isEmpty) {
               return const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
-                child: Center(child: Text('Sin compromisos pendientes', style: TextStyle(opacity: 0.3, fontSize: 12))),
+                child: Center(child: Text('Sin compromisos pendientes', style: TextStyle(color: AppTheme.darkText.withOpacity(0.3), fontSize: 12))),
               );
             }
             return Column(

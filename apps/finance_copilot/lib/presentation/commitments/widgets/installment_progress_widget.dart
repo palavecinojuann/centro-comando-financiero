@@ -49,7 +49,7 @@ class InstallmentProgressWidget extends StatelessWidget {
                     fontSize: 8,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 2.0,
-                    opacity: 0.5,
+                    color: AppTheme.darkText.withOpacity(0.5),
                   ),
                 ),
               ],

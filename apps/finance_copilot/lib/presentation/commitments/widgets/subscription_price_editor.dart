@@ -21,7 +21,7 @@ class SubscriptionPriceEditor extends StatelessWidget {
             fontSize: 9,
             fontWeight: FontWeight.w900,
             letterSpacing: 3.0,
-            opacity: 0.4,
+            color: AppTheme.darkText,
           ),
         ),
         const SizedBox(height: 8),
@@ -30,7 +30,7 @@ class SubscriptionPriceEditor extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Text(
-              '$',
+              '\$',
               style: TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.w300,
@@ -49,10 +49,10 @@ class SubscriptionPriceEditor extends StatelessWidget {
                   letterSpacing: -2.0,
                   color: AppTheme.darkText,
                 ),
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: '0.00',
-                  hintStyle: TextStyle(opacity: 0.1),
+                  hintStyle: TextStyle(color: AppTheme.darkText.withOpacity(0.1)),
                 ),
                 controller: TextEditingController(text: amount.toStringAsFixed(0))
                   ..selection = TextSelection.fromPosition(
