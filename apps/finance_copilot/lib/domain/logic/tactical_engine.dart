@@ -1,9 +1,9 @@
 import '../entities/daily_expense.dart';
 
-enum FinancialProtocol {
   emergencia,
   blindaje,
   expansion,
+  disfrute,
 }
 
 class TacticalEngine {
@@ -22,6 +22,11 @@ class TacticalEngine {
     final liquidSurplus = totalIncome - totalExpenses;
     if (sustainability < 100 || liquidSurplus < 50000) {
       return FinancialProtocol.blindaje;
+    }
+    
+    // Modo Disfrute si la sostenibilidad es excepcional (> 120%)
+    if (sustainability > 120) {
+      return FinancialProtocol.disfrute;
     }
     
     return FinancialProtocol.expansion;
@@ -46,6 +51,11 @@ class TacticalEngine {
           'Inyección JANLU (50%)': surplus * 0.5,
           'Inversión Externa (30%)': surplus * 0.3,
           'Disfrute Libre (20%)': surplus * 0.2,
+        };
+      case FinancialProtocol.disfrute:
+        return {
+          'Inversión (40%)': surplus * 0.4,
+          'Disfrute Total (60%)': surplus * 0.6,
         };
     }
   }

@@ -63,7 +63,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             children: [
               _buildSidebar(),
               Expanded(
-                child: _buildMainContent(context, peacePoint, sustainability, protocol, totalIncome, totalExpenses),
+                child: _buildMainContent(context, peacePoint.toDouble(), sustainability, protocol, totalIncome, totalExpenses),
               ),
             ],
           ),
