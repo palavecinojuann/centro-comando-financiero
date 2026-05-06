@@ -19,10 +19,14 @@ class DashboardScreen extends ConsumerStatefulWidget {
 class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
-    // Valores simulados basados en preview.html
+    final expensesAsync = ref.watch(currentMonthExpensesProvider);
+    
+    // Cálculos dinámicos basados en los gastos reales
+    final expenses = expensesAsync.value ?? [];
     const double totalIncome = 450000;
-    const double totalExpenses = 280000;
+    final double totalExpenses = expenses.fold(0.0, (sum, e) => sum + e.amount);
     const double sustainability = 85.0;
+
     final protocol = TacticalEngine.calculateProtocol(
       totalIncome: totalIncome,
       totalExpenses: totalExpenses,
@@ -34,25 +38,54 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
 
     return Scaffold(
-      backgroundColor: AppTheme.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(protocol),
-              const SizedBox(height: 40),
-              Center(
-                child: _buildPeacePointGauge(peacePoint, sustainability),
-              ),
-              const SizedBox(height: 40),
-              _buildExecutiveSummary(totalIncome, totalExpenses),
-              const SizedBox(height: 32),
-              _buildPaymentAgenda(),
-              const SizedBox(height: 32),
-              _buildQuickActions(context),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text('BÚNKER FINANCIERO', style: TextStyle(fontSize: 12, letterSpacing: 2, fontWeight: FontWeight.bold)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_none, color: AppTheme.woodAccent),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      drawer: _buildDrawer(context),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddOperationModal(context),
+        backgroundColor: AppTheme.woodAccent,
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppTheme.background,
+              Color(0xFFE8E0D5),
+              Color(0xFFF2EDE4),
             ],
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(protocol),
+                const SizedBox(height: 40),
+                Center(child: _buildPeacePointGauge(peacePoint, sustainability)),
+                const SizedBox(height: 40),
+                _buildExecutiveSummary(totalIncome, totalExpenses),
+                const SizedBox(height: 32),
+                _buildPaymentAgenda(),
+                const SizedBox(height: 32),
+                _buildQuickActions(context),
+                const SizedBox(height: 80),
+              ],
+            ),
           ),
         ),
       ),
@@ -273,13 +306,73 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               );
             }
             return Column(
-              children: commitments.map((e) => _buildAgendaItem(context, e)).toList(),
+              children: commitments.map<Widget>((DailyExpense e) => _buildAgendaItem(context, e)).toList(),
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, stack) => Text('Error: $err'),
+          error: (err, stack) => Text('Error: $err', style: const TextStyle(fontSize: 10, color: Colors.red)),
         ),
       ],
+    );
+  }
+
+  Widget _buildDrawer(BuildContext context) {
+    return Drawer(
+      backgroundColor: AppTheme.background,
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: const BoxDecoration(color: AppTheme.woodAccent),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CircleAvatar(radius: 30, backgroundColor: Colors.white24, child: Icon(Icons.person, color: Colors.white)),
+                const SizedBox(height: 12),
+                const Text('Comandante', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Cinzel')),
+                Text('Hogar Principal', style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12)),
+              ],
+            ),
+          ),
+          _buildDrawerItem(Icons.dashboard, 'Dashboard', () => Navigator.pop(context)),
+          _buildDrawerItem(Icons.receipt_long, 'Operaciones', () {}),
+          _buildDrawerItem(Icons.security, 'Búnker Táctico', () {
+            Navigator.pop(context);
+            GoRouter.of(context).push('/tactical');
+          }),
+          _buildDrawerItem(Icons.psychology, 'Copiloto IA', () {
+            Navigator.pop(context);
+            GoRouter.of(context).push('/copilot');
+          }),
+          const Divider(),
+          _buildDrawerItem(Icons.settings, 'Configuración', () {}),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDrawerItem(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon, color: AppTheme.woodAccent),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.darkText)),
+      onTap: onTap,
+    );
+  }
+
+  void _showAddOperationModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.7,
+        decoration: const BoxDecoration(
+          color: AppTheme.background,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        ),
+        padding: const EdgeInsets.all(24),
+        child: const Center(child: Text('Módulo de Carga en Construcción...', style: TextStyle(fontFamily: 'Cinzel', fontWeight: FontWeight.bold))),
+      ),
     );
   }
 
