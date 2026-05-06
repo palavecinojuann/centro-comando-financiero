@@ -1,159 +1,402 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
+import '../../domain/entities/daily_expense.dart';
 import '../widgets/glass_card.dart';
-import '../widgets/finance_line_chart.dart';
+import '../logic/tactical_engine.dart';
+import '../commitments/commitment_edit_dialog.dart';
 
-class DashboardScreen extends ConsumerWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  @override
+  Widget build(BuildContext context) {
+    // Valores simulados basados en preview.html
+    const double totalIncome = 450000;
+    const double totalExpenses = 280000;
+    const double sustainability = 85.0;
+    final protocol = TacticalEngine.calculateProtocol(
+      totalIncome: totalIncome,
+      totalExpenses: totalExpenses,
+      sustainability: sustainability,
+    );
+    final peacePoint = TacticalEngine.calculatePeacePoint(
+      sustainability: sustainability,
+      liquidSurplus: totalIncome - totalExpenses,
+    );
+
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          color: AppTheme.darkBackground,
-          // Un sutil fondo con blobs oscuros para dar profundidad al glassmorphism
-          image: DecorationImage(
-            image: NetworkImage('https://www.transparenttextures.com/patterns/stardust.png'), // Placeholder para textura sutil
-            opacity: 0.1,
-            repeat: ImageRepeat.repeat,
-          ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(),
-                const SizedBox(height: 32),
-                _buildMainBalance(),
-                const SizedBox(height: 24),
-                const Expanded(
-                  child: GlassCard(
-                    padding: EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Tendencia de Gastos',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(height: 24),
-                        Expanded(child: FinanceLineChart()),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                _buildQuickActions(),
-              ],
-            ),
+      backgroundColor: AppTheme.background,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(protocol),
+              const SizedBox(height: 40),
+              Center(
+                child: _buildPeacePointGauge(peacePoint, sustainability),
+              ),
+              const SizedBox(height: 40),
+              _buildExecutiveSummary(totalIncome, totalExpenses),
+              const SizedBox(height: 32),
+              _buildPaymentAgenda(),
+              const SizedBox(height: 32),
+              _buildQuickActions(context),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(FinancialProtocol protocol) {
+    String protocolName = protocol.name.toUpperCase();
+    Color protocolColor = protocol == FinancialProtocol.emergencia 
+        ? Colors.red 
+        : protocol == FinancialProtocol.blindaje 
+            ? AppTheme.woodAccent 
+            : Colors.green;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Buenos días,',
-              style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 14),
-            ),
             const Text(
-              'Comandante 🚀',
-              style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+              'COMANDO FINANCIERO',
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 4.0,
+                color: AppTheme.darkText,
+                opacity: 0.4,
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Text(
+              'Resumen Ejecutivo',
+              style: TextStyle(
+                fontFamily: 'Cinzel',
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.darkText,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: protocolColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: protocolColor.withValues(alpha: 0.2)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.bolt, size: 14, color: protocolColor),
+                  const SizedBox(width: 6),
+                  Text(
+                    'PROTOCOLO: $protocolName',
+                    style: TextStyle(
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.5,
+                      color: protocolColor,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
         const CircleAvatar(
-          backgroundColor: AppTheme.emeraldAccent,
-          child: Icon(Icons.person, color: AppTheme.darkBackground),
+          radius: 24,
+          backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=finance_copilot'),
         ),
       ],
     );
   }
 
-  Widget _buildMainBalance() {
-    return GlassCard(
-      height: 160,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Presupuesto Disponible',
-                style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 16),
+  Widget _buildPeacePointGauge(int peacePoint, double sustainability) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        SizedBox(
+          width: 250,
+          height: 250,
+          child: CustomPaint(
+            painter: GaugePainter(
+              progress: sustainability / 100,
+              color: sustainability >= 100 ? const Color(0xFF9BB095) : AppTheme.goldTactical,
+            ),
+          ),
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'PEACE POINT',
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 2.0,
+                color: AppTheme.darkText,
+                opacity: 0.4,
               ),
-              const Icon(Icons.account_balance_wallet, color: AppTheme.goldAccent),
-            ],
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            '\$2,450.00',
-            style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.w800),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              const Icon(Icons.trending_up, color: AppTheme.emeraldAccent, size: 16),
-              const SizedBox(width: 4),
-              Text(
-                '+12% vs mes pasado',
-                style: TextStyle(color: AppTheme.emeraldAccent.withValues(alpha: 0.9), fontSize: 14),
+            ),
+            Text(
+              '$peacePoint',
+              style: const TextStyle(
+                fontSize: 72,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -2.0,
+                color: AppTheme.darkText,
               ),
-            ],
-          ),
-        ],
-      ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.6),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: sustainability >= 100 ? Colors.green : Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'SOSTENIBILIDAD ${sustainability.toInt()}%',
+                    style: TextStyle(
+                      fontSize: 8,
+                      fontWeight: FontWeight.w900,
+                      color: sustainability >= 100 ? Colors.green[800] : Colors.red[800],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
-  Widget _buildQuickActions() {
+  Widget _buildExecutiveSummary(double income, double expenses) {
     return Row(
       children: [
         Expanded(
           child: GlassCard(
-            height: 80,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            height: 120,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(Icons.add, color: AppTheme.emeraldAccent),
-                const SizedBox(width: 8),
-                Text('Añadir Gasto', style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontWeight: FontWeight.bold)),
+                const Text(
+                  'GASTOS TOTALES',
+                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1.2, opacity: 0.5),
+                ),
+                Text(
+                  '\$${expenses.toStringAsFixed(0)}',
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, letterSpacing: -1.0),
+                ),
               ],
             ),
           ),
         ),
         const SizedBox(width: 16),
         Expanded(
-          child: Builder(
-            builder: (context) => GestureDetector(
-              onTap: () => GoRouter.of(context).push('/copilot'),
-              child: GlassCard(
-                height: 80,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          child: GlassCard(
+            height: 120,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'INGRESO NETO',
+                  style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1.2, opacity: 0.5),
+                ),
+                Text(
+                  '\$${income.toStringAsFixed(0)}',
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, letterSpacing: -1.0, color: Color(0xFF9BB095)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPaymentAgenda() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'AGENDA DE PAGOS',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2.0, opacity: 0.4),
+            ),
+            Icon(Icons.calendar_today, size: 14, opacity: 0.4),
+          ],
+        ),
+        const SizedBox(height: 16),
+        _buildAgendaItem(
+          context,
+          DailyExpense(
+            id: '1',
+            description: 'Internet Fibra',
+            amount: 4500,
+            category: 'Servicios',
+            timestamp: DateTime.now(),
+            paymentMethod: 'Débito',
+            userId: 'user1',
+            type: 'recurring',
+            dueDay: 12,
+            dueDate: DateTime(2026, 5, 12),
+          ),
+        ),
+        _buildAgendaItem(
+          context,
+          DailyExpense(
+            id: '2',
+            description: 'Cuota Tarjeta',
+            amount: 12800,
+            category: 'Deuda',
+            timestamp: DateTime.now(),
+            paymentMethod: 'Crédito',
+            userId: 'user1',
+            type: 'commitment',
+            totalInstallments: 12,
+            currentInstallment: 3,
+            dueDate: DateTime(2026, 5, 15),
+          ),
+        ),
+        _buildAgendaItem(
+          context,
+          DailyExpense(
+            id: '3',
+            description: 'Seguro Hogar',
+            amount: 3200,
+            category: 'Seguros',
+            timestamp: DateTime.now(),
+            paymentMethod: 'Débito',
+            userId: 'user1',
+            type: 'recurring',
+            dueDay: 20,
+            dueDate: DateTime(2026, 5, 20),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAgendaItem(BuildContext context, DailyExpense exp) {
+    final bool isRecurring = exp.type == 'recurring';
+    final String dateStr = '${exp.dueDate?.day} ${exp.dueDate?.month == 5 ? 'May' : 'Jun'}';
+
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (context) => CommitmentEditDialog(expense: exp),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.4),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                if (isRecurring)
+                  const Padding(
+                    padding: EdgeInsets.only(right: 12.0),
+                    child: Icon(Icons.repeat, size: 16, color: AppTheme.woodAccent),
+                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.auto_awesome, color: AppTheme.goldAccent),
-                    const SizedBox(width: 8),
-                    Text('Copiloto IA', style: TextStyle(color: Colors.white.withValues(alpha: 0.9), fontWeight: FontWeight.bold)),
+                    Text(exp.description, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                    Text('Vence: $dateStr', style: const TextStyle(fontSize: 10, color: Colors.red, fontWeight: FontWeight.w800)),
                   ],
+                ),
+              ],
+            ),
+            Text('\$${exp.amount.toStringAsFixed(0)}', style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildQuickActions(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () => GoRouter.of(context).push('/tactical'),
+            child: GlassCard(
+              height: 70,
+              child: const Center(
+                child: Text(
+                  'CENTRO TÁCTICO',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2.0),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: GestureDetector(
+            onTap: () => GoRouter.of(context).push('/copilot'),
+            child: Container(
+              height: 70,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppTheme.woodAccent, Color(0xFF4A443F)],
+                ),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.woodAccent.withValues(alpha: 0.3),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: Text(
+                  'COPILOTO IA',
+                  style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2.0, color: Colors.white),
                 ),
               ),
             ),
@@ -162,4 +405,43 @@ class DashboardScreen extends ConsumerWidget {
       ],
     );
   }
+}
+
+class GaugePainter extends CustomPainter {
+  final double progress;
+  final Color color;
+
+  GaugePainter({required this.progress, required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+    const strokeWidth = 20.0;
+
+    // Background circle
+    final bgPaint = Paint()
+      ..color = Colors.white.withValues(alpha: 0.6)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
+    canvas.drawCircle(center, radius - strokeWidth / 2, bgPaint);
+
+    // Progress arc
+    final progressPaint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius - strokeWidth / 2),
+      -math.pi / 2,
+      2 * math.pi * progress,
+      false,
+      progressPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

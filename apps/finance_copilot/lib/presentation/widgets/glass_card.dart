@@ -31,13 +31,25 @@ class GlassCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppTheme.glassBackground,
             borderRadius: BorderRadius.circular(borderRadius),
-            border: Border.all(color: AppTheme.glassBorder, width: 1.5),
+            border: Border.all(color: AppTheme.glassBorder, width: 1.0),
+            boxShadow: [
+              BoxShadow(
+                color: AppTheme.woodAccent.withValues(alpha: 0.08),
+                blurRadius: 40,
+                offset: const Offset(10, 20),
+              ),
+              BoxShadow(
+                color: Colors.white.withValues(alpha: 0.8),
+                blurRadius: 30,
+                offset: const Offset(-10, -10),
+              ),
+            ],
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withValues(alpha: 0.15),
-                Colors.white.withValues(alpha: 0.05),
+                Colors.white.withValues(alpha: 0.6),
+                Colors.white.withValues(alpha: 0.2),
               ],
             ),
           ),

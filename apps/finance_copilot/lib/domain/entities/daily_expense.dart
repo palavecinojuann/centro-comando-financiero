@@ -14,6 +14,12 @@ class DailyExpense with _$DailyExpense {
     required String description,
     required String paymentMethod,
     required String userId,
+    @Default('expense') String type, // income, expense, commitment, recurring
+    @Default(1) int totalInstallments,
+    @Default(1) int currentInstallment,
+    int? dueDay,
+    DateTime? dueDate,
+    @Default(false) bool isPaid,
   }) = _DailyExpense;
 
   factory DailyExpense.fromJson(Map<String, dynamic> json) => _$DailyExpenseFromJson(json);

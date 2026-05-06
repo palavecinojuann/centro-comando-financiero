@@ -2,7 +2,7 @@ import os
 import glob
 
 out_file = r"apps\finance_copilot\notebooklm_export.txt"
-brain_dir = r"C:\Users\bimontcad\.gemini\antigravity\brain\b2681372-6605-4d8b-ae5a-e4b50b2d3a89"
+brain_dir = r"C:\Users\bimontcad\.gemini\antigravity\brain\db9e9834-2d3a-42de-9e4a-dd02b4fe3ea4"
 
 with open(out_file, "w", encoding="utf-8") as out:
     out.write("---\ntitle: Finance Copilot - Código Fuente y Arquitectura\n---\n\n")

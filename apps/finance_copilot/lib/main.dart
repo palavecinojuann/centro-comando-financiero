@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/dashboard/dashboard_screen.dart';
+import 'presentation/tactical/tactical_ops_screen.dart';
 import 'presentation/copilot/copilot_screen.dart';
 
 void main() async {
@@ -33,6 +34,10 @@ class FinanceCopilotApp extends ConsumerWidget {
           builder: (context, state) => const DashboardScreen(),
         ),
         GoRoute(
+          path: '/tactical',
+          builder: (context, state) => const TacticalOpsScreen(),
+        ),
+        GoRoute(
           path: '/copilot',
           builder: (context, state) => const CopilotScreen(),
         ),
@@ -41,7 +46,7 @@ class FinanceCopilotApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'Finance Copilot SaaS',
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.luxuryTheme,
       routerConfig: goRouter,
       debugShowCheckedModeBanner: false,
     );
