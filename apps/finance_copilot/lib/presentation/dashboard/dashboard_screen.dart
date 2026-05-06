@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_theme.dart';
 import '../../domain/entities/daily_expense.dart';
 import '../widgets/glass_card.dart';
-import '../logic/tactical_engine.dart';
+import '../../domain/logic/tactical_engine.dart';
 import '../commitments/commitment_edit_dialog.dart';
 import 'expenses_provider.dart';
 

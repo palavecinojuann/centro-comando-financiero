@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/app_theme.dart';
 import '../widgets/glass_card.dart';
-import '../logic/tactical_engine.dart';
+import '../../domain/logic/tactical_engine.dart';
 
 class TacticalOpsScreen extends ConsumerStatefulWidget {
   const TacticalOpsScreen({super.key});

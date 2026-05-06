@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 part 'daily_expense.freezed.dart';
 part 'daily_expense.g.dart';
 
-@Freezed(fieldRename: FieldRename.snake)
+@freezed
 class DailyExpense with _$DailyExpense {
   const factory DailyExpense({
     required String id,
