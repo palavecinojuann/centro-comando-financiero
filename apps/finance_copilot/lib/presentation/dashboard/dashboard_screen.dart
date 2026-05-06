@@ -297,17 +297,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
         ),
         const SizedBox(height: 16),
         expensesAsync.when(
-          data: (expenses) {
-            final commitments = expenses.where((e) => e.type == 'commitment' || e.type == 'recurring').toList();
+          data: (List<DailyExpense> expenses) {
+            final commitments = expenses.where((DailyExpense e) => e.type == 'commitment' || e.type == 'recurring').toList();
             if (commitments.isEmpty) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Center(child: Text('Sin compromisos pendientes', style: TextStyle(color: AppTheme.darkText.withOpacity(0.3), fontSize: 12))),
               );
             }
-            return Column(
-              children: commitments.map<Widget>((DailyExpense e) => _buildAgendaItem(context, e)).toList(),
-            );
+            final List<Widget> agendaItems = [];
+            for (final DailyExpense e in commitments) {
+              agendaItems.add(_buildAgendaItem(context, e));
+            }
+            return Column(children: agendaItems);
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (err, stack) => Text('Error: $err', style: const TextStyle(fontSize: 10, color: Colors.red)),

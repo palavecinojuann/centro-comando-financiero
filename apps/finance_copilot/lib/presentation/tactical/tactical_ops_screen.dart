@@ -134,7 +134,8 @@ class _TacticalOpsScreenState extends ConsumerState<TacticalOpsScreen> {
         const SizedBox(height: 16),
         if (distribution.isEmpty)
           Text('No hay excedente para distribuir.', style: TextStyle(fontStyle: FontStyle.italic, color: AppTheme.darkText.withOpacity(0.5))),
-        ...distribution.entries.map((e) => _buildDirectiveItem(e.key, e.value)),
+        for (var entry in distribution.entries)
+          _buildDirectiveItem(entry.key, entry.value),
       ],
     );
   }
