@@ -252,7 +252,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
@@ -267,8 +267,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           data: (expenses) {
             final commitments = expenses.where((e) => e.type == 'commitment' || e.type == 'recurring').toList();
             if (commitments.isEmpty) {
-              return const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20),
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Center(child: Text('Sin compromisos pendientes', style: TextStyle(color: AppTheme.darkText.withOpacity(0.3), fontSize: 12))),
               );
             }

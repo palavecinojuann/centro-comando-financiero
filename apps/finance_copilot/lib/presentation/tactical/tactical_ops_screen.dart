@@ -60,7 +60,7 @@ class _TacticalOpsScreenState extends ConsumerState<TacticalOpsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'SIMULADOR DE ESCENARIOS',
             style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 2.0, color: AppTheme.darkText.withOpacity(0.5)),
           ),
