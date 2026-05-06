@@ -7,6 +7,7 @@ import '../../domain/entities/daily_expense.dart';
 import '../widgets/glass_card.dart';
 import '../logic/tactical_engine.dart';
 import '../commitments/commitment_edit_dialog.dart';
+import 'expenses_provider.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -248,6 +249,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildPaymentAgenda() {
+    final expensesAsync = ref.watch(currentMonthExpensesProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -262,51 +265,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ],
         ),
         const SizedBox(height: 16),
-        _buildAgendaItem(
-          context,
-          DailyExpense(
-            id: '1',
-            description: 'Internet Fibra',
-            amount: 4500,
-            category: 'Servicios',
-            timestamp: DateTime.now(),
-            paymentMethod: 'Débito',
-            userId: 'user1',
-            type: 'recurring',
-            dueDay: 12,
-            dueDate: DateTime(2026, 5, 12),
-          ),
-        ),
-        _buildAgendaItem(
-          context,
-          DailyExpense(
-            id: '2',
-            description: 'Cuota Tarjeta',
-            amount: 12800,
-            category: 'Deuda',
-            timestamp: DateTime.now(),
-            paymentMethod: 'Crédito',
-            userId: 'user1',
-            type: 'commitment',
-            totalInstallments: 12,
-            currentInstallment: 3,
-            dueDate: DateTime(2026, 5, 15),
-          ),
-        ),
-        _buildAgendaItem(
-          context,
-          DailyExpense(
-            id: '3',
-            description: 'Seguro Hogar',
-            amount: 3200,
-            category: 'Seguros',
-            timestamp: DateTime.now(),
-            paymentMethod: 'Débito',
-            userId: 'user1',
-            type: 'recurring',
-            dueDay: 20,
-            dueDate: DateTime(2026, 5, 20),
-          ),
+        expensesAsync.when(
+          data: (expenses) {
+            final commitments = expenses.where((e) => e.type == 'commitment' || e.type == 'recurring').toList();
+            if (commitments.isEmpty) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Center(child: Text('Sin compromisos pendientes', style: TextStyle(opacity: 0.3, fontSize: 12))),
+              );
+            }
+            return Column(
+              children: commitments.map((e) => _buildAgendaItem(context, e)).toList(),
+            );
+          },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (err, stack) => Text('Error: $err'),
         ),
       ],
     );

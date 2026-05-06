@@ -1,12 +1,12 @@
 import '../entities/daily_expense.dart';
 
 abstract class ExpensesRepository {
-  /// Obtiene los gastos de un usuario para un mes específico
-  Stream<List<DailyExpense>> watchExpenses(String userId, DateTime startOfMonth, DateTime endOfMonth);
+  /// Obtiene los gastos de un hogar para un mes específico
+  Stream<List<DailyExpense>> watchExpenses(String householdId, DateTime startOfMonth, DateTime endOfMonth);
   
-  /// Agrega un nuevo gasto
-  Future<void> addExpense(DailyExpense expense);
+  /// Agrega un nuevo gasto a un hogar
+  Future<void> addExpense(String householdId, DailyExpense expense);
   
-  /// Elimina un gasto
-  Future<void> deleteExpense(String expenseId);
+  /// Elimina un gasto de un hogar
+  Future<void> deleteExpense(String householdId, String expenseId);
 }

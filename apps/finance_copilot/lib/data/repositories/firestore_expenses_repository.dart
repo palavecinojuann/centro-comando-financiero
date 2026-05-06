@@ -12,10 +12,11 @@ class FirestoreExpensesRepository implements ExpensesRepository {
   FirestoreExpensesRepository(this._firestore);
 
   @override
-  Stream<List<DailyExpense>> watchExpenses(String userId, DateTime startOfMonth, DateTime endOfMonth) {
+  Stream<List<DailyExpense>> watchExpenses(String householdId, DateTime startOfMonth, DateTime endOfMonth) {
     return _firestore
-        .collection('daily_expenses')
-        .where('user_id', isEqualTo: userId)
+        .collection('hogares')
+        .doc(householdId)
+        .collection('gastos')
         .where('timestamp', isGreaterThanOrEqualTo: startOfMonth)
         .where('timestamp', isLessThanOrEqualTo: endOfMonth)
         .orderBy('timestamp', descending: true)
@@ -26,18 +27,27 @@ class FirestoreExpensesRepository implements ExpensesRepository {
   }
 
   @override
-  Future<void> addExpense(DailyExpense expense) async {
-    // Convertimos la entidad a JSON, pero reemplazamos DateTime por Timestamp para Firestore
+  Future<void> addExpense(String householdId, DailyExpense expense) async {
     final data = expense.toJson();
     data['timestamp'] = Timestamp.fromDate(expense.timestamp);
-    data.remove('id'); // Firestore auto-genera el ID o usamos doc(id).set()
+    data.remove('id');
     
-    await _firestore.collection('daily_expenses').doc(expense.id).set(data);
+    await _firestore
+        .collection('hogares')
+        .doc(householdId)
+        .collection('gastos')
+        .doc(expense.id)
+        .set(data);
   }
 
   @override
-  Future<void> deleteExpense(String expenseId) async {
-    await _firestore.collection('daily_expenses').doc(expenseId).delete();
+  Future<void> deleteExpense(String householdId, String expenseId) async {
+    await _firestore
+        .collection('hogares')
+        .doc(householdId)
+        .collection('gastos')
+        .doc(expenseId)
+        .delete();
   }
 }
 
