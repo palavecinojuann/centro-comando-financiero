@@ -20,12 +20,22 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final expensesAsync = ref.watch(currentMonthExpensesProvider);
-    final expenses = expensesAsync.value ?? [];
     
-    final double totalIncome = 450000;
+    // Extracción segura de datos para evitar errores de tipo en minificación Web
+    return expensesAsync.when(
+      data: (expenses) => _buildDashboard(context, expenses),
+      loading: () => _buildDashboard(context, []), // Render with empty while loading
+      error: (err, stack) => _buildDashboard(context, []), // Render with empty on error
+    );
+  }
+
+  Widget _buildDashboard(BuildContext context, List<DailyExpense> expenses) {
+    final double totalIncome = 450000.0;
     final double totalExpenses = expenses.fold(0.0, (sum, e) => sum + e.amount);
     final double liquidSurplus = totalIncome - totalExpenses;
-    final double sustainability = (liquidSurplus / totalIncome * 100).clamp(0, 100);
+    final double sustainability = (totalIncome > 0) 
+        ? (liquidSurplus / totalIncome * 100).clamp(0.0, 100.0) 
+        : 0.0;
 
     final protocol = TacticalEngine.calculateProtocol(
       totalIncome: totalIncome,
@@ -35,7 +45,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final peacePoint = TacticalEngine.calculatePeacePoint(
       sustainability: sustainability,
       liquidSurplus: liquidSurplus,
-    );
+    ).toDouble();
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -65,7 +75,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             children: [
               _buildSidebar(),
               Expanded(
-                child: _buildMainContent(context, peacePoint.toDouble(), sustainability, protocol, totalIncome, totalExpenses),
+                child: _buildMainContent(context, peacePoint, sustainability, protocol, totalIncome, totalExpenses),
               ),
             ],
           ),
