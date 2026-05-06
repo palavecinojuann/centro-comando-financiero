@@ -9,9 +9,13 @@ class AppTheme {
   static const Color background = Color(0xFFF2EDE4);
   static const Color woodAccent = Color(0xFF8B735B);
   static const Color goldTactical = Color(0xFFD9A852);
-  static const Color darkText = Color(0xFF4A443F);
-  static const Color glassBackground = Color(0x66FFFFFF);
-  static const Color glassBorder = Color(0x99FFFFFF);
+  static const Color darkText = Color(0xFF2D2D2D);
+  static const Color glassBackground = Color(0x33FFFFFF); // Ultra-transparent
+  static const Color glassBorder = Color(0x80FFFFFF);
+  
+  // Neumorphism shadows
+  static const Color neuLight = Color(0xFFFFFFFF);
+  static const Color neuShadow = Color(0xFFD1CDC7);
   static const Color emeraldAccent = Color(0xFF50C878);
   static const Color goldAccent = Color(0xFFD9A852);
   static const Color darkBackground = Color(0xFF1A1A1A);
