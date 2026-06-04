@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Función auxiliar para verificar si el usuario está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Función para validar que el usuario pertenece al hogar que intenta operar
+    function perteneceAlHogar(hogarId) {
+      return isAuthenticated() && 
+        resource.data.hogarId == hogarId || 
+        get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.hogarId == hogarId;
+    }
+
+    // Regla para la subcolección de egresos, deudas y configuraciones del búnker
+    match /hogares/{hogarId}/{document=**} {
+      allow read, write: if isAuthenticated() && (hogarId == get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.hogarId);
+    }
+    
+    // Perfiles de usuario vinculados al hogarId compartido
+    match /usuarios/{userId} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+  }
+}

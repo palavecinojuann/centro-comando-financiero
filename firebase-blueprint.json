@@ -1,0 +1,137 @@
+{
+  "entities": {
+    "hogar": {
+      "title": "Hogar",
+      "description": "Estructura principal del hogar unificado.",
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string"
+        },
+        "miembros": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "configuracion": {
+          "type": "object",
+          "properties": {
+            "moneda": { "type": "string" },
+            "estabilidad_objetivo": { "type": "number" }
+          }
+        }
+      },
+      "required": ["nombre", "miembros", "configuracion"]
+    },
+    "ingresoPrincipal": {
+      "title": "Ingreso Principal",
+      "description": "Sueldo de Bimont.",
+      "type": "object",
+      "properties": {
+        "monto": { "type": "number" },
+        "fecha": { "type": "string", "format": "date-time" },
+        "descripcion": { "type": "string" },
+        "creado_por": { "type": "string" }
+      },
+      "required": ["monto", "fecha", "descripcion", "creado_por"]
+    },
+    "gastoVital": {
+      "title": "Gasto Vital",
+      "description": "Egresos categorizados.",
+      "type": "object",
+      "properties": {
+        "monto": { "type": "number" },
+        "fecha": { "type": "string", "format": "date-time" },
+        "categoria": { "type": "string" },
+        "descripcion": { "type": "string" },
+        "peso": { "type": "number" },
+        "es_suscripcion": { "type": "boolean" },
+        "pausado": { "type": "boolean" },
+        "creado_por": { "type": "string" }
+      },
+      "required": ["monto", "fecha", "categoria", "descripcion", "peso", "creado_por"]
+    },
+    "janluBridge": {
+      "title": "Puente Janlu",
+      "description": "Espejo de utilidad neta de Janlu Velas.",
+      "type": "object",
+      "properties": {
+        "utilidad_neta": { "type": "number" },
+        "periodo": { "type": "string" },
+        "fecha": { "type": "string", "format": "date-time" }
+      },
+      "required": ["utilidad_neta", "periodo", "fecha"]
+    },
+    "deuda": {
+      "title": "Deuda",
+      "description": "Deuda estructurada con vencimientos y cuotas.",
+      "type": "object",
+      "properties": {
+        "nombreCompromiso": { "type": "string" },
+        "capitalOrig": { "type": "number" },
+        "interesPorcentual": { "type": "number" },
+        "cuotaMinima": { "type": "number" },
+        "fechaRegistro": { "type": "string", "format": "date-time" },
+        "fechaVencimiento": { "type": "string", "format": "date-time" },
+        "tipoLiquidacion": { "type": "string", "enum": ["fija", "cuotas"] },
+        "cuotasTotales": { "type": "number" },
+        "cuotasPagadas": { "type": "number" }
+      },
+      "required": ["nombreCompromiso", "capitalOrig", "tipoLiquidacion"]
+    },
+    "cofre": {
+      "title": "Cofre de Propósito",
+      "description": "Metas de ahorro y gamificación.",
+      "type": "object",
+      "properties": {
+        "nombre": { "type": "string" },
+        "objetivo": { "type": "number" },
+        "acumulado": { "type": "number" },
+        "icono": { "type": "string" }
+      },
+      "required": ["nombre", "objetivo", "acumulado"]
+    },
+    "categoria": {
+      "title": "Categoría de Gastos",
+      "description": "Definición de categorías personalizables para el presupuesto.",
+      "type": "object",
+      "properties": {
+        "nombre": { "type": "string" },
+        "subtitulo": { "type": "string" },
+        "icono": { "type": "string" },
+        "color": { "type": "string" },
+        "orden": { "type": "number" }
+      },
+      "required": ["nombre", "icono", "color"]
+    }
+  },
+  "firestore": {
+    "/hogares/{id_hogar}": {
+      "schema": { "$ref": "#/entities/hogar" },
+      "description": "El hogar maestro"
+    },
+    "/hogares/{id_hogar}/ingresos_principales/{id_ingreso}": {
+      "schema": { "$ref": "#/entities/ingresoPrincipal" },
+      "description": "Ingresos inmutables"
+    },
+    "/hogares/{id_hogar}/gastos_vitales/{id_gasto}": {
+      "schema": { "$ref": "#/entities/gastoVital" },
+      "description": "Gastos mensuales"
+    },
+    "/hogares/{id_hogar}/janlu_bridge/{id_bridge}": {
+      "schema": { "$ref": "#/entities/janluBridge" },
+      "description": "Inyecciones de capital Janlu"
+    },
+    "/hogares/{id_hogar}/debts/{id_deuda}": {
+      "schema": { "$ref": "#/entities/deuda" },
+      "description": "Deudas del hogar"
+    },
+    "/hogares/{id_hogar}/cofres/{id_cofre}": {
+      "schema": { "$ref": "#/entities/cofre" },
+      "description": "Metas de ahorro"
+    },
+    "/hogares/{id_hogar}/categorias/{id_categoria}": {
+      "schema": { "$ref": "#/entities/categoria" },
+      "description": "Configuración de categorías de gasto"
+    }
+  }
+}

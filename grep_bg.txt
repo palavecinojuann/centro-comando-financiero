@@ -1,0 +1,53 @@
+72:    <div onClick={onClick} className="bg-[#161a23] p-4 rounded-[1.5rem] flex items-center gap-4 hover:bg-[#1c222e] transition-colors cursor-pointer border border-[#2a303c] hover:border-white/10 group shadow-lg lg:flex-1">
+265:      setRamaSeleccionada({ titulo, filtro, bgColor: bgColor || 'bg-[#304B8C]', icon, colorHex });
+270:    { title: "Bimont", valueTop: "Cimiento", valueBottom: formatNumber(totalBimont), bgColor: "bg-[#3C5A99]", valueColor: "text-[#3C5A99]", icon: Briefcase, onClick: () => handleSeleccionarRama("Bimont", "#3C5A99", "bg-[#3C5A99]", Briefcase, t => t.type === 'ingreso') },
+271:    { title: "Janlu", valueTop: "Acelerador", valueBottom: formatNumber(totalJanlu), bgColor: "bg-[#E84393]", valueColor: "text-[#E84393]", icon: Zap, onClick: () => handleSeleccionarRama("Janlu", "#E84393", "bg-[#E84393]", Zap, t => t.type === 'janlu') },
+285:    { title: "Deudas", valueTop: "Compromisos", valueBottom: formatNumber(transacciones.filter(t => t.type === 'deuda').reduce((acc, crr) => acc + (crr.capitalOrig || 0), 0)), bgColor: "bg-[#F1C40F]", valueColor: "text-[#F1C40F]", icon: AlertTriangle, onClick: () => setCurrentView('Metas') }
+289:    { title: "Blindaje", valueTop: "Protocolo", valueBottom: estabilidad >= 100 ? "ACTIVO" : "INACTIVO", bgColor: "bg-[#636E72]", valueColor: "text-[#8b949e]", icon: Lock, onClick: () => setCurrentView('Metas') },
+290:    { title: "Expansión", valueTop: "Protocolo", valueBottom: estabilidad >= 115 ? "ACTIVO" : "INACTIVO", bgColor: "bg-[#FF7675]", valueColor: "text-[#FF7675]", icon: TrendingUp, onClick: () => setCurrentView('Metas') },
+291:    { title: "Contingencia", valueTop: "Triaje", valueBottom: estabilidad < 100 ? "ALERTA" : "OK", bgColor: "bg-[#636E72]", valueColor: "text-[#8b949e]", icon: AlertTriangle, onClick: () => setCurrentView('Reportes') },
+292:    { title: "Opciones", valueTop: "Config...", valueBottom: "Ver", bgColor: "bg-[#636E72]", valueColor: "text-white", icon: ChevronDown, onClick: () => setCurrentView('Configuración') }
+332:    <div className="min-h-screen bg-[var(--color-bg-dark)] flex items-center justify-center p-0 md:p-8 font-sans relative overflow-hidden">
+333:      <div className="absolute top-[-10%] left-[-10%] w-[40vw] h-[40vw] bg-[#FF007F]/20 rounded-full blur-[100px] pointer-events-none" />
+334:      <div className="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-[#7000FF]/20 rounded-full blur-[100px] pointer-events-none" />
+335:      <div className="absolute top-[40%] left-[50%] w-[20vw] h-[20vw] bg-[#00F0FF]/15 rounded-full blur-[80px] pointer-events-none" />
+360:          <div className="flex justify-between items-center bg-[#25396A] rounded-full px-5 py-3 mx-auto max-w-[300px] shadow-inner relative z-30">
+377:        <aside className="hidden lg:flex w-[280px] bg-[#161a23] flex-col py-8 px-6 border-r border-[#2a303c]">
+379:            <div className="w-10 h-10 bg-[#304B8C] rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+393:                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${currentView === item ? 'bg-[#304B8C] text-white shadow-lg' : 'text-white/60 hover:bg-white/5 hover:text-white'}`}
+401:          <div className="bg-[#2a303c]/50 border border-[#3e485c] rounded-2xl p-5 mt-auto">
+404:                <div className={`w-2.5 h-2.5 rounded-full animate-pulse ${estabilidad >= 100 ? 'bg-[#00B894] shadow-[0_0_8px_rgba(0,184,148,0.8)]' : 'bg-[#FF7675] shadow-[0_0_8px_rgba(255,118,117,0.8)]'}`} />
+422:                     <button onClick={() => { setTransactionToEdit(null); setIsModalOpen(true); }} className="flex items-center gap-2 bg-[#304B8C] hover:bg-[#3C5A99] text-white px-5 py-3 rounded-full font-bold uppercase tracking-widest text-xs transition-colors shadow-lg">
+427:                     <button onClick={handleLogin} className="flex items-center gap-2 bg-[#304B8C] hover:bg-[#3C5A99] text-white px-5 py-3 rounded-full font-bold uppercase tracking-widest text-xs transition-colors shadow-lg">
+432:                  <div className="flex justify-between items-center bg-[#161a23] rounded-full px-5 py-3 shadow-inner border border-[#2a303c] relative z-30">
+453:              <div className="relative w-[280px] bg-[#161a23] h-full flex flex-col py-8 px-6 border-r border-[#2a303c] shadow-2xl animate-in slide-in-from-left duration-300">
+456:                    <div className="w-10 h-10 bg-[#304B8C] rounded-xl flex items-center justify-center">
+473:                      className={`w-full flex items-center gap-3 px-4 py-4 rounded-xl transition-colors ${currentView === item ? 'bg-[#304B8C] text-white shadow-lg' : 'text-white/60 hover:bg-white/5'}`}
+528:                        <div className="bg-[#E8DFD1] p-8 rounded-[2rem] flex flex-col items-center justify-center relative shadow-[10px_10px_20px_#c5bda2,-10px_-10px_20px_#ffffff] border border-white/20 flex-1 min-h-[400px]">
+592:                 <div className="bg-[#161a23] rounded-2xl border border-[#2a303c] p-6 lg:p-8 flex-1 overflow-y-auto shadow-lg">
+596:                             <div className="bg-[#1c222e] p-6 rounded-2xl flex-1 border border-[#F1C40F]/30 shadow-inner">
+602:                             <div className="bg-[#1c222e] p-6 rounded-2xl flex-1 border border-[#00B894]/30 shadow-inner">
+615:                                <div key={d.id} className="bg-[#0d1117] border border-[#2a303c] p-4 rounded-xl flex items-center justify-between">
+617:                                      <div className="w-8 h-8 rounded-full bg-[#1c222e] flex items-center justify-center text-white/50 font-bold border border-white/5">
+634:                            <div className="mt-8 bg-[#304B8C]/20 border border-[#304B8C] p-4 rounded-xl flex items-center gap-4">
+658:                 <div className="bg-[#161a23] rounded-2xl border border-[#2a303c] p-6 lg:p-8 flex-1 overflow-y-auto shadow-lg">
+669:                                let color = "bg-[#3C5A99]"; // Azul base
+670:                                if (nivel === 1) { label = "Vital Irremplazable"; color = "bg-[#FF7675]"; }
+671:                                if (nivel === 2) { label = "Sostenimiento Básico"; color = "bg-[#F1C40F]"; }
+672:                                if (nivel === 3) { label = "Operativo Standard"; color = "bg-[#00CEC9]"; }
+673:                                if (nivel === 4) { label = "Confort Ajustable"; color = "bg-[#8D6E63]"; }
+674:                                if (nivel === 5) { label = "Ocio / Lujo (Recortable)"; color = "bg-[#6c5ce7]"; }
+677:                                   <div key={nivel} className="bg-[#0d1117] border border-[#2a303c] p-4 rounded-xl">
+685:                                      <div className="w-full bg-[#1c222e] rounded-full h-2 mt-3 overflow-hidden">
+698:                            <div className="bg-[#FF7675]/10 border border-[#FF7675]/30 p-5 rounded-2xl mb-4">
+711:                            <div className="bg-[#00B894]/10 border border-[#00B894]/30 p-5 rounded-2xl mb-4">
+724:                          <div className="bg-[#1c222e] border border-[#2a303c] p-5 rounded-2xl shadow-inner mt-4">
+744:                 <div className="bg-[#161a23] rounded-3xl p-8 border border-[#2a303c] shadow-lg mb-8">
+748:                 <div className="bg-[#161a23] rounded-3xl p-8 border border-[#2a303c] shadow-lg">
+750:                       <div className="w-16 h-16 rounded-full bg-[#304B8C] flex items-center justify-center text-white">
+775:                          <div className="bg-[#1c222e] p-6 rounded-2xl border border-[#FF7675]/30 relative overflow-hidden group">
+776:                             <div className="absolute top-0 right-0 w-16 h-16 bg-[#FF7675]/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
+785:                          <div className="bg-[#1c222e] p-6 rounded-2xl border border-[#00CEC9]/30 relative overflow-hidden group">
+786:                             <div className="absolute top-0 right-0 w-16 h-16 bg-[#00CEC9]/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />
+795:                          <div className="bg-[#1c222e] p-6 rounded-2xl border border-[#00B894]/30 relative overflow-hidden group">
+796:                             <div className="absolute top-0 right-0 w-16 h-16 bg-[#00B894]/10 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-150" />

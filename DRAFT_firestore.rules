@@ -1,0 +1,102 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Primitives
+    function isSignedIn() { return request.auth != null; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // User Profile Validation
+    function isValidUserProfile(data) {
+      let isEmailValid = (!("email" in data) || (data.email is string && data.email.size() <= 100));
+      let isProtocolValid = data.currentProtocol in ["EMERGENCIA", "BLINDAJE", "EXPANSION"];
+      let isPeacePointValid = (!("peacePoint" in data) || data.peacePoint is number);
+      let isLiquidityValid = (!("liquidity" in data) || data.liquidity is number);
+      let isMonthlyExpensesValid = (!("monthlyExpenses" in data) || data.monthlyExpenses is number);
+      let isEmergencyFundValid = (!("emergencyFund" in data) || data.emergencyFund is number);
+      let isCapitalEfficiencyValid = (!("capitalEfficiency" in data) || data.capitalEfficiency is number);
+      let isSurplusValid = (!("surplus" in data) || data.surplus is number);
+      let isUpdatedAtValid = data.updatedAt == request.time;
+      
+      return isEmailValid && isProtocolValid && isPeacePointValid && isLiquidityValid && isMonthlyExpensesValid && isEmergencyFundValid && isCapitalEfficiencyValid && isSurplusValid && isUpdatedAtValid;
+    }
+
+    // Commitment Validation
+    function isValidCommitment(data, userId) {
+      let isUserIdValid = data.userId == userId;
+      let isTitleValid = data.title is string && data.title.size() > 0 && data.title.size() <= 100;
+      let isAmountValid = data.amount is number;
+      let isTypeValid = data.type in ["Suscripción", "Cuota", "Fijo", "Variable"];
+      let isStatusValid = data.status in ["Pagado", "Pendiente", "Próximo"];
+      let isDueDateValid = (!("dueDate" in data) || data.dueDate is timestamp || data.dueDate is string); // Allow both for flex, ideally just timestamp
+      let isIconValid = (!("iconName" in data) || (data.iconName is string && data.iconName.size() <= 50));
+      
+      return isUserIdValid && isTitleValid && isAmountValid && isTypeValid && isStatusValid && isDueDateValid && isIconValid;
+    }
+
+    // === USERS ===
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      // Explicitly checking resource.data isn't needed for get on exact ID, but for list it would be.
+      // We don't allow list on users here.
+
+      // CREATE
+      allow create: if isOwner(userId)
+                    && isValidId(userId)
+                    && isValidUserProfile(incoming())
+                    && incoming().keys().hasAll(["currentProtocol", "updatedAt"])
+                    && incoming().keys().size() <= 9;
+                    
+      // UPDATE
+      allow update: if isOwner(userId)
+                    && isValidId(userId)
+                    && isValidUserProfile(incoming())
+                    && (
+                      incoming().diff(existing()).affectedKeys().hasOnly([
+                        "currentProtocol", "peacePoint", "liquidity", 
+                        "monthlyExpenses", "emergencyFund", "capitalEfficiency", 
+                        "surplus", "updatedAt", "email"
+                      ])
+                    );
+                    
+      // DELETE
+      allow delete: if isOwner(userId);
+
+      // === COMMITMENTS ===
+      match /commitments/{commitmentId} {
+        allow get: if isOwner(userId);
+        
+        allow list: if isOwner(userId) && resource.data.userId == request.auth.uid;
+
+        // CREATE
+        allow create: if isOwner(userId)
+                      && isValidId(commitmentId)
+                      && isValidCommitment(incoming(), userId)
+                      && incoming().keys().hasAll(["userId", "title", "amount", "type", "status", "createdAt"])
+                      && incoming().keys().size() <= 8
+                      && incoming().createdAt == request.time;
+
+        // UPDATE
+        allow update: if isOwner(userId)
+                      && isValidId(commitmentId)
+                      && isValidCommitment(incoming(), userId)
+                      && incoming().userId == existing().userId // Immutable userId
+                      && incoming().createdAt == existing().createdAt // Immutable createdAt
+                      && (
+                        incoming().diff(existing()).affectedKeys().hasOnly([
+                          "title", "amount", "type", "status", "dueDate", "iconName"
+                        ])
+                      );
+
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}
