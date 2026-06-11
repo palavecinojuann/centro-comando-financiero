@@ -14,7 +14,7 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
   const formatNumber = (num: number) => 
-    new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(num);
+    new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(num).replace('ARS', '$').trim();
 
   const totalInput = bimont + janlu || 1;
   const totalOutput = vitales + variables + excedente || 1;
@@ -28,28 +28,28 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
     excedente: 85,
   };
 
-  // Flows proportional routing
+  // Flows proportional routing (Dorado = Cimiento, Fucsia = Acelerador, Cian = Liquidez/Excedentes)
   const flows = [
-    { id: 'b-vit', from: 'bimont', to: 'vitales', value: bimont * (vitales / totalOutput), colorFrom: '#00B894', colorTo: '#FF7675' },
-    { id: 'b-var', from: 'bimont', to: 'variables', value: bimont * (variables / totalOutput), colorFrom: '#00B894', colorTo: '#F1C40F' },
-    { id: 'b-exc', from: 'bimont', to: 'excedente', value: bimont * (excedente / totalOutput), colorFrom: '#00B894', colorTo: '#06B6D4' },
-    { id: 'j-vit', from: 'janlu', to: 'vitales', value: janlu * (vitales / totalOutput), colorFrom: '#D946EF', colorTo: '#FF7675' },
-    { id: 'j-var', from: 'janlu', to: 'variables', value: janlu * (variables / totalOutput), colorFrom: '#D946EF', colorTo: '#F1C40F' },
+    { id: 'b-vit', from: 'bimont', to: 'vitales', value: bimont * (vitales / totalOutput), colorFrom: '#F1C40F', colorTo: '#F1C40F' },
+    { id: 'b-var', from: 'bimont', to: 'variables', value: bimont * (variables / totalOutput), colorFrom: '#F1C40F', colorTo: '#06B6D4' },
+    { id: 'b-exc', from: 'bimont', to: 'excedente', value: bimont * (excedente / totalOutput), colorFrom: '#F1C40F', colorTo: '#06B6D4' },
+    { id: 'j-vit', from: 'janlu', to: 'vitales', value: janlu * (vitales / totalOutput), colorFrom: '#D946EF', colorTo: '#F1C40F' },
+    { id: 'j-var', from: 'janlu', to: 'variables', value: janlu * (variables / totalOutput), colorFrom: '#D946EF', colorTo: '#06B6D4' },
     { id: 'j-exc', from: 'janlu', to: 'excedente', value: janlu * (excedente / totalOutput), colorFrom: '#D946EF', colorTo: '#06B6D4' },
   ].filter(f => f.value > 0);
 
   const maxFlow = Math.max(...flows.map(f => f.value), 1);
 
   const getOpacity = (flow: any) => {
-    if (!hoveredNode) return 0.3; // Base translucency
-    if (hoveredNode === flow.from || hoveredNode === flow.to) return 0.9; // Highlight
-    return 0.05; // Dim others
+    if (!hoveredNode) return 0.25; // Base translucency
+    if (hoveredNode === flow.from || hoveredNode === flow.to) return 0.85; // Highlight
+    return 0.03; // Dim others
   };
 
   return (
-      <div className="relative w-full h-[350px] sm:h-[450px] bg-[#0d0f15]/80 rounded-none border border-white/5 overflow-hidden shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)] flex px-2 sm:px-4">
+      <div className="relative w-full h-[350px] sm:h-[450px] glass-premium neumorphic-dark-out rounded-[2rem] overflow-hidden flex px-2 sm:px-4">
         {/* Decorative Grid & Lights */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff02_1px,transparent_1px),linear-gradient(to_bottom,#ffffff02_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
         
         {/* Left Nodes Container */}
         <div className="w-[120px] sm:w-[150px] h-full relative z-10 shrink-0">
@@ -57,11 +57,12 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
               id="bimont" 
               title="Bimont" 
               amount={bimont} 
-              color="#00B894" 
+              color="#F1C40F" 
               icon={<Briefcase />}
               pos={yPos.bimont} 
               isHovered={hoveredNode === 'bimont'}
               onHover={setHoveredNode}
+              formatNumber={formatNumber}
            />
            <NodeCard 
               id="janlu" 
@@ -72,6 +73,7 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
               pos={yPos.janlu} 
               isHovered={hoveredNode === 'janlu'}
               onHover={setHoveredNode}
+              formatNumber={formatNumber}
            />
         </div>
 
@@ -93,19 +95,19 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
                   const strokeWidth = Math.max(2, (flow.value / maxFlow) * 15); 
 
                   return (
-                    <motion.path 
-                       key={flow.id}
-                       d={path}
-                       fill="none"
-                       stroke={`url(#grad-${flow.id})`}
-                       strokeWidth={strokeWidth}
-                       strokeLinecap="round"
-                       vectorEffect="non-scaling-stroke"
-                       initial={{ pathLength: 0, opacity: 0 }}
-                       animate={{ pathLength: 1, opacity: getOpacity(flow) }}
-                       transition={{ duration: 1.5, ease: "easeOut" }}
-                       style={{ transition: 'opacity 0.4s ease' }}
-                    />
+                     <motion.path 
+                        key={flow.id}
+                        d={path}
+                        fill="none"
+                        stroke={`url(#grad-${flow.id})`}
+                        strokeWidth={strokeWidth}
+                        strokeLinecap="round"
+                        vectorEffect="non-scaling-stroke"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={{ pathLength: 1, opacity: getOpacity(flow) }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        style={{ transition: 'opacity 0.4s ease' }}
+                     />
                   )
                })}
             </svg>
@@ -117,21 +119,23 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
               id="vitales" 
               title="C. Vitales" 
               amount={vitales} 
-              color="#FF7675" 
+              color="#F1C40F" 
               icon={<Activity />}
               pos={yPos.vitales} 
               isHovered={hoveredNode === 'vitales'}
               onHover={setHoveredNode}
+              formatNumber={formatNumber}
            />
            <NodeCard 
               id="variables" 
               title="Variables" 
               amount={variables} 
-              color="#F1C40F" 
+              color="#06B6D4" 
               icon={<ShoppingBag />}
               pos={yPos.variables} 
               isHovered={hoveredNode === 'variables'}
               onHover={setHoveredNode}
+              formatNumber={formatNumber}
            />
            <NodeCard 
               id="excedente" 
@@ -142,13 +146,14 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
               pos={yPos.excedente} 
               isHovered={hoveredNode === 'excedente'}
               onHover={setHoveredNode}
+              formatNumber={formatNumber}
            />
         </div>
       </div>
   );
 }
 
-const NodeCard = ({ id, title, amount, color, icon, pos, isHovered, onHover }: any) => {
+const NodeCard = ({ id, title, amount, color, icon, pos, isHovered, onHover, formatNumber }: any) => {
     return (
        <div 
          className={`absolute w-full cursor-pointer transition-transform duration-300 ${isHovered ? 'scale-105 z-20' : 'scale-100 z-10'}`}
@@ -160,16 +165,16 @@ const NodeCard = ({ id, title, amount, color, icon, pos, isHovered, onHover }: a
          onMouseLeave={() => onHover(null)}
        >
           <div 
-            className={`bg-[#1A1C23]/80 backdrop-blur-xl border border-white/10 rounded-none p-2 sm:p-3 shadow-2xl flex items-center gap-2 sm:gap-3 hover:bg-[#161A23]/50 transition-all duration-300 ${isHovered ? 'ring-1' : ''}`} 
+            className={`bg-white/5 backdrop-blur-xl border border-white/5 rounded-2xl p-2 sm:p-3 shadow-2xl flex items-center gap-2 sm:gap-3 hover:bg-white/10 hover:border-white/10 transition-all duration-300 ${isHovered ? 'ring-1' : ''}`} 
             style={{ ringColor: `${color}80` }}
           >
              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 shadow-inner" style={{ backgroundColor: `${color}15`, border: `1px solid ${color}40`, color: color }}>
                 {React.cloneElement(icon, { className: "w-4 h-4 sm:w-5 sm:h-5" })}
              </div>
              <div className="min-w-0 flex-1 overflow-hidden">
-                <p className="text-white/50 text-[8px] sm:text-[9px] uppercase font-bold tracking-widest truncate">{title}</p>
-                <p className="text-white font-black text-[11px] sm:text-[13px] tracking-tight truncate">
-                  {new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(amount)}
+                <p className="text-slate-400 text-[8px] sm:text-[9px] uppercase font-bold tracking-widest truncate">{title}</p>
+                <p className="text-white font-black text-[11px] sm:text-[13px] tracking-tight truncate font-contable">
+                  {formatNumber(amount)}
                 </p>
              </div>
           </div>
