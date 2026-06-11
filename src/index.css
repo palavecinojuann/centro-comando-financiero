@@ -6,20 +6,21 @@
   --font-serif: "Cinzel", serif;
   --font-display: "Cinzel", serif;
 
-  /* Bunker Petróleo & Cian/Oro Design Tokens */
-  --color-bunker-bg: #0C1A20;
-  --color-bunker-panel: #132730;
-  --color-bunker-limon: #00E5FF;
-  --color-bunker-limonDim: rgba(0, 229, 255, 0.15);
+  /* Deep Analytics Design Tokens (v3.8) */
+  --color-bunker-bg: #0B1A28;
+  --color-bunker-panel: rgba(255, 255, 255, 0.05);
+  --color-bunker-limon: #06B6D4;
+  --color-bunker-limonDim: rgba(6, 182, 212, 0.15);
   --color-bunker-texto: #FFFFFF;
-  --color-bunker-mutado: #8A9A9E;
+  --color-bunker-mutado: #94A3B8;
 
-  /* Fallbacks mapped to Petróleo/Cyan/Gold for instant cascade harmony */
-  --color-bg-dark: #0C1A20;
-  --color-panel-glass: #132730;
-  --color-neon-pink: #FF007F;
-  --color-neon-blue: #00E5FF;
-  --color-gold: #FFD500;
+  /* Semantic Accent Fallbacks */
+  --color-bg-dark: #0B1A28;
+  --color-panel-glass: rgba(255, 255, 255, 0.05);
+  --color-neon-pink: #D946EF;
+  --color-neon-blue: #06B6D4;
+  --color-gold: #F1C40F;
+  --color-violet: #8B5CF6;
 }
 
 @layer base {
@@ -88,18 +89,69 @@ div[class*="rounded-full"] {
 }
 
 /* --- ESTILOS ADICIONALES PREMIUM "IRISH CREAM LUXURY" --- */
-.accent-glow-cyan {
-  box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+.glass-premium {
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05), 0 20px 40px rgba(0, 0, 0, 0.4) !important;
 }
 
-.accent-glow-pink {
-  box-shadow: 0 0 15px rgba(255, 0, 127, 0.2);
+.neumorphic-dark-out {
+  box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.5), -6px -6px 16px rgba(255, 255, 255, 0.015) !important;
+}
+
+.neumorphic-dark-inset {
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.6), inset -3px -3px 6px rgba(255, 255, 255, 0.02) !important;
+}
+
+/* Neon Glows */
+.glow-cyan {
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.35) !important;
+}
+
+.glow-gold {
+  box-shadow: 0 0 15px rgba(241, 196, 15, 0.3) !important;
+}
+
+.glow-fuchsia {
+  box-shadow: 0 0 15px rgba(217, 70, 239, 0.35) !important;
+}
+
+.glow-violet {
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.35) !important;
+}
+
+/* Text Gradients */
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #06B6D4 30%, #FFFFFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-gold {
-  background: linear-gradient(135deg, #FFD500, #FFF);
+  background: linear-gradient(135deg, #F1C40F 30%, #FFFFFF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-fuchsia {
+  background: linear-gradient(135deg, #D946EF 30%, #FFFFFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-violet {
+  background: linear-gradient(135deg, #8B5CF6 30%, #FFFFFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Ledger Typographic Alignment */
+.font-contable {
+  font-family: "Outfit", sans-serif !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: -0.02em !important;
 }
 
 /* Tablas Financieras Compactas (Búnker OS v3.6) */
