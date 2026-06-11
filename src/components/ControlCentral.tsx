@@ -470,7 +470,7 @@ export const ControlCentral: React.FC = () => {
 
   // RENDERIZADOR: ESTRUCTURA INTERFAZ MÓVIL
   const renderMobileLayout = () => (
-    <div className="w-full h-full flex flex-col relative bg-gradient-to-b from-[#0B1A28] to-[#112B3C]">
+    <div className="w-full h-full flex flex-col relative bg-gradient-to-b from-[#0E2531] to-[#071218]">
       {/* Notch & Status Bar (Sólo visible si es simulador en PC) */}
       {isLargeScreen && (
         <>
@@ -553,7 +553,7 @@ export const ControlCentral: React.FC = () => {
       </main>
 
       {/* Bottom Tab Bar móvil */}
-      <nav className="absolute bottom-0 left-0 right-0 z-40 bg-[#0B1A28]/90 backdrop-blur-xl border-t border-white/10 py-2 px-3 flex justify-around items-center shrink-0">
+      <nav className="absolute bottom-0 left-0 right-0 z-40 bg-[#071218]/90 backdrop-blur-xl border-t border-white/10 py-2 px-3 flex justify-around items-center shrink-0">
         {[
           { id: 'SALDO', label: 'Saldo', icon: <CreditCard className="w-4 h-4" /> },
           { id: 'HOY', label: 'Hoy', icon: <Calendar className="w-4 h-4" /> },
@@ -578,7 +578,7 @@ export const ControlCentral: React.FC = () => {
 
   // RENDERIZADOR: ESTRUCTURA INTERFAZ PC COMPLETA
   const renderPCLayout = () => (
-    <div className="w-full min-h-screen flex bg-gradient-to-b from-[#0B1A28] to-[#112B3C] text-white font-sans overflow-hidden select-none">
+    <div className="w-full min-h-screen flex bg-gradient-to-b from-[#0E2531] to-[#071218] text-white font-sans overflow-hidden select-none">
       
       {/* Sidebar fijo a la izquierda */}
       <aside className="w-64 border-r border-white/5 bg-white/[0.02] backdrop-blur-3xl p-6 flex flex-col justify-between shrink-0 select-none">
@@ -911,10 +911,10 @@ export const ControlCentral: React.FC = () => {
         /* 2. Pantalla Grande (PC) */
         isMobileSimulator ? (
           /* Modo Simulador de Smartphone */
-          <div className="min-h-screen w-screen bg-[#070E16] flex flex-col items-center justify-center p-6 overflow-hidden relative">
+          <div className="min-h-screen w-screen bg-[#071218] flex flex-col items-center justify-center p-6 overflow-hidden relative">
             
             {/* Header del Simulador en PC */}
-            <div className="absolute top-4 left-6 right-6 flex justify-between items-center z-40 bg-[#112B3C]/40 backdrop-blur-xl border border-white/5 px-5 py-3 rounded-2xl max-w-7xl mx-auto w-[calc(100vw-3rem)]">
+            <div className="absolute top-4 left-6 right-6 flex justify-between items-center z-40 bg-[#0E2531]/40 backdrop-blur-xl border border-white/5 px-5 py-3 rounded-2xl max-w-7xl mx-auto w-[calc(100vw-3rem)]">
               <div>
                 <span className="text-[8px] font-mono tracking-[0.25em] text-[#06B6D4] font-black uppercase">ENTORNO DE PRUEBAS</span>
                 <h2 className="text-sm font-serif font-black uppercase text-white">Laboratorio Multi-Terminal en Paralelo</h2>
@@ -949,7 +949,7 @@ export const ControlCentral: React.FC = () => {
             {/* Smartphone Canvas */}
             {!isMultiMobile ? (
               /* Smartphone Frame Único */
-              <div className="w-[412px] h-[892px] rounded-[3.2rem] border-[12px] border-[#1E293B] shadow-[0_0_80px_rgba(0,0,0,0.85)] relative overflow-hidden flex flex-col bg-gradient-to-b from-[#0B1A28] to-[#112B3C] border-slate-800 shrink-0 mt-12 animate-in zoom-in-95 duration-200">
+              <div className="w-[412px] h-[892px] rounded-[3.2rem] border-[12px] border-[#1E293B] shadow-[0_0_80px_rgba(0,0,0,0.85)] relative overflow-hidden flex flex-col bg-gradient-to-b from-[#0E2531] to-[#071218] border-slate-800 shrink-0 mt-12 animate-in zoom-in-95 duration-200">
                 {renderMobileLayout()}
               </div>
             ) : (
@@ -1018,7 +1018,7 @@ export const ControlCentral: React.FC = () => {
                 ].map((disp) => (
                   <div key={disp.id} className="flex-shrink-0 snap-center flex flex-col items-center select-none py-4">
                     <span className="text-[10px] font-mono font-black text-slate-400 mb-2.5 uppercase tracking-widest">{disp.titulo}</span>
-                    <div className="w-[360px] h-[780px] rounded-[3rem] border-[10px] border-[#1E293B] shadow-[0_15px_40px_rgba(0,0,0,0.65)] relative overflow-hidden flex flex-col bg-gradient-to-b from-[#0B1A28] to-[#112B3C] border-slate-800 shrink-0 hover:border-slate-700 transition duration-300">
+                    <div className="w-[360px] h-[780px] rounded-[3rem] border-[10px] border-[#1E293B] shadow-[0_15px_40px_rgba(0,0,0,0.65)] relative overflow-hidden flex flex-col bg-gradient-to-b from-[#0E2531] to-[#071218] border-slate-800 shrink-0 hover:border-slate-700 transition duration-300">
                       
                       {/* Notch */}
                       <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-28 h-6 bg-black rounded-full z-50 items-center justify-center flex">
@@ -1056,7 +1056,7 @@ export const ControlCentral: React.FC = () => {
                       </main>
 
                       {/* Bottom Tab Bar */}
-                      <nav className="absolute bottom-0 left-0 right-0 z-40 bg-[#0B1A28]/95 backdrop-blur-xl border-t border-white/10 py-2 px-3 flex justify-around items-center shrink-0">
+                      <nav className="absolute bottom-0 left-0 right-0 z-40 bg-[#071218]/95 backdrop-blur-xl border-t border-white/10 py-2 px-3 flex justify-around items-center shrink-0">
                         {[
                           { id: 'SALDO', label: 'Saldo', icon: <CreditCard className="w-4 h-4" /> },
                           { id: 'HOY', label: 'Hoy', icon: <Calendar className="w-4 h-4" /> },

@@ -146,8 +146,136 @@ export function LibroDiario({ operaciones, onEdit, onDelete, onPay, onToggleStat
         return datosConBalance;
     }, [operaciones, ordenInverso]);
 
+    // Segmentar transacciones por naturaleza
+    const gastosFilas = useMemo(() => filasCalculadas.filter(f => f.type === 'gasto'), [filasCalculadas]);
+    const ingresosFilas = useMemo(() => filasCalculadas.filter(f => f.type === 'ingreso' || f.type === 'janlu'), [filasCalculadas]);
+    const deudasFilas = useMemo(() => filasCalculadas.filter(f => f.type === 'deuda'), [filasCalculadas]);
+
+    // Renderizador genérico de secciones de tabla idéntico al quinto teléfono de la imagen
+    const renderSeccionTabla = (tituloSeccion: string, filas: FilaDiario[], totalLabel: string) => {
+        if (filas.length === 0) return null;
+
+        const totalMonto = filas.reduce((acc, f) => acc + f.monto, 0);
+
+        return (
+            <div className="mb-6 last:mb-0">
+                <table className="financial-table">
+                    <thead>
+                        <tr className="bg-white text-black">
+                            <th className="w-16 py-2 px-3 text-black font-black font-sans uppercase text-[9px] tracking-widest rounded-none border-none">Fecha</th>
+                            <th className="py-2 px-3 text-black font-black font-sans uppercase text-[9px] tracking-widest border-none">Categoría</th>
+                            <th className="py-2 px-3 text-black font-black font-sans uppercase text-[9px] tracking-widest border-none">Cuenta</th>
+                            <th className="text-right py-2 px-3 text-black font-black font-sans uppercase text-[9px] tracking-widest border-none">Cantidad</th>
+                            <th className="text-center w-24 py-2 px-3 text-black font-black font-sans uppercase text-[9px] tracking-widest rounded-none border-none">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {/* Fila Cabecera del Grupo */}
+                        <tr className="bg-slate-900/60 border-b border-white/5">
+                            <td colSpan={5} className="py-2 px-3 text-[9px] font-mono font-black uppercase text-white tracking-widest bg-black/40">
+                                {tituloSeccion}
+                            </td>
+                        </tr>
+                        {filas.map((fila) => {
+                            let colorCantidad = "text-white";
+                            if (fila.type === 'ingreso' || fila.type === 'janlu') {
+                                colorCantidad = "text-[#00D2FF]"; // Cian
+                            } else if (fila.type === 'deuda') {
+                                colorCantidad = "text-[#FFD500]"; // Amarillo Oro
+                            } else if (fila.type === 'gasto') {
+                                colorCantidad = fila.rawOp.categoriaMacro === 'COMPROMISOS_INDISPENSABLES' ? "text-white" : "text-[#8A9A9E]";
+                            }
+
+                            return (
+                                <tr key={fila.id} className={`transition-colors ${fila.rawOp.estado === 'Pausado' ? 'opacity-30 grayscale' : ''}`}>
+                                    {/* Fecha */}
+                                    <td className="font-mono text-[10px] text-bunker-mutado font-semibold py-2 px-3">
+                                        {fila.fechaTexto}
+                                    </td>
+                                    
+                                    {/* Categoría */}
+                                    <td className="font-bold text-white uppercase tracking-wide text-xs py-2 px-3">
+                                        {fila.categoria}
+                                    </td>
+
+                                    {/* Cuenta / Detalle */}
+                                    <td className="text-bunker-mutado text-[11px] font-medium py-2 px-3">
+                                        <div className="flex flex-col">
+                                            <span>{fila.cuenta}</span>
+                                            <span className="text-[9px] opacity-60 truncate max-w-[150px]">{fila.concepto}</span>
+                                        </div>
+                                    </td>
+
+                                    {/* Cantidad */}
+                                    <td className={`text-right font-black font-contable text-xs tracking-tight py-2 px-3 ${colorCantidad}`}>
+                                        {fila.esIngreso ? '+' : '-'}{formatNumber(fila.monto)}
+                                    </td>
+
+                                    {/* Acciones */}
+                                    <td className="text-center py-2 px-3">
+                                        <div className="flex items-center justify-center gap-1">
+                                            {/* Pagar/Ejecutar */}
+                                            {(fila.type === 'deuda' || fila.rawOp.recurrente || fila.rawOp.estado === 'Pendiente') && (
+                                                <button
+                                                    title="Ejecutar/Pagar"
+                                                    onClick={() => onPay && onPay(fila.id, fila.type)}
+                                                    className="p-1 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-lg transition-all cursor-pointer"
+                                                >
+                                                    <CheckCircle className="w-3.5 h-3.5" />
+                                                </button>
+                                            )}
+
+                                            {/* Cancelar/Finalizar */}
+                                            {(fila.type === 'gasto' || fila.type === 'deuda') && (
+                                                <button
+                                                    title={fila.rawOp.estado === 'Finalizado' ? 'Reactivar' : 'Finalizar'}
+                                                    onClick={() => onToggleStatus && onToggleStatus(fila.id, fila.type, fila.rawOp.estado || 'Activo')}
+                                                    className={`p-1 rounded-lg transition-all cursor-pointer ${fila.rawOp.estado === 'Finalizado' ? 'text-amber-400 hover:text-amber-300 hover:bg-amber-500/10' : 'text-bunker-mutado hover:text-white hover:bg-white/5'}`}
+                                                >
+                                                    <XCircle className="w-3.5 h-3.5" />
+                                                </button>
+                                            )}
+
+                                            {/* Editar */}
+                                            <button
+                                                title="Editar"
+                                                onClick={() => onEdit && onEdit(fila.id, fila.type)}
+                                                className="p-1 text-[#00D2FF] hover:text-[#00D2FF]/80 hover:bg-[#00D2FF]/10 rounded-lg transition-all cursor-pointer"
+                                            >
+                                                <Edit className="w-3.5 h-3.5" />
+                                            </button>
+
+                                            {/* Borrar */}
+                                            <button
+                                                title="Borrar"
+                                                onClick={() => onDelete && onDelete(fila.id, fila.type)}
+                                                className="p-1 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all cursor-pointer"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                        {/* Fila Totalizador */}
+                        <tr className="bg-black/45 border-t border-white/10">
+                            <td colSpan={3} className="py-2.5 px-3 text-[9px] font-mono font-black uppercase text-bunker-mutado tracking-widest text-left">
+                                {totalLabel}
+                            </td>
+                            <td className="text-right py-2.5 px-3 text-white font-contable font-black text-xs">
+                                {formatNumber(totalMonto)}
+                            </td>
+                            <td className="bg-transparent" />
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        );
+    };
+
     return (
-        <div className="flex flex-col h-full font-sans selection:bg-[#00E5FF] selection:text-black">
+        <div className="flex flex-col h-full font-sans selection:bg-[#00D2FF] selection:text-black">
             <div className="flex justify-between items-center mb-6 px-4">
                 <div>
                   <h3 className="text-white text-lg font-sans font-black uppercase tracking-widest">Libro Diario</h3>
@@ -155,121 +283,28 @@ export function LibroDiario({ operaciones, onEdit, onDelete, onPay, onToggleStat
                 </div>
                 <button 
                     onClick={() => setOrdenInverso(!ordenInverso)}
-                    className="flex items-center gap-2 px-3 py-2 bg-bunker-panel hover:border-[#00E5FF]/30 transition-all rounded-xl border border-white/5 text-bunker-texto text-[9px] font-black uppercase tracking-widest font-sans shadow-lg group cursor-pointer"
+                    className="flex items-center gap-2 px-3 py-2 bg-bunker-panel hover:border-[#00D2FF]/30 transition-all rounded-xl border border-white/5 text-bunker-texto text-[9px] font-black uppercase tracking-widest font-sans shadow-lg group cursor-pointer"
                 >
-                    {ordenInverso ? <ArrowUpAZ className="w-3.5 h-3.5 text-[#00E5FF]" /> : <ArrowDownAZ className="w-3.5 h-3.5 text-[#00E5FF]" />}
-                    <span className="group-hover:text-[#00E5FF] transition-colors">
+                    {ordenInverso ? <ArrowUpAZ className="w-3.5 h-3.5 text-[#00D2FF]" /> : <ArrowDownAZ className="w-3.5 h-3.5 text-[#00D2FF]" />}
+                    <span className="group-hover:text-[#00D2FF] transition-colors">
                         {ordenInverso ? 'Cronología ↓' : 'Cronología ↑'}
                     </span>
                 </button>
             </div>
 
             <div className="bg-bunker-panel border border-white/5 rounded-2xl shadow-2xl overflow-hidden flex-1 flex flex-col min-h-[400px]">
-                <div className="overflow-x-auto custom-scrollbar">
-                    <table className="financial-table">
-                        <thead>
-                            <tr>
-                                <th className="w-16">Fecha</th>
-                                <th>Categoría</th>
-                                <th>Cuenta / Destino</th>
-                                <th className="text-right">Cantidad</th>
-                                <th className="text-center w-24">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filasCalculadas.length === 0 ? (
-                                <tr>
-                                    <td colSpan={5} className="py-20 text-center text-bunker-mutado font-sans text-xs uppercase tracking-widest font-black opacity-30">
-                                        [ SISTEMA VACÍO // NO SE REGISTRAN OPERACIONES ]
-                                    </td>
-                                </tr>
-                            ) : (
-                                filasCalculadas.map((fila) => {
-                                    // Determinar color de cantidad de la transacción
-                                    let colorCantidad = "text-white";
-                                    if (fila.type === 'ingreso' || fila.type === 'janlu') {
-                                        colorCantidad = "text-[#00E5FF]"; // Cian
-                                    } else if (fila.type === 'deuda') {
-                                        colorCantidad = "text-[#FFD500]"; // Amarillo Oro
-                                    } else if (fila.type === 'gasto') {
-                                        colorCantidad = fila.rawOp.categoriaMacro === 'COMPROMISOS_INDISPENSABLES' ? "text-white" : "text-[#8A9A9E]";
-                                    }
-
-                                    return (
-                                        <tr key={fila.id} className={`transition-colors ${fila.rawOp.estado === 'Pausado' ? 'opacity-30 grayscale' : ''}`}>
-                                            {/* Fecha */}
-                                            <td className="font-mono text-[10px] text-bunker-mutado font-semibold">
-                                                {fila.fechaTexto}
-                                            </td>
-                                            
-                                            {/* Categoría */}
-                                            <td className="font-bold text-white uppercase tracking-wide text-xs">
-                                                {fila.categoria}
-                                            </td>
-
-                                            {/* Cuenta / Detalle */}
-                                            <td className="text-bunker-mutado text-[11px] font-medium">
-                                                <div className="flex flex-col">
-                                                    <span>{fila.cuenta}</span>
-                                                    <span className="text-[9px] opacity-60 truncate max-w-[150px]">{fila.concepto}</span>
-                                                </div>
-                                            </td>
-
-                                            {/* Cantidad */}
-                                            <td className={`text-right font-black font-sans text-xs tracking-tight ${colorCantidad}`}>
-                                                {fila.esIngreso ? '+' : '-'}{formatNumber(fila.monto)}
-                                            </td>
-
-                                            {/* Acciones */}
-                                            <td className="text-center">
-                                                <div className="flex items-center justify-center gap-1.5">
-                                                    {/* Pagar/Ejecutar */}
-                                                    {(fila.type === 'deuda' || fila.rawOp.recurrente || fila.rawOp.estado === 'Pendiente') && (
-                                                        <button
-                                                            title="Ejecutar/Pagar"
-                                                            onClick={() => onPay && onPay(fila.id, fila.type)}
-                                                            className="p-1.5 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 rounded-lg transition-all cursor-pointer"
-                                                        >
-                                                            <CheckCircle className="w-3.5 h-3.5" />
-                                                        </button>
-                                                    )}
-
-                                                    {/* Cancelar/Finalizar */}
-                                                    {(fila.type === 'gasto' || fila.type === 'deuda') && (
-                                                        <button
-                                                            title={fila.rawOp.estado === 'Finalizado' ? 'Reactivar' : 'Finalizar'}
-                                                            onClick={() => onToggleStatus && onToggleStatus(fila.id, fila.type, fila.rawOp.estado || 'Activo')}
-                                                            className={`p-1.5 rounded-lg transition-all cursor-pointer ${fila.rawOp.estado === 'Finalizado' ? 'text-amber-400 hover:text-amber-300 hover:bg-amber-500/10' : 'text-bunker-mutado hover:text-white hover:bg-white/5'}`}
-                                                        >
-                                                            <XCircle className="w-3.5 h-3.5" />
-                                                        </button>
-                                                    )}
-
-                                                    {/* Editar */}
-                                                    <button
-                                                        title="Editar"
-                                                        onClick={() => onEdit && onEdit(fila.id, fila.type)}
-                                                        className="p-1.5 text-[#00E5FF] hover:text-[#00E5FF]/80 hover:bg-[#00E5FF]/10 rounded-lg transition-all cursor-pointer"
-                                                    >
-                                                        <Edit className="w-3.5 h-3.5" />
-                                                    </button>
-
-                                                    {/* Borrar */}
-                                                    <button
-                                                        title="Borrar"
-                                                        onClick={() => onDelete && onDelete(fila.id, fila.type)}
-                                                        className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-all cursor-pointer"
-                                                    >
-                                                        <Trash2 className="w-3.5 h-3.5" />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })
-                            )}
-                        </tbody>
-                    </table>
+                <div className="overflow-y-auto custom-scrollbar p-3">
+                    {filasCalculadas.length === 0 ? (
+                        <div className="py-20 text-center text-bunker-mutado font-sans text-xs uppercase tracking-widest font-black opacity-30">
+                            [ SISTEMA VACÍO // NO SE REGISTRAN OPERACIONES ]
+                        </div>
+                    ) : (
+                        <>
+                            {renderSeccionTabla("Gasto", gastosFilas, "Total Gastos")}
+                            {renderSeccionTabla("Ingreso", ingresosFilas, "Total Ingresos")}
+                            {renderSeccionTabla("Transferencias de dinero / Compromisos", deudasFilas, "Total Compromisos")}
+                        </>
+                    )}
                 </div>
             </div>
         </div>

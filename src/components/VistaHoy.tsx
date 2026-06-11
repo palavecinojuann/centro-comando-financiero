@@ -98,9 +98,9 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
       <div className="space-y-8 px-2">
         
         {/* SECCIÓN OBJETIVOS */}
-        <section className="bg-bunker-panel/40 border border-white/5 p-6 rounded-3xl backdrop-blur-xl shadow-2xl">
+        <section className="bg-bunker-panel border border-white/5 p-6 rounded-3xl backdrop-blur-xl shadow-2xl">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white">Objetivos</span>
+            <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Objetivos</span>
             <span className="text-[8px] font-mono text-bunker-mutado uppercase tracking-widest">// COFRES DE PROPÓSITO</span>
           </div>
 
@@ -111,7 +111,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
                 <div key={obj.id} className="flex flex-col gap-2">
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-white font-bold tracking-wide uppercase text-[10px]">{obj.nombre}</span>
-                    <span className="text-[#00E5FF] font-black font-mono">{formatMoney(obj.actual)} / {formatMoney(obj.meta)}</span>
+                    <span className="text-[#00E5FF] font-black font-mono font-contable">{formatMoney(obj.actual)} / {formatMoney(obj.meta)}</span>
                   </div>
                   {/* Barra de progreso en cian */}
                   <div className="w-full h-1.5 bg-black/50 rounded-full overflow-hidden border border-white/5">
@@ -128,9 +128,9 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
         </section>
 
         {/* SECCIÓN PLANIFICADAS */}
-        <section className="bg-bunker-panel/40 border border-white/5 p-6 rounded-3xl backdrop-blur-xl shadow-2xl">
+        <section className="bg-bunker-panel border border-white/5 p-6 rounded-3xl backdrop-blur-xl shadow-2xl">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white">Planificadas</span>
+            <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Planificadas</span>
             <span className="text-[8px] font-mono text-bunker-mutado uppercase tracking-widest">// PAGOS Y FLUJOS PENDIENTES</span>
           </div>
 
@@ -139,15 +139,19 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
               <div 
                 key={op.id}
                 onClick={() => onEditTransaction(op.id, op.type)}
-                className="flex justify-between items-center p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-[#00E5FF]/20 transition-all cursor-pointer"
+                className="flex justify-between items-center p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-[#00D2FF]/20 transition-all cursor-pointer"
               >
                 <div className="flex flex-col gap-0.5">
                   <span className="text-white font-black text-xs uppercase tracking-wide">{op.concepto}</span>
                   <span className="text-bunker-mutado text-[8px] font-black uppercase tracking-widest">{op.categoria}</span>
                 </div>
-                {/* Badge de cantidad */}
-                <div className={`px-3 py-1.5 rounded-xl font-black font-mono text-xs tracking-tight ${
-                  op.type === 'ingreso' || op.type === 'janlu' ? 'bg-[#00E5FF]/10 text-[#00E5FF]' : 'bg-[#FFD500]/10 text-[#FFD500]'
+                {/* Badge de cantidad destacado en color plano (como la Pantalla 2) */}
+                <div className={`px-3 py-1 rounded-xl font-black font-contable text-[11px] tracking-tight ${
+                  op.type === 'ingreso' || op.type === 'janlu' 
+                    ? 'bg-[#00D2FF] text-black' 
+                    : op.concepto.toLowerCase().includes('transferencia') || op.categoria.toLowerCase().includes('transferencia')
+                      ? 'bg-white text-black'
+                      : 'bg-[#FFD500] text-black'
                 }`}>
                   {formatMoney(op.monto)}
                 </div>
@@ -163,9 +167,9 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
         </section>
 
         {/* SECCIÓN PAGADAS */}
-        <section className="bg-bunker-panel/40 border border-white/5 p-6 rounded-3xl backdrop-blur-xl shadow-2xl">
+        <section className="bg-bunker-panel border border-white/5 p-6 rounded-3xl backdrop-blur-xl shadow-2xl">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white">Pagadas</span>
+            <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Pagadas</span>
             <span className="text-[8px] font-mono text-bunker-mutado uppercase tracking-widest">// REGISTRO DE CAJA EJECUTADO</span>
           </div>
 
@@ -180,8 +184,13 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
                   <span className="text-white font-black text-xs uppercase tracking-wide opacity-80">{op.concepto}</span>
                   <span className="text-bunker-mutado text-[8px] font-bold uppercase tracking-widest">{op.categoria}</span>
                 </div>
-                <div className={`font-black font-sans text-xs tracking-tight ${
-                  op.type === 'ingreso' || op.type === 'janlu' ? 'text-[#00E5FF]' : 'text-white'
+                {/* Badge de cantidad destacado en color plano (como la Pantalla 2) */}
+                <div className={`px-3 py-1 rounded-xl font-black font-contable text-[11px] tracking-tight ${
+                  op.type === 'ingreso' || op.type === 'janlu' 
+                    ? 'bg-[#00D2FF] text-black' 
+                    : op.concepto.toLowerCase().includes('transferencia') || op.categoria.toLowerCase().includes('transferencia')
+                      ? 'bg-white text-black'
+                      : 'bg-[#FFD500] text-black'
                 }`}>
                   {op.type === 'ingreso' || op.type === 'janlu' ? '+' : '-'}{formatMoney(op.monto)}
                 </div>
@@ -197,7 +206,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
 
           <div className="border-t border-white/5 pt-4 mt-4 flex justify-between items-center text-xs font-mono uppercase text-bunker-mutado">
             <span>Gastos Totales</span>
-            <span className="text-white font-black font-sans tracking-tight">{formatMoney(totalGastosPagados)}</span>
+            <span className="text-white font-black font-contable tracking-tight">{formatMoney(totalGastosPagados)}</span>
           </div>
         </section>
 

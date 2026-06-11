@@ -48,7 +48,7 @@ export function VistaSaldo({ cajaRealTotal, totalCuotasDeudas, deudas }: VistaSa
       {/* Cabecera */}
       <div className="flex justify-between items-center mb-6 px-4">
         <div>
-          <h3 className="text-white text-lg font-sans font-black uppercase tracking-widest">Saldo</h3>
+          <h3 className="text-white text-lg font-serif font-black uppercase tracking-widest">Saldo</h3>
           <p className="text-[9px] font-mono text-bunker-mutado uppercase tracking-widest">// BALANCES Y ACTIVOS CONSOLIDADOS</p>
         </div>
         <button className="px-3 py-1.5 bg-bunker-panel border border-white/5 text-[9px] text-[#00E5FF] font-black uppercase tracking-widest font-sans rounded-xl hover:bg-white/5 transition-all">
@@ -56,38 +56,28 @@ export function VistaSaldo({ cajaRealTotal, totalCuotasDeudas, deudas }: VistaSa
         </button>
       </div>
 
-      {/* Barras Consolidadas Superiores */}
-      <div className="px-4 mb-8 space-y-4">
-        {/* Barra 1: Saldo Líquido */}
-        <div className="flex flex-col gap-1.5">
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-bunker-mutado font-mono uppercase text-[9px] font-black tracking-widest">// CAJA REAL LÍQUIDA</span>
-            <span className="text-[#00E5FF] font-black font-sans">{formatMoney(cajaRealTotal)}</span>
-          </div>
-          <div className="w-full h-2.5 bg-black/50 border border-white/5 rounded-full overflow-hidden">
-            <div className="h-full bg-[#00E5FF] rounded-full shadow-[0_0_10px_#00E5FF]" style={{ width: '75%' }} />
-          </div>
+      {/* Bloques Destacados Planos Superiores (idénticos a la Pantalla 1) */}
+      <div className="px-4 mb-8 space-y-3">
+        {/* Caja 1: Saldo Líquido en Turquesa */}
+        <div className="w-full bg-[#00E5FF] text-black font-contable font-black text-sm px-4 py-3 rounded-xl shadow-[0_0_15px_rgba(0,229,255,0.2)] flex justify-between items-center">
+          <span className="text-[8px] font-mono font-black tracking-widest uppercase">// CAJA REAL LÍQUIDA</span>
+          <span>{formatMoney(cajaRealTotal)}</span>
         </div>
 
-        {/* Barra 2: Tarjetas / Deuda */}
-        <div className="flex flex-col gap-1.5">
-          <div className="flex justify-between items-center text-xs">
-            <span className="text-bunker-mutado font-mono uppercase text-[9px] font-black tracking-widest">// CRÉDITO COMPROMETIDO</span>
-            <span className="text-[#FFD500] font-black font-sans">{formatMoney(totalTarjetasConsumido)}</span>
-          </div>
-          <div className="w-full h-2.5 bg-black/50 border border-white/5 rounded-full overflow-hidden">
-            <div className="h-full bg-[#FFD500] rounded-full shadow-[0_0_10px_#FFD500]" style={{ width: '40%' }} />
-          </div>
+        {/* Caja 2: Tarjetas / Deuda en Amarillo */}
+        <div className="w-full bg-[#FFD500] text-black font-contable font-black text-sm px-4 py-3 rounded-xl shadow-[0_0_15px_rgba(255,213,0,0.15)] flex justify-between items-center">
+          <span className="text-[8px] font-mono font-black tracking-widest uppercase">// CRÉDITO COMPROMETIDO</span>
+          <span>{formatMoney(totalTarjetasConsumido)}</span>
         </div>
       </div>
 
       <div className="space-y-8 px-2">
 
         {/* CUENTAS CORRIENTES */}
-        <section className="bg-bunker-panel/40 border border-white/5 p-5 rounded-3xl backdrop-blur-xl">
+        <section className="bg-bunker-panel border border-white/5 p-5 rounded-3xl backdrop-blur-xl">
           <div className="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
-            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white">Cuentas Corrientes</span>
-            <span className="text-[10px] font-black text-white/70 font-sans">{formatMoney(totalCuentasCorrientes)}</span>
+            <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Cuentas Corrientes</span>
+            <span className="text-[10px] font-black text-white/70 font-sans font-contable">{formatMoney(totalCuentasCorrientes)}</span>
           </div>
 
           <div className="space-y-4">
@@ -99,23 +89,23 @@ export function VistaSaldo({ cajaRealTotal, totalCuotasDeudas, deudas }: VistaSa
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <span className="text-white font-bold tracking-wide uppercase text-[10px]">{cuenta.nombre}</span>
-                    {/* Barra de progreso de cuenta */}
+                    {/* Barra de progreso de cuenta en turquesa */}
                     <div className="w-24 h-1 bg-black/50 rounded-full overflow-hidden">
                       <div className="h-full bg-[#00E5FF]" style={{ width: `${cuenta.progreso}%` }} />
                     </div>
                   </div>
                 </div>
-                <span className="text-white font-black font-sans text-xs">{formatMoney(cuenta.balance)}</span>
+                <span className="text-white font-black font-sans text-xs font-contable">{formatMoney(cuenta.balance)}</span>
               </div>
             ))}
           </div>
         </section>
 
         {/* TARJETAS DE CREDITO */}
-        <section className="bg-bunker-panel/40 border border-white/5 p-5 rounded-3xl backdrop-blur-xl">
+        <section className="bg-bunker-panel border border-white/5 p-5 rounded-3xl backdrop-blur-xl">
           <div className="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
-            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white">Tarjetas de Crédito</span>
-            <span className="text-[10px] font-black text-[#FFD500] font-sans">{formatMoney(totalTarjetasConsumido)}</span>
+            <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Tarjetas de Crédito</span>
+            <span className="text-[10px] font-black text-[#FFD500] font-sans font-contable">{formatMoney(totalTarjetasConsumido)}</span>
           </div>
 
           <div className="space-y-4">
@@ -135,8 +125,8 @@ export function VistaSaldo({ cajaRealTotal, totalCuotasDeudas, deudas }: VistaSa
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-0.5">
-                    <span className="text-[#FFD500] font-black font-sans text-xs">{formatMoney(tc.consumido)}</span>
-                    <span className="text-[8px] font-mono text-bunker-mutado">Límite {formatMoney(tc.limite)}</span>
+                    <span className="text-[#FFD500] font-black font-sans text-xs font-contable">{formatMoney(tc.consumido)}</span>
+                    <span className="text-[8px] font-mono text-bunker-mutado font-contable">Límite {formatMoney(tc.limite)}</span>
                   </div>
                 </div>
               );
@@ -145,10 +135,10 @@ export function VistaSaldo({ cajaRealTotal, totalCuotasDeudas, deudas }: VistaSa
         </section>
 
         {/* OTROS ACTIVOS */}
-        <section className="bg-bunker-panel/40 border border-white/5 p-5 rounded-3xl backdrop-blur-xl">
+        <section className="bg-bunker-panel border border-white/5 p-5 rounded-3xl backdrop-blur-xl">
           <div className="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
-            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white">Otros Activos</span>
-            <span className="text-[10px] font-black text-white/70 font-sans">{formatMoney(totalOtrosActivos)}</span>
+            <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Otros Activos</span>
+            <span className="text-[10px] font-black text-white/70 font-sans font-contable">{formatMoney(totalOtrosActivos)}</span>
           </div>
 
           <div className="space-y-4">
@@ -160,7 +150,7 @@ export function VistaSaldo({ cajaRealTotal, totalCuotasDeudas, deudas }: VistaSa
                   </div>
                   <span className="text-white font-bold tracking-wide uppercase text-[10px]">{activo.nombre}</span>
                 </div>
-                <span className="text-white font-black font-sans text-xs">{formatMoney(activo.balance)}</span>
+                <span className="text-white font-black font-sans text-xs font-contable">{formatMoney(activo.balance)}</span>
               </div>
             ))}
           </div>
