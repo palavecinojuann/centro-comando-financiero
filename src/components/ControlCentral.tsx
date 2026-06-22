@@ -1,7 +1,7 @@
 // ControlCentral.tsx - Orquestador Maestro de Alta Densidad Dual (PC & Móvil) // BÚNKER OS v3.10
 import React, { useState, useMemo, useEffect } from 'react';
 import { db } from '../firebase';
-import { collection, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, addDoc } from 'firebase/firestore';
 import { FinancialEngine, EstadoFinanciero, Gasto, DeudaAvanzada } from '../services/motores/FinancialEngine';
 import { useMotorIntegral } from '../services/motores/MotorIntegral';
 import { AuditorCognitivo } from '../services/motores/AuditorCognitivo';
@@ -52,6 +52,14 @@ export const ControlCentral: React.FC = () => {
   const [deudasFirestore, setDeudasFirestore] = useState<any[]>([]);
   const [ingresosTotales, setIngresosTotales] = useState<any[]>([]);
   const [deudas, setDeudas] = useState<DeudaAvanzada[]>([]);
+
+  // Nuevos estados para saldos, presupuestos y objetivos editables en Firestore
+  const [cuentasCorrientes, setCuentasCorrientes] = useState<any[]>([]);
+  const [tarjetasCredito, setTarjetasCredito] = useState<any[]>([]);
+  const [otrosActivos, setOtrosActivos] = useState<any[]>([]);
+  const [presupuestoGastos, setPresupuestoGastos] = useState<any[]>([]);
+  const [presupuestoIngresos, setPresupuestoIngresos] = useState<any[]>([]);
+  const [cofresObjetivos, setCofresObjetivos] = useState<any[]>([]);
 
   // Estados de control de la UI Dual
   const [isMobileSimulator, setIsMobileSimulator] = useState<boolean>(false);
@@ -182,11 +190,123 @@ export const ControlCentral: React.FC = () => {
       setDeudas(d);
     });
 
+    // 5. Cuentas Corrientes Subscription & Init
+    const qCuentas = collection(db, `hogares/${ID_HOGAR}/cuentas_corrientes`);
+    const unsubCuentas = onSnapshot(qCuentas, async (snap) => {
+      if (snap.empty) {
+        const defaults = [
+          { nombre: 'Banco Nacional', balance: 356000, progreso: 80, icono: 'Landmark' },
+          { nombre: 'Banco Money Pro', balance: 311000, progreso: 65, icono: 'Landmark' },
+          { nombre: 'Cartera USD', balance: 133000, progreso: 30, icono: 'Coins' },
+          { text: '', nombre: 'Cartera Efectivo', balance: 89000, progreso: 20, icono: 'Coins' }
+        ];
+        for (const item of defaults) {
+          await addDoc(qCuentas, item);
+        }
+      } else {
+        setCuentasCorrientes(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      }
+    });
+
+    // 6. Tarjetas de Crédito Subscription & Init
+    const qTarjetas = collection(db, `hogares/${ID_HOGAR}/tarjetas_credito`);
+    const unsubTarjetas = onSnapshot(qTarjetas, async (snap) => {
+      if (snap.empty) {
+        const defaults = [
+          { nombre: 'Banco Money Pro', consumido: 120000, limite: 450000, icono: 'CreditCard' },
+          { nombre: 'Banco Nacional', consumido: 90000, limite: 300000, icono: 'CreditCard' }
+        ];
+        for (const item of defaults) {
+          await addDoc(qTarjetas, item);
+        }
+      } else {
+        setTarjetasCredito(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      }
+    });
+
+    // 7. Otros Activos Subscription & Init
+    const qActivos = collection(db, `hogares/${ID_HOGAR}/otros_activos`);
+    const unsubActivos = onSnapshot(qActivos, async (snap) => {
+      if (snap.empty) {
+        const defaults = [
+          { nombre: 'Ahorros USD', balance: 9480000, icono: 'Coins' },
+          { nombre: 'Ahorros Pesos', balance: 233000, icono: 'Coins' },
+          { nombre: 'Casa Propia', balance: 54520000, icono: 'Home' },
+          { nombre: 'Moto / Movilidad', balance: 2000000, icono: 'Home' }
+        ];
+        for (const item of defaults) {
+          await addDoc(qActivos, item);
+        }
+      } else {
+        setOtrosActivos(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      }
+    });
+
+    // 8. Presupuesto Gastos (Límites) Subscription & Init
+    const qPresupuestoGastos = collection(db, `hogares/${ID_HOGAR}/presupuesto_gastos`);
+    const unsubPresupuestoGastos = onSnapshot(qPresupuestoGastos, async (snap) => {
+      if (snap.empty) {
+        const defaults = [
+          { nombre: 'Deudas', limite: 25000, icono: 'Shield' },
+          { nombre: 'Ropa', limite: 15000, icono: 'Coins' },
+          { nombre: 'Casa', limite: 30000, icono: 'Home' },
+          { nombre: 'Formación', limite: 10000, icono: 'BookOpen' },
+          { nombre: 'Café', limite: 8000, icono: 'Coffee' },
+          { nombre: 'Vehículo', limite: 12000, icono: 'Car' },
+          { nombre: 'Servicios', limite: 15000, icono: 'Zap' }
+        ];
+        for (const item of defaults) {
+          await addDoc(qPresupuestoGastos, item);
+        }
+      } else {
+        setPresupuestoGastos(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      }
+    });
+
+    // 9. Presupuesto Ingresos (Valores) Subscription & Init
+    const qPresupuestoIngresos = collection(db, `hogares/${ID_HOGAR}/presupuesto_ingresos`);
+    const unsubPresupuestoIngresos = onSnapshot(qPresupuestoIngresos, async (snap) => {
+      if (snap.empty) {
+        const defaults = [
+          { nombre: 'Sueldo', valor: 1400000, icono: 'Briefcase' },
+          { nombre: 'Regalos', valor: 25000, icono: 'Gift' },
+          { nombre: 'Janlu Bridge', valor: 350000, icono: 'Coins' }
+        ];
+        for (const item of defaults) {
+          await addDoc(qPresupuestoIngresos, item);
+        }
+      } else {
+        setPresupuestoIngresos(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      }
+    });
+
+    // 10. Objetivos (Cofres) Subscription & Init
+    const qCofres = collection(db, `hogares/${ID_HOGAR}/cofres`);
+    const unsubCofres = onSnapshot(qCofres, async (snap) => {
+      if (snap.empty) {
+        const defaults = [
+          { nombre: 'Fondo de Emergencia', acumulado: 480000, objetivo: 600000, icono: 'Target' },
+          { nombre: 'Expansión Janlu Velas', acumulado: 89000, objetivo: 150000, icono: 'Target' }
+        ];
+        for (const item of defaults) {
+          await addDoc(qCofres, item);
+        }
+      } else {
+        setCofresObjetivos(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      }
+    });
+
     return () => {
       unsubGastos();
       unsubIngresos();
       unsubJanlu();
       unsubDebts();
+      unsubCuentas();
+      unsubTarjetas();
+      unsubActivos();
+      unsubPresupuestoGastos();
+      unsubPresupuestoIngresos();
+      unsubCofres();
     };
   }, []);
 
@@ -512,6 +632,9 @@ export const ControlCentral: React.FC = () => {
             cajaRealTotal={cajaRealTotal}
             totalCuotasDeudas={totalDeudasMesActualCalculado}
             deudas={deudas}
+            cuentas={cuentasCorrientes}
+            tarjetas={tarjetasCredito}
+            activos={otrosActivos}
           />
         )}
 
@@ -521,6 +644,7 @@ export const ControlCentral: React.FC = () => {
             operaciones={operacionesNormalizadas}
             onOpenCargar={handleOpenNuevaOperacion}
             onEditTransaction={handleOpenEditarOperacion}
+            objetivosDb={cofresObjetivos}
           />
         )}
 
@@ -530,6 +654,8 @@ export const ControlCentral: React.FC = () => {
             gastos={operacionesNormalizadas}
             ingresosBimont={ingresoBimont}
             janluMesActual={sumJanluVal}
+            categoriasGastosDb={presupuestoGastos}
+            categoriasIngresosDb={presupuestoIngresos}
           />
         )}
 
@@ -668,6 +794,9 @@ export const ControlCentral: React.FC = () => {
                     cajaRealTotal={cajaRealTotal}
                     totalCuotasDeudas={totalDeudasMesActualCalculado}
                     deudas={deudas}
+                    cuentas={cuentasCorrientes}
+                    tarjetas={tarjetasCredito}
+                    activos={otrosActivos}
                   />
                 </div>
                 <div className="glass-premium neumorphic-dark-out p-6 rounded-[2rem]">
@@ -675,6 +804,8 @@ export const ControlCentral: React.FC = () => {
                     gastos={operacionesNormalizadas}
                     ingresosBimont={ingresoBimont}
                     janluMesActual={sumJanluVal}
+                    categoriasGastosDb={presupuestoGastos}
+                    categoriasIngresosDb={presupuestoIngresos}
                   />
                 </div>
               </div>
@@ -686,6 +817,7 @@ export const ControlCentral: React.FC = () => {
                     operaciones={operacionesNormalizadas}
                     onOpenCargar={handleOpenNuevaOperacion}
                     onEditTransaction={handleOpenEditarOperacion}
+                    objetivosDb={cofresObjetivos}
                   />
                 </div>
                 <div className="glass-premium neumorphic-dark-out p-6 rounded-[2rem]">
@@ -734,6 +866,9 @@ export const ControlCentral: React.FC = () => {
               cajaRealTotal={cajaRealTotal}
               totalCuotasDeudas={totalDeudasMesActualCalculado}
               deudas={deudas}
+              cuentas={cuentasCorrientes}
+              tarjetas={tarjetasCredito}
+              activos={otrosActivos}
             />
           </div>
         )}
@@ -745,6 +880,7 @@ export const ControlCentral: React.FC = () => {
               operaciones={operacionesNormalizadas}
               onOpenCargar={handleOpenNuevaOperacion}
               onEditTransaction={handleOpenEditarOperacion}
+              objetivosDb={cofresObjetivos}
             />
           </div>
         )}
@@ -756,6 +892,8 @@ export const ControlCentral: React.FC = () => {
               gastos={operacionesNormalizadas}
               ingresosBimont={ingresoBimont}
               janluMesActual={sumJanluVal}
+              categoriasGastosDb={presupuestoGastos}
+              categoriasIngresosDb={presupuestoIngresos}
             />
           </div>
         )}
@@ -965,6 +1103,9 @@ export const ControlCentral: React.FC = () => {
                         cajaRealTotal={cajaRealTotal}
                         totalCuotasDeudas={totalDeudasMesActualCalculado}
                         deudas={deudas}
+                        cuentas={cuentasCorrientes}
+                        tarjetas={tarjetasCredito}
+                        activos={otrosActivos}
                       />
                     )
                   },
@@ -977,6 +1118,7 @@ export const ControlCentral: React.FC = () => {
                         operaciones={operacionesNormalizadas}
                         onOpenCargar={handleOpenNuevaOperacion}
                         onEditTransaction={handleOpenEditarOperacion}
+                        objetivosDb={cofresObjetivos}
                       />
                     )
                   },
@@ -989,6 +1131,8 @@ export const ControlCentral: React.FC = () => {
                         gastos={operacionesNormalizadas}
                         ingresosBimont={ingresoBimont}
                         janluMesActual={sumJanluVal}
+                        categoriasGastosDb={presupuestoGastos}
+                        categoriasIngresosDb={presupuestoIngresos}
                       />
                     )
                   },

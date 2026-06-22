@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Plus, Check, Calendar, TrendingUp, Compass } from 'lucide-react';
+import { Plus, Check, Calendar, TrendingUp, Compass, X, Trash2, Edit3, Save, Target, Settings } from 'lucide-react';
 import { motion } from 'motion/react';
+import { db } from '../firebase';
+import { doc, updateDoc, addDoc, collection, deleteDoc } from 'firebase/firestore';
 
 interface Transaccion {
   id: string;
@@ -19,17 +21,24 @@ interface VistaHoyProps {
   operaciones: Transaccion[];
   onOpenCargar: () => void;
   onEditTransaction: (id: string, type: string) => void;
+  objetivosDb: any[];
 }
 
-export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: VistaHoyProps) {
+export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetivosDb }: VistaHoyProps) {
   const hoy = new Date();
-  
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<any>(null);
+  const [newItemName, setNewItemName] = useState('');
+  const [newItemTarget, setNewItemTarget] = useState(0);
+  const [newItemAccumulated, setNewItemAccumulated] = useState(0);
+
+  const ID_HOGAR = "hogar_bimont_central";
+
   // Formateadores locales
   const diaNumero = format(hoy, 'd');
   const diaNombre = format(hoy, 'EEEE', { locale: es });
   const mesAnio = format(hoy, 'MMMM yyyy', { locale: es });
 
-  // 1. Filtrar transacciones del mes
   const esteMes = hoy.getMonth();
   const esteAnio = hoy.getFullYear();
 
@@ -38,7 +47,6 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
     return f.getMonth() === esteMes && f.getFullYear() === esteAnio;
   });
 
-  // 2. Clasificar: Pagadas (estado === 'Finalizado' o 'Pagado' o gastos/ingresos ordinarios) y Planificadas (estado === 'Pendiente' o recurrente impago)
   const planificadas = transaccionesMes.filter(op => 
     op.estado === 'Pendiente' || (op.type === 'deuda' && op.estado !== 'Finalizado' && op.estado !== 'Pagado')
   );
@@ -47,23 +55,76 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
     op.estado === 'Finalizado' || op.estado === 'Pagado' || (!op.estado && op.type !== 'deuda')
   );
 
-  // 3. Objetivos (Cofres / Metas de deudas/ahorros)
-  // Simulamos algunos objetivos realistas del bunker si no existen en Firestore
-  const objetivos = [
-    { id: 'obj1', nombre: 'Fondo de Emergencia', actual: 480000, meta: 600000, fecha: 'Últimos 30 días' },
-    { id: 'obj2', nombre: 'Expansión Janlu Velas', actual: 89000, meta: 150000, fecha: 'Meta Julio' }
-  ];
-
-  const totalGastosPagados = pagadas
-    .filter(op => op.type === 'gasto' || op.type === 'deuda')
-    .reduce((sum, op) => sum + op.monto, 0);
+  // Mapear objetivos de Firestore
+  const objetivos = objetivosDb.map(obj => ({
+    id: obj.id,
+    nombre: obj.nombre,
+    actual: obj.acumulado || 0,
+    meta: obj.objetivo || 1000,
+    fecha: 'Meta Activa',
+    icono: obj.icono || 'Target',
+    ...obj
+  }));
 
   const formatMoney = (amount: number) => {
     return new Intl.NumberFormat('es-AR', {
       style: 'currency',
       currency: 'ARS',
       maximumFractionDigits: 0
-    }).format(amount);
+    }).format(amount).replace('ARS', '$');
+  };
+
+  // Handlers CRUD para Objetivos
+  const handleSaveObjective = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newItemName) return;
+
+    const colRef = collection(db, `hogares/${ID_HOGAR}/cofres`);
+
+    try {
+      if (editingItem) {
+        const docRef = doc(db, `hogares/${ID_HOGAR}/cofres`, editingItem.id);
+        await updateDoc(docRef, {
+          nombre: newItemName,
+          objetivo: Number(newItemTarget),
+          acumulado: Number(newItemAccumulated)
+        });
+      } else {
+        await addDoc(colRef, {
+          nombre: newItemName,
+          objetivo: Number(newItemTarget),
+          acumulado: Number(newItemAccumulated),
+          icono: 'Target'
+        });
+      }
+      resetForm();
+    } catch (err) {
+      console.error("Error saving objective:", err);
+    }
+  };
+
+  const handleEditClick = (item: any) => {
+    setEditingItem(item);
+    setNewItemName(item.nombre);
+    setNewItemTarget(item.objetivo || 0);
+    setNewItemAccumulated(item.acumulado || 0);
+  };
+
+  const handleDeleteItem = async (id: string) => {
+    if (!window.confirm("¿Seguro que deseas eliminar este objetivo?")) return;
+    try {
+      await deleteDoc(doc(db, `hogares/${ID_HOGAR}/cofres`, id));
+      if (editingItem?.id === id) resetForm();
+    } catch (err) {
+      console.error("Error deleting objective:", err);
+    }
+  };
+
+  const resetForm = () => {
+    setEditingItem(null);
+    setNewItemName('');
+    setNewItemTarget(0);
+    setNewItemAccumulated(0);
   };
 
   return (
@@ -88,7 +149,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
         {/* Botón (+) Circular en Cian */}
         <button
           onClick={onOpenCargar}
-          className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-tr from-[#00E5FF] to-[#00B0FF] text-black flex items-center justify-center shadow-[0_0_15px_rgba(0,229,255,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer focus:outline-none"
+          className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-tr from-[#00E5FF] to-[#00B0FF] text-black flex items-center justify-center shadow-[0_0_15px_rgba(0,229,255,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer focus:outline-none animate-pulse"
           title="Nuevo Registro"
         >
           <Plus className="w-6 h-6 md:w-7 md:h-7 stroke-[3px]" />
@@ -100,7 +161,16 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
         {/* SECCIÓN OBJETIVOS */}
         <section className="bg-bunker-panel border border-white/5 p-6 rounded-3xl backdrop-blur-xl shadow-2xl">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Objetivos</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Objetivos</span>
+              <button 
+                onClick={() => setIsEditModalOpen(true)}
+                className="p-1 text-bunker-mutado hover:text-[#00E5FF] transition-colors cursor-pointer"
+                title="Configurar objetivos"
+              >
+                <Settings className="w-3.5 h-3.5" />
+              </button>
+            </div>
             <span className="text-[8px] font-mono text-bunker-mutado uppercase tracking-widest">// COFRES DE PROPÓSITO</span>
           </div>
 
@@ -124,6 +194,12 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
                 </div>
               );
             })}
+
+            {objetivos.length === 0 && (
+              <div className="text-center py-6 text-bunker-mutado text-[10px] font-mono uppercase tracking-widest opacity-40">
+                // Sin objetivos activos
+              </div>
+            )}
           </div>
         </section>
 
@@ -145,7 +221,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
                   <span className="text-white font-black text-xs uppercase tracking-wide">{op.concepto}</span>
                   <span className="text-bunker-mutado text-[8px] font-black uppercase tracking-widest">{op.categoria}</span>
                 </div>
-                {/* Badge de cantidad destacado en color plano (como la Pantalla 2) */}
+                {/* Badge de cantidad destacado en color plano */}
                 <div className={`px-3 py-1 rounded-xl font-black font-contable text-[11px] tracking-tight ${
                   op.type === 'ingreso' || op.type === 'janlu' 
                     ? 'bg-[#00D2FF] text-black' 
@@ -178,39 +254,145 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction }: Vista
               <div 
                 key={op.id}
                 onClick={() => onEditTransaction(op.id, op.type)}
-                className="flex justify-between items-center p-3 rounded-2xl bg-black/20 border border-white/5 hover:border-white/10 transition-all cursor-pointer"
+                className="flex justify-between items-center p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-[#00D2FF]/20 transition-all cursor-pointer"
               >
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-white font-black text-xs uppercase tracking-wide opacity-80">{op.concepto}</span>
-                  <span className="text-bunker-mutado text-[8px] font-bold uppercase tracking-widest">{op.categoria}</span>
+                  <span className="text-white font-black text-xs uppercase tracking-wide truncate max-w-[150px]">{op.concepto}</span>
+                  <span className="text-bunker-mutado text-[8px] font-black uppercase tracking-widest">{op.categoria}</span>
                 </div>
-                {/* Badge de cantidad destacado en color plano (como la Pantalla 2) */}
-                <div className={`px-3 py-1 rounded-xl font-black font-contable text-[11px] tracking-tight ${
-                  op.type === 'ingreso' || op.type === 'janlu' 
-                    ? 'bg-[#00D2FF] text-black' 
-                    : op.concepto.toLowerCase().includes('transferencia') || op.categoria.toLowerCase().includes('transferencia')
-                      ? 'bg-white text-black'
-                      : 'bg-[#FFD500] text-black'
-                }`}>
-                  {op.type === 'ingreso' || op.type === 'janlu' ? '+' : '-'}{formatMoney(op.monto)}
+                <div className="flex items-center gap-2">
+                  <span className="text-white font-black font-contable text-xs">{formatMoney(op.monto)}</span>
+                  <div className="w-4 h-4 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                    <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3px]" />
+                  </div>
                 </div>
               </div>
             ))}
 
             {pagadas.length === 0 && (
               <div className="text-center py-6 text-bunker-mutado text-[10px] font-mono uppercase tracking-widest opacity-40">
-                // Sin registros ejecutados en este período
+                // Ninguna transacción cobrada o pagada este mes
               </div>
             )}
-          </div>
-
-          <div className="border-t border-white/5 pt-4 mt-4 flex justify-between items-center text-xs font-mono uppercase text-bunker-mutado">
-            <span>Gastos Totales</span>
-            <span className="text-white font-black font-contable tracking-tight">{formatMoney(totalGastosPagados)}</span>
           </div>
         </section>
 
       </div>
+
+      {/* MODAL DE EDICIÓN FLOTANTE PARA OBJETIVOS */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#161a23] border border-white/10 w-full max-w-md p-6 rounded-3xl space-y-4 shadow-2xl relative">
+            <header className="flex items-center justify-between border-b border-white/5 pb-3">
+              <span className="text-white font-serif text-xs font-black uppercase tracking-widest">
+                {editingItem ? 'Editar Objetivo' : 'Configurar Objetivos y Cofres'}
+              </span>
+              <button 
+                onClick={() => { setIsEditModalOpen(false); resetForm(); }}
+                className="p-1.5 border border-white/5 rounded-full text-slate-400 hover:text-white cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </header>
+
+            {/* Formulario */}
+            <form onSubmit={handleSaveObjective} className="space-y-3.5">
+              <div>
+                <label className="text-[8px] font-mono tracking-widest text-slate-400 uppercase block mb-1">Nombre del Objetivo</label>
+                <input 
+                  type="text" 
+                  value={newItemName}
+                  onChange={e => setNewItemName(e.target.value)}
+                  placeholder="Ej. Fondo de Emergencia, Viaje..."
+                  className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#00E5FF]/50 font-sans"
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[8px] font-mono tracking-widest text-slate-400 uppercase block mb-1">Monto Acumulado ($)</label>
+                  <input 
+                    type="number" 
+                    value={newItemAccumulated || ''}
+                    onChange={e => setNewItemAccumulated(Number(e.target.value))}
+                    placeholder="0"
+                    className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#00E5FF]/50 font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[8px] font-mono tracking-widest text-slate-400 uppercase block mb-1">Monto Meta ($)</label>
+                  <input 
+                    type="number" 
+                    value={newItemTarget || ''}
+                    onChange={e => setNewItemTarget(Number(e.target.value))}
+                    placeholder="0"
+                    className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#00E5FF]/50 font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                {editingItem && (
+                  <button 
+                    type="button"
+                    onClick={resetForm}
+                    className="px-3 py-1.5 border border-white/5 hover:bg-white/5 text-[9px] font-black uppercase tracking-widest text-slate-300 rounded-xl cursor-pointer"
+                  >
+                    Cancelar
+                  </button>
+                )}
+                <button 
+                  type="submit"
+                  className="px-4 py-1.5 bg-[#00E5FF] text-black text-[9px] font-black uppercase tracking-widest rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  {editingItem ? 'Actualizar' : 'Añadir'}
+                </button>
+              </div>
+            </form>
+
+            {/* Listado para edición/eliminación */}
+            <div className="border-t border-white/5 pt-4">
+              <span className="text-[8px] font-mono tracking-widest text-slate-400 uppercase block mb-2">// OBJETIVOS ACTIVOS</span>
+              <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
+                {objetivos.map((item: any) => (
+                  <div key={item.id} className="flex justify-between items-center bg-black/20 p-2.5 border border-white/5 rounded-xl hover:border-white/10 transition-all">
+                    <div className="flex items-center gap-2">
+                      <div className="text-slate-400"><Target className="w-4 h-4" /></div>
+                      <div className="flex flex-col">
+                        <span className="text-white text-[9px] font-black uppercase tracking-wide">{item.nombre}</span>
+                        <span className="text-bunker-mutado text-[8px] font-mono">
+                          {formatMoney(item.actual)} / {formatMoney(item.meta)}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <button 
+                        onClick={() => handleEditClick(item)}
+                        className="p-1 border border-white/5 rounded-md hover:bg-[#00E5FF]/10 hover:border-[#00E5FF]/30 text-slate-400 hover:text-[#00E5FF] cursor-pointer"
+                        title="Editar"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteItem(item.id)}
+                        className="p-1 border border-white/5 rounded-md hover:bg-red-500/10 hover:border-red-500/30 text-slate-400 hover:text-red-500 cursor-pointer"
+                        title="Eliminar"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
