@@ -1,7 +1,7 @@
 // ControlCentral.tsx - Orquestador Maestro de Alta Densidad Dual (PC & Móvil) // BÚNKER OS v3.10
 import React, { useState, useMemo, useEffect } from 'react';
 import { db } from '../firebase';
-import { collection, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, addDoc, setDoc } from 'firebase/firestore';
 import { FinancialEngine, EstadoFinanciero, Gasto, DeudaAvanzada } from '../services/motores/FinancialEngine';
 import { useMotorIntegral } from '../services/motores/MotorIntegral';
 import { AuditorCognitivo } from '../services/motores/AuditorCognitivo';
@@ -23,6 +23,8 @@ import { VistaHoy } from './VistaHoy';
 import { VistaPresupuesto } from './VistaPresupuesto';
 import { VistaInformes } from './VistaInformes';
 import { LibroDiario } from './LibroDiario';
+import { PanelEstrategia } from './PanelEstrategia';
+import { TipoProtocolo } from '../hooks/useSimuladorEscenarios';
 
 
 import { 
@@ -71,7 +73,9 @@ export const ControlCentral: React.FC = () => {
   const [transaccionAEditar, setTransaccionAEditar] = useState<any>(null);
   const [debtForSnowball, setDebtForSnowball] = useState<DeudaAvanzada | null>(null);
   const [showSankeyDrawer, setShowSankeyDrawer] = useState(false);
-  const [activeOverlay, setActiveOverlay] = useState<'WHAT_IF' | 'BOVEDA' | 'CONFIGURACION' | 'SIMULADORES' | null>(null);
+  const [activeOverlay, setActiveOverlay] = useState<'WHAT_IF' | 'BOVEDA' | 'CONFIGURACION' | 'SIMULADORES' | 'ESTRATEGIA' | null>(null);
+  const [protocoloActivo, setProtocoloActivo] = useState<string>('Modo Blindaje');
+  const [protocoloId, setProtocoloId] = useState<TipoProtocolo>('BLINDAJE');
   
   const [quickMenuOpen, setQuickMenuOpen] = useState(false);
   const [isGlobalScanningFacturas, setIsGlobalScanningFacturas] = useState(false);
@@ -296,6 +300,25 @@ export const ControlCentral: React.FC = () => {
       }
     });
 
+    // 11. Configuración del Búnker (Protocolo Activo)
+    const docConfig = doc(db, `hogares/${ID_HOGAR}/configuracion/bunker`);
+    const unsubConfig = onSnapshot(docConfig, async (snap) => {
+      if (!snap.exists()) {
+        await setDoc(docConfig, {
+          protocoloId: 'BLINDAJE',
+          protocoloActivo: 'Modo Blindaje'
+        });
+      } else {
+        const data = snap.data();
+        if (data.protocoloId) {
+          setProtocoloId(data.protocoloId);
+        }
+        if (data.protocoloActivo) {
+          setProtocoloActivo(data.protocoloActivo);
+        }
+      }
+    });
+
     return () => {
       unsubGastos();
       unsubIngresos();
@@ -307,6 +330,7 @@ export const ControlCentral: React.FC = () => {
       unsubPresupuestoGastos();
       unsubPresupuestoIngresos();
       unsubCofres();
+      unsubConfig();
     };
   }, []);
 
@@ -533,6 +557,21 @@ export const ControlCentral: React.FC = () => {
   }, [gastos, auditor]);
 
   // Manejo de base de datos
+  const handleGuardarProtocolo = async (id: TipoProtocolo, nombre: string) => {
+    const ID_HOGAR = "hogar_bimont_central";
+    try {
+      const docConfig = doc(db, `hogares/${ID_HOGAR}/configuracion/bunker`);
+      await setDoc(docConfig, {
+        protocoloId: id,
+        protocoloActivo: nombre
+      }, { merge: true });
+      setScanNotification(`Protocolo ${nombre} activado`);
+      setTimeout(() => setScanNotification(null), 3000);
+    } catch (e) {
+      console.error("Error al guardar protocolo:", e);
+    }
+  };
+
   const handlePausarEnTriaje = async (id: string, currentEstado?: string) => {
     const ID_HOGAR = "hogar_bimont_central";
     try {
@@ -618,9 +657,18 @@ export const ControlCentral: React.FC = () => {
             Equilibra<span className="text-[#06B6D4]">.</span>
           </span>
         </div>
-        <span className="text-[8px] font-mono font-black tracking-widest px-2 py-0.5 border border-white/10 rounded-md text-slate-400 bg-white/5 uppercase">
-          MÓVIL
-        </span>
+        <button 
+          onClick={() => setActiveOverlay('ESTRATEGIA')}
+          className={`text-[8px] font-mono font-black tracking-widest px-2 py-0.5 border rounded-md uppercase cursor-pointer hover:opacity-85 transition-opacity focus:outline-none ${
+            protocoloId === 'BLINDAJE' ? 'bg-[#06B6D4]/10 text-[#06B6D4] border-[#06B6D4]/20 animate-pulse' :
+            protocoloId === 'EXPANSION' ? 'bg-[#D946EF]/10 text-[#D946EF] border-[#D946EF]/20' :
+            protocoloId === 'DISFRUTE' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' :
+            protocoloId === 'TACTICO_LIBRE' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' :
+            'bg-red-500/10 text-red-400 border-red-500/20'
+          }`}
+        >
+          {protocoloActivo}
+        </button>
       </header>
 
       {/* Contenido principal móvil */}
@@ -756,9 +804,23 @@ export const ControlCentral: React.FC = () => {
         
         {/* Cabecera Superior PC */}
         <header className="flex justify-between items-center border-b border-white/5 pb-4 mb-6 shrink-0">
-          <div>
-            <span className="text-[10px] font-mono tracking-[0.25em] text-[#06B6D4] font-black uppercase">SISTEMA DUAL ANALÍTICO</span>
-            <h2 className="text-2xl font-serif font-black uppercase text-white mt-1">Consola de Control Central</h2>
+          <div className="flex flex-col gap-2">
+            <button 
+              onClick={() => setActiveOverlay('ESTRATEGIA')}
+              className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity bg-transparent border-0 p-0 text-left focus:outline-none"
+            >
+              <span className="text-[9px] font-mono tracking-[0.2em] text-slate-500 uppercase">PROTOCOLO ACTIVO:</span>
+              <span className={`px-2.5 py-0.5 rounded-full text-[8px] font-black tracking-widest border font-mono uppercase ${
+                protocoloId === 'BLINDAJE' ? 'bg-[#06B6D4]/10 text-[#06B6D4] border-[#06B6D4]/30 shadow-[0_0_10px_rgba(6,182,212,0.15)] animate-pulse' :
+                protocoloId === 'EXPANSION' ? 'bg-[#D946EF]/10 text-[#D946EF] border-[#D946EF]/30 shadow-[0_0_10px_rgba(217,70,239,0.15)]' :
+                protocoloId === 'DISFRUTE' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30 shadow-[0_0_10px_rgba(234,179,8,0.15)]' :
+                protocoloId === 'TACTICO_LIBRE' ? 'bg-purple-500/10 text-purple-400 border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.15)]' :
+                'bg-red-500/10 text-red-400 border-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.15)]'
+              }`}>
+                {protocoloActivo}
+              </span>
+            </button>
+            <h2 className="text-2xl font-serif font-black uppercase text-white">Consola de Control Central</h2>
           </div>
           
           <div className="flex items-center gap-3">
@@ -971,6 +1033,10 @@ export const ControlCentral: React.FC = () => {
             <button onClick={() => { setActiveOverlay('WHAT_IF'); setQuickMenuOpen(false); }} className="flex items-center gap-3 bg-[#112B3C] border border-white/10 text-white p-2.5 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer group">
               <span className="text-[8px] font-mono tracking-widest text-slate-400 group-hover:text-white uppercase font-black">Monte Carlo</span>
               <div className="w-7 h-7 rounded-xl bg-[#F1C40F]/10 flex items-center justify-center border border-[#F1C40F]/20"><Bot className="w-3.5 h-3.5 text-[#F1C40F]" /></div>
+            </button>
+            <button onClick={() => { setActiveOverlay('ESTRATEGIA'); setQuickMenuOpen(false); }} className="flex items-center gap-3 bg-[#112B3C] border border-white/10 text-white p-2.5 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer group">
+              <span className="text-[8px] font-mono tracking-widest text-slate-400 group-hover:text-white uppercase font-black">Protocolos</span>
+              <div className="w-7 h-7 rounded-xl bg-[#06B6D4]/10 flex items-center justify-center border border-[#06B6D4]/20"><ShieldCheck className="w-3.5 h-3.5 text-[#06B6D4]" /></div>
             </button>
             <button onClick={() => { setActiveOverlay('CONFIGURACION'); setQuickMenuOpen(false); }} className="flex items-center gap-3 bg-[#112B3C] border border-white/10 text-white p-2.5 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer group">
               <span className="text-[8px] font-mono tracking-widest text-slate-400 group-hover:text-white uppercase font-black">Parámetros</span>
@@ -1343,6 +1409,17 @@ export const ControlCentral: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Panel de Arquitectura Estratégica (Protocolos Operativos) */}
+      <PanelEstrategia
+        situacionBase={{
+          ingresosTotales: totalIngresosLiquidez,
+          gastosTotales: costoSupervivenciaMensualCalculado + gastosVariablesCalculado
+        }}
+        isOpen={activeOverlay === 'ESTRATEGIA'}
+        onClose={() => setActiveOverlay(null)}
+        onProtocoloChange={handleGuardarProtocolo}
+      />
 
       {/* Copiloto Estratégico IA */}
       <CopilotoEstrategico 
