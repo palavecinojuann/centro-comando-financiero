@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "gen-lang-client-0185199610"
+  },
+  "targets": {
+    "gen-lang-client-0185199610": {
+      "hosting": {
+        "equilibra": [
+          "equilibra"
+        ]
+      }
+    }
   }
 }
