@@ -4,6 +4,7 @@ import { es } from 'date-fns/locale';
 import { Plus, Check, Calendar, TrendingUp, Compass, X, Trash2, Edit3, Save, Target, Settings } from 'lucide-react';
 import { motion } from 'motion/react';
 import { db } from '../firebase';
+import { EmptyState } from './EmptyState';
 import { doc, updateDoc, addDoc, collection, deleteDoc } from 'firebase/firestore';
 
 interface Transaccion {
@@ -203,79 +204,103 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
           </div>
         </section>
 
-        {/* SECCIÓN PLANIFICADAS */}
-        <section className="bg-bunker-panel border border-white/5 p-6 rounded-3xl backdrop-blur-xl shadow-2xl">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Planificadas</span>
-            <span className="text-[8px] font-mono text-bunker-mutado uppercase tracking-widest">// PAGOS Y FLUJOS PENDIENTES</span>
-          </div>
-
-          <div className="space-y-3">
-            {planificadas.slice(0, 4).map(op => (
-              <div 
-                key={op.id}
-                onClick={() => onEditTransaction(op.id, op.type)}
-                className="flex justify-between items-center p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-[#00D2FF]/20 transition-all cursor-pointer"
-              >
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-white font-black text-xs uppercase tracking-wide">{op.concepto}</span>
-                  <span className="text-bunker-mutado text-[8px] font-black uppercase tracking-widest">{op.categoria}</span>
-                </div>
-                {/* Badge de cantidad destacado en color plano */}
-                <div className={`px-3 py-1 rounded-xl font-black font-contable text-[11px] tracking-tight ${
-                  op.type === 'ingreso' || op.type === 'janlu' 
-                    ? 'bg-[#00D2FF] text-black' 
-                    : op.concepto.toLowerCase().includes('transferencia') || op.categoria.toLowerCase().includes('transferencia')
-                      ? 'bg-white text-black'
-                      : 'bg-[#FFD500] text-black'
-                }`}>
-                  {formatMoney(op.monto)}
-                </div>
+        {transaccionesMes.length === 0 ? (
+          <EmptyState
+            icon={Calendar}
+            titulo="Sin Operaciones Hoy"
+            subtitulo="Tu libro del día está limpio — registrá tu primera operación"
+            textoBoton="Registrar Operación"
+            onAccion={onOpenCargar}
+          />
+        ) : (
+          <>
+            {/* SECCIÓN PLANIFICADAS */}
+            <section className="bg-bunker-panel border border-white/5 p-6 rounded-3xl backdrop-blur-xl shadow-2xl">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Planificadas</span>
+                <span className="text-[8px] font-mono text-bunker-mutado uppercase tracking-widest">// PAGOS Y FLUJOS PENDIENTES</span>
               </div>
-            ))}
 
-            {planificadas.length === 0 && (
-              <div className="text-center py-6 text-bunker-mutado text-[10px] font-mono uppercase tracking-widest opacity-40">
-                // Sin cobros ni deudas pendientes
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* SECCIÓN PAGADAS */}
-        <section className="bg-bunker-panel border border-white/5 p-6 rounded-3xl backdrop-blur-xl shadow-2xl">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Pagadas</span>
-            <span className="text-[8px] font-mono text-bunker-mutado uppercase tracking-widest">// REGISTRO DE CAJA EJECUTADO</span>
-          </div>
-
-          <div className="space-y-3">
-            {pagadas.slice(0, 5).map(op => (
-              <div 
-                key={op.id}
-                onClick={() => onEditTransaction(op.id, op.type)}
-                className="flex justify-between items-center p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-[#00D2FF]/20 transition-all cursor-pointer"
-              >
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-white font-black text-xs uppercase tracking-wide truncate max-w-[150px]">{op.concepto}</span>
-                  <span className="text-bunker-mutado text-[8px] font-black uppercase tracking-widest">{op.categoria}</span>
+              {planificadas.length === 0 ? (
+                <div className="text-center py-6 text-bunker-mutado text-[10px] font-mono uppercase tracking-widest opacity-40">
+                  // Sin cobros ni deudas pendientes
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-white font-black font-contable text-xs">{formatMoney(op.monto)}</span>
-                  <div className="w-4 h-4 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
-                    <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3px]" />
-                  </div>
-                </div>
-              </div>
-            ))}
+              ) : (
+                <motion.div 
+                  initial="hidden" 
+                  animate="visible" 
+                  variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
+                  className="space-y-3"
+                >
+                  {planificadas.slice(0, 4).map(op => (
+                    <motion.div 
+                      key={op.id}
+                      variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                      onClick={() => onEditTransaction(op.id, op.type)}
+                      className="flex justify-between items-center p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-[#00D2FF]/20 transition-all cursor-pointer"
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-white font-black text-xs uppercase tracking-wide">{op.concepto}</span>
+                        <span className="text-bunker-mutado text-[8px] font-black uppercase tracking-widest">{op.categoria}</span>
+                      </div>
+                      {/* Badge de cantidad destacado en color plano */}
+                      <div className={`px-3 py-1 rounded-xl font-black font-contable text-[11px] tracking-tight ${
+                        op.type === 'ingreso' || op.type === 'janlu' 
+                          ? 'bg-[#00D2FF] text-black' 
+                          : op.concepto.toLowerCase().includes('transferencia') || op.categoria.toLowerCase().includes('transferencia')
+                            ? 'bg-white text-black'
+                            : 'bg-[#FFD500] text-black'
+                      }`}>
+                        {formatMoney(op.monto)}
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </section>
 
-            {pagadas.length === 0 && (
-              <div className="text-center py-6 text-bunker-mutado text-[10px] font-mono uppercase tracking-widest opacity-40">
-                // Ninguna transacción cobrada o pagada este mes
+            {/* SECCIÓN PAGADAS */}
+            <section className="bg-bunker-panel border border-white/5 p-6 rounded-3xl backdrop-blur-xl shadow-2xl">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Pagadas</span>
+                <span className="text-[8px] font-mono text-bunker-mutado uppercase tracking-widest">// REGISTRO DE CAJA EJECUTADO</span>
               </div>
-            )}
-          </div>
-        </section>
+
+              {pagadas.length === 0 ? (
+                <div className="text-center py-6 text-bunker-mutado text-[10px] font-mono uppercase tracking-widest opacity-40">
+                  // Ninguna transacción cobrada o pagada este mes
+                </div>
+              ) : (
+                <motion.div 
+                  initial="hidden" 
+                  animate="visible" 
+                  variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
+                  className="space-y-3"
+                >
+                  {pagadas.slice(0, 5).map(op => (
+                    <motion.div 
+                      key={op.id}
+                      variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                      onClick={() => onEditTransaction(op.id, op.type)}
+                      className="flex justify-between items-center p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-[#00D2FF]/20 transition-all cursor-pointer"
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-white font-black text-xs uppercase tracking-wide truncate max-w-[150px]">{op.concepto}</span>
+                        <span className="text-bunker-mutado text-[8px] font-black uppercase tracking-widest">{op.categoria}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-white font-black font-contable text-xs">{formatMoney(op.monto)}</span>
+                        <div className="w-4 h-4 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
+                          <Check className="w-2.5 h-2.5 text-emerald-400 stroke-[3px]" />
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </section>
+          </>
+        )}
 
       </div>
 

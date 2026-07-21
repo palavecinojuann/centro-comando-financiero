@@ -3,6 +3,8 @@ import { BarChart, Bar, ResponsiveContainer, XAxis } from 'recharts';
 import { Coffee, Shield, Home, BookOpen, Car, Zap, Coins, Briefcase, Gift, Settings, X, Plus, Trash2, Edit3, Save } from 'lucide-react';
 import { db } from '../firebase';
 import { doc, updateDoc, addDoc, collection, deleteDoc } from 'firebase/firestore';
+import { EmptyState } from './EmptyState';
+import { motion } from 'motion/react';
 
 interface VistaPresupuestoProps {
   gastos: any[];
@@ -201,57 +203,72 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
           </div>
 
           {/* Lista de gastos con barras de progreso */}
-          <div className="space-y-3">
-            {categoriasGastos.map(cat => {
-              const ratio = cat.limite > 0 ? (cat.valor / cat.limite) * 100 : 0;
-              const pct = Math.min(100, ratio);
-              
-              // Color de la barra y texto según nivel de alerta (Burn Rate)
-              let barColor = "bg-[#06b6d4]"; // Cian - Normal
-              let glowColor = "shadow-[0_0_8px_rgba(6,182,212,0.3)]";
-              let textColor = "text-[#06b6d4]";
-              
-              if (ratio > 90) {
-                barColor = "bg-[#ff007f]"; // Fucsia - Alerta/Emergencia
-                glowColor = "shadow-[0_0_8px_rgba(255,0,127,0.45)]";
-                textColor = "text-[#ff007f]";
-              } else if (ratio > 70) {
-                barColor = "bg-[#F1C40F]"; // Dorado - Prevención
-                glowColor = "shadow-[0_0_8px_rgba(241,196,15,0.35)]";
-                textColor = "text-[#F1C40F]";
-              }
+          {categoriasGastos.length === 0 ? (
+            <EmptyState
+              icon={Settings}
+              titulo="Sin Categorías de Gasto"
+              subtitulo="Configurá tus límites presupuestarios mensuales"
+              textoBoton="Configurar Límites"
+              onAccion={() => { setActiveTab('GASTOS'); setIsEditModalOpen(true); }}
+            />
+          ) : (
+            <motion.div 
+              initial="hidden" 
+              animate="visible" 
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
+              className="space-y-3"
+            >
+              {categoriasGastos.map(cat => {
+                const ratio = cat.limite > 0 ? (cat.valor / cat.limite) * 100 : 0;
+                const pct = Math.min(100, ratio);
+                
+                // Color de la barra y texto según nivel de alerta (Burn Rate)
+                let barColor = "bg-[#06b6d4]"; // Cian - Normal
+                let glowColor = "shadow-[0_0_8px_rgba(6,182,212,0.3)]";
+                let textColor = "text-[#06b6d4]";
+                
+                if (ratio > 90) {
+                  barColor = "bg-[#ff007f]"; // Fucsia - Alerta/Emergencia
+                  glowColor = "shadow-[0_0_8px_rgba(255,0,127,0.45)]";
+                  textColor = "text-[#ff007f]";
+                } else if (ratio > 70) {
+                  barColor = "bg-[#F1C40F]"; // Dorado - Prevención
+                  glowColor = "shadow-[0_0_8px_rgba(241,196,15,0.35)]";
+                  textColor = "text-[#F1C40F]";
+                }
 
-              return (
-                <div key={cat.id} className="flex items-center gap-3.5 bg-black/25 border border-white/5 p-3 rounded-2xl hover:border-white/10 transition-all duration-300">
-                  {/* Icon Container */}
-                  <div className="w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 shadow-inner">
-                    {cat.icono}
-                  </div>
-                  
-                  {/* Info & Progress */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-white text-[10px] font-black uppercase tracking-wider font-sans">{cat.nombre}</span>
-                      <span className={`text-[9px] font-mono font-black ${textColor}`}>{ratio.toFixed(0)}%</span>
+                return (
+                  <motion.div key={cat.id} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="flex items-center gap-3.5 bg-black/25 border border-white/5 p-3 rounded-2xl hover:border-white/10 transition-all duration-300">
+                    {/* Icon Container */}
+                    <div className="w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 shadow-inner">
+                      {cat.icono}
                     </div>
-                    {/* Progress Bar Track */}
-                    <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5 shadow-inner">
-                      <div 
-                        className={`h-full ${barColor} ${glowColor} transition-all duration-500 rounded-full`} 
-                        style={{ width: `${pct}%` }}
-                      />
+                    
+                    {/* Info & Progress */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-white text-[10px] font-black uppercase tracking-wider font-sans">{cat.nombre}</span>
+                        <span className={`text-[9px] font-mono font-black ${textColor}`}>{ratio.toFixed(0)}%</span>
+                      </div>
+                      {/* Progress Bar Track */}
+                      <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5 shadow-inner">
+                        <div 
+                          className={`h-full ${barColor} ${glowColor} transition-all duration-500 rounded-full`} 
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Values */}
-                  <div className="text-right flex flex-col justify-center pl-2 flex-shrink-0 font-sans">
-                    <span className="text-white text-[10px] font-black font-sans">{formatMoney(cat.valor)}</span>
-                    <span className="text-bunker-mutado text-[7.5px] font-mono mt-0.5 uppercase tracking-wide">lím: {formatMoney(cat.limite)}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                    {/* Values */}
+                    <div className="text-right flex flex-col justify-center pl-2 flex-shrink-0 font-sans">
+                      <span className="text-white text-[10px] font-black font-sans">{formatMoney(cat.valor)}</span>
+                      <span className="text-bunker-mutado text-[7.5px] font-mono mt-0.5 uppercase tracking-wide">lím: {formatMoney(cat.limite)}</span>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          )}
         </section>
 
         {/* SECCIÓN INGRESOS - LISTA */}
@@ -261,24 +278,39 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
             <span className="text-[10px] font-black text-[#00E5FF] font-sans">{formatMoney(totalIngresosReal)}</span>
           </div>
 
-          <div className="space-y-3">
-            {categoriasIngresos.map(cat => (
-              <div key={cat.id} className="flex items-center justify-between bg-black/25 border border-white/5 p-3 rounded-2xl hover:border-white/10 transition-all duration-300">
-                <div className="flex items-center gap-3.5">
-                  {/* Icon Container */}
-                  <div className="w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 shadow-inner">
-                    {cat.icono}
+          {categoriasIngresos.length === 0 ? (
+            <EmptyState
+              icon={Briefcase}
+              titulo="Sin Fuentes de Ingreso"
+              subtitulo="Registrá tus fuentes de ingreso para proyecciones precisas"
+              textoBoton="Agregar Ingreso"
+              onAccion={() => { setActiveTab('INGRESOS'); setIsEditModalOpen(true); }}
+            />
+          ) : (
+            <motion.div 
+              initial="hidden" 
+              animate="visible" 
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
+              className="space-y-3"
+            >
+              {categoriasIngresos.map(cat => (
+                <motion.div key={cat.id} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="flex items-center justify-between bg-black/25 border border-white/5 p-3 rounded-2xl hover:border-white/10 transition-all duration-300">
+                  <div className="flex items-center gap-3.5">
+                    {/* Icon Container */}
+                    <div className="w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center flex-shrink-0 shadow-inner">
+                      {cat.icono}
+                    </div>
+                    <span className="text-white text-[10px] font-black uppercase tracking-wider font-sans">{cat.nombre}</span>
                   </div>
-                  <span className="text-white text-[10px] font-black uppercase tracking-wider font-sans">{cat.nombre}</span>
-                </div>
-                
-                {/* Value */}
-                <div className="text-right font-sans">
-                  <span className="text-[#00E5FF] text-[11px] font-black font-sans">{formatMoney(cat.valor)}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+                  
+                  {/* Value */}
+                  <div className="text-right font-sans">
+                    <span className="text-[#00E5FF] text-[11px] font-black font-sans">{formatMoney(cat.valor)}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
         </section>
 
         {/* COMPARATIVA FINAL DE PRESUPUESTO */}

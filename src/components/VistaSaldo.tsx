@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { CreditCard, Landmark, Coins, Home, Plus, Trash2, X, Save, Edit3 } from 'lucide-react';
 import { db } from '../firebase';
 import { doc, updateDoc, addDoc, collection, deleteDoc } from 'firebase/firestore';
+import { EmptyState } from './EmptyState';
+import { motion } from 'motion/react';
 
 interface VistaSaldoProps {
   cajaRealTotal: number;
@@ -182,24 +184,39 @@ export function VistaSaldo({ cajaRealTotal, totalCuotasDeudas, deudas, cuentas, 
             <span className="text-[10px] font-black text-white/70 font-sans font-contable">{formatMoney(totalCuentasCorrientes)}</span>
           </div>
 
-          <div className="space-y-4">
-            {cuentasCorrientes.map(cuenta => (
-              <div key={cuenta.id} className="flex justify-between items-center text-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center text-bunker-mutado">
-                    {cuenta.logo}
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-white font-bold tracking-wide uppercase text-[10px]">{cuenta.nombre}</span>
-                    <div className="w-24 h-1 bg-black/50 rounded-full overflow-hidden">
-                      <div className="h-full bg-[#00E5FF]" style={{ width: `${cuenta.progreso || 50}%` }} />
+          {cuentasCorrientes.length === 0 ? (
+            <EmptyState
+              icon={Landmark}
+              titulo="Sin Cuentas Registradas"
+              subtitulo="Registrá tu primera cuenta bancaria para comenzar el monitoreo"
+              textoBoton="Añadir Cuenta"
+              onAccion={() => { setActiveTab('CUENTAS'); setIsEditModalOpen(true); }}
+            />
+          ) : (
+            <motion.div 
+              initial="hidden" 
+              animate="visible" 
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
+              className="space-y-4"
+            >
+              {cuentasCorrientes.map(cuenta => (
+                <motion.div key={cuenta.id} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-center text-xs">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center text-bunker-mutado">
+                      {cuenta.logo}
+                    </div>
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-white font-bold tracking-wide uppercase text-[10px]">{cuenta.nombre}</span>
+                      <div className="w-24 h-1 bg-black/50 rounded-full overflow-hidden">
+                        <div className="h-full bg-[#00E5FF]" style={{ width: `${cuenta.progreso || 50}%` }} />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <span className="text-white font-black font-sans text-xs font-contable">{formatMoney(cuenta.balance)}</span>
-              </div>
-            ))}
-          </div>
+                  <span className="text-white font-black font-sans text-xs font-contable">{formatMoney(cuenta.balance)}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
         </section>
 
         {/* TARJETAS DE CREDITO */}
@@ -209,30 +226,45 @@ export function VistaSaldo({ cajaRealTotal, totalCuotasDeudas, deudas, cuentas, 
             <span className="text-[10px] font-black text-[#FFD500] font-sans font-contable">{formatMoney(totalTarjetasConsumido)}</span>
           </div>
 
-          <div className="space-y-4">
-            {tarjetasCredito.map(tc => {
-              const pct = tc.limite > 0 ? (tc.consumido / tc.limite) * 100 : 0;
-              return (
-                <div key={tc.id} className="flex justify-between items-center text-xs">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center text-[#FFD500]/60">
-                      {tc.logo}
-                    </div>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-white font-bold tracking-wide uppercase text-[10px]">{tc.nombre}</span>
-                      <div className="w-24 h-1 bg-black/50 rounded-full overflow-hidden">
-                        <div className="h-full bg-[#FFD500]" style={{ width: `${pct}%` }} />
+          {tarjetasCredito.length === 0 ? (
+            <EmptyState
+              icon={CreditCard}
+              titulo="Sin Tarjetas"
+              subtitulo="Agregá tus tarjetas de crédito para trackear consumos"
+              textoBoton="Añadir Tarjeta"
+              onAccion={() => { setActiveTab('TARJETAS'); setIsEditModalOpen(true); }}
+            />
+          ) : (
+            <motion.div 
+              initial="hidden" 
+              animate="visible" 
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
+              className="space-y-4"
+            >
+              {tarjetasCredito.map(tc => {
+                const pct = tc.limite > 0 ? (tc.consumido / tc.limite) * 100 : 0;
+                return (
+                  <motion.div key={tc.id} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-center text-xs">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center text-[#FFD500]/60">
+                        {tc.logo}
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <span className="text-white font-bold tracking-wide uppercase text-[10px]">{tc.nombre}</span>
+                        <div className="w-24 h-1 bg-black/50 rounded-full overflow-hidden">
+                          <div className="h-full bg-[#FFD500]" style={{ width: `${pct}%` }} />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex flex-col items-end gap-0.5">
-                    <span className="text-[#FFD500] font-black font-sans text-xs font-contable">{formatMoney(tc.consumido)}</span>
-                    <span className="text-[8px] font-mono text-bunker-mutado font-contable">Límite {formatMoney(tc.limite)}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                    <div className="flex flex-col items-end gap-0.5">
+                      <span className="text-[#FFD500] font-black font-sans text-xs font-contable">{formatMoney(tc.consumido)}</span>
+                      <span className="text-[8px] font-mono text-bunker-mutado font-contable">Límite {formatMoney(tc.limite)}</span>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          )}
         </section>
 
         {/* OTROS ACTIVOS */}
@@ -242,19 +274,34 @@ export function VistaSaldo({ cajaRealTotal, totalCuotasDeudas, deudas, cuentas, 
             <span className="text-[10px] font-black text-white/70 font-sans font-contable">{formatMoney(totalOtrosActivos)}</span>
           </div>
 
-          <div className="space-y-4">
-            {otrosActivos.map(activo => (
-              <div key={activo.id} className="flex justify-between items-center text-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center text-bunker-mutado">
-                    {activo.logo}
+          {otrosActivos.length === 0 ? (
+            <EmptyState
+              icon={Coins}
+              titulo="Sin Activos"
+              subtitulo="Registrá tus bienes y ahorros para una vista patrimonial completa"
+              textoBoton="Añadir Activo"
+              onAccion={() => { setActiveTab('ACTIVOS'); setIsEditModalOpen(true); }}
+            />
+          ) : (
+            <motion.div 
+              initial="hidden" 
+              animate="visible" 
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
+              className="space-y-4"
+            >
+              {otrosActivos.map(activo => (
+                <motion.div key={activo.id} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }} className="flex justify-between items-center text-xs">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center text-bunker-mutado">
+                      {activo.logo}
+                    </div>
+                    <span className="text-white font-bold tracking-wide uppercase text-[10px]">{activo.nombre}</span>
                   </div>
-                  <span className="text-white font-bold tracking-wide uppercase text-[10px]">{activo.nombre}</span>
-                </div>
-                <span className="text-white font-black font-sans text-xs font-contable">{formatMoney(activo.balance)}</span>
-              </div>
-            ))}
-          </div>
+                  <span className="text-white font-black font-sans text-xs font-contable">{formatMoney(activo.balance)}</span>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
         </section>
 
       </div>
