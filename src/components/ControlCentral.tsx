@@ -23,7 +23,7 @@ import { VistaHoy } from './VistaHoy';
 import { VistaPresupuesto } from './VistaPresupuesto';
 import { VistaInformes } from './VistaInformes';
 import { LibroDiario } from './LibroDiario';
-import { PanelEstrategia } from './PanelEstrategia';
+import { VistaEstrategia } from './VistaEstrategia';
 import { TipoProtocolo } from '../hooks/useSimuladorEscenarios';
 
 
@@ -36,7 +36,7 @@ import {
   LayoutGrid, Smartphone
 } from 'lucide-react';
 
-type PestanaBunker = 'SALDO' | 'HOY' | 'PRESUPUESTO' | 'INFORMES' | 'TRANSACCIONES' | 'BENTO';
+type PestanaBunker = 'SALDO' | 'HOY' | 'PRESUPUESTO' | 'INFORMES' | 'TRANSACCIONES' | 'BENTO' | 'ESTRATEGIA';
 
 export const ControlCentral: React.FC = () => {
   // Pestaña activa por defecto: BENTO
@@ -588,7 +588,7 @@ export const ControlCentral: React.FC = () => {
           </span>
         </div>
         <button 
-          onClick={() => setActiveOverlay('ESTRATEGIA')}
+          onClick={() => setPestanaActiva('ESTRATEGIA')}
           className={`text-[8px] font-mono font-black tracking-widest px-2 py-0.5 border rounded-md uppercase cursor-pointer hover:opacity-85 transition-opacity focus:outline-none ${
             protocoloId === 'BLINDAJE' ? 'bg-[#E5A93B]/10 text-[#E5A93B] border-[#E5A93B]/20 animate-pulse' :
             protocoloId === 'EXPANSION' ? 'bg-[#D946EF]/10 text-[#D946EF] border-[#D946EF]/20' :
@@ -654,6 +654,19 @@ export const ControlCentral: React.FC = () => {
           />
         )}
 
+          {/* Pestaña ESTRATEGIA */}
+          {pestanaActiva === 'ESTRATEGIA' && (
+            <VistaEstrategia 
+              situacionBase={{
+                ingresosTotales: totalIngresosLiquidez,
+                gastosTotales: costoSupervivenciaMensualCalculado + gastosVariablesCalculado
+              }}
+              protocoloId={protocoloId}
+              protocoloActivo={protocoloActivo}
+              onProtocoloChange={handleGuardarProtocolo}
+            />
+          )}
+
       </main>
 
       {/* Bottom Tab Bar móvil */}
@@ -663,7 +676,8 @@ export const ControlCentral: React.FC = () => {
           { id: 'HOY', label: 'Hoy', icon: <Calendar className="w-4 h-4" /> },
           { id: 'PRESUPUESTO', label: 'Límites', icon: <Settings className="w-4 h-4" /> },
           { id: 'INFORMES', label: 'Distrib.', icon: <Activity className="w-4 h-4" /> },
-          { id: 'TRANSACCIONES', label: 'Diario', icon: <BookOpen className="w-4 h-4" /> }
+          { id: 'TRANSACCIONES', label: 'Diario', icon: <BookOpen className="w-4 h-4" /> },
+            { id: 'ESTRATEGIA', label: 'Estrategia', icon: <ShieldCheck className="w-4 h-4" /> }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -705,7 +719,8 @@ export const ControlCentral: React.FC = () => {
               { id: 'HOY', nombre: 'Hoy / Agenda', icono: <Calendar className="w-4 h-4" /> },
               { id: 'PRESUPUESTO', nombre: 'Límites / Presup.', icono: <Settings className="w-4 h-4" /> },
               { id: 'INFORMES', nombre: 'Distribución', icono: <Activity className="w-4 h-4" /> },
-              { id: 'TRANSACCIONES', nombre: 'Libro Diario', icono: <BookOpen className="w-4 h-4" /> }
+              { id: 'TRANSACCIONES', nombre: 'Libro Diario', icono: <BookOpen className="w-4 h-4" /> },
+                { id: 'ESTRATEGIA', nombre: 'Estrategia', icono: <ShieldCheck className="w-4 h-4" /> }
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -736,7 +751,7 @@ export const ControlCentral: React.FC = () => {
         <header className="flex justify-between items-center border-b border-white/5 pb-4 mb-6 shrink-0">
           <div className="flex flex-col gap-2">
             <button 
-              onClick={() => setActiveOverlay('ESTRATEGIA')}
+              onClick={() => setPestanaActiva('ESTRATEGIA')}
               className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity bg-transparent border-0 p-0 text-left focus:outline-none"
             >
               <span className="text-[9px] font-mono tracking-[0.2em] text-slate-500 uppercase">PROTOCOLO ACTIVO:</span>
@@ -942,6 +957,21 @@ export const ControlCentral: React.FC = () => {
           </div>
         )}
 
+          {/* PESTAÑA: ESTRATEGIA (PC) */}
+          {pestanaActiva === 'ESTRATEGIA' && (
+            <div className="max-w-6xl w-full mx-auto grid grid-cols-1 gap-8 items-start">
+              <VistaEstrategia 
+                situacionBase={{
+                  ingresosTotales: totalIngresosLiquidez,
+                  gastosTotales: costoSupervivenciaMensualCalculado + gastosVariablesCalculado
+                }}
+                protocoloId={protocoloId}
+                protocoloActivo={protocoloActivo}
+                onProtocoloChange={handleGuardarProtocolo}
+              />
+            </div>
+          )}
+
       </main>
 
       {/* ⚡ FAB DE ACCIONES EN PC */}
@@ -964,7 +994,7 @@ export const ControlCentral: React.FC = () => {
               <span className="text-[8px] font-mono tracking-widest text-slate-400 group-hover:text-white uppercase font-black">Monte Carlo</span>
               <div className="w-7 h-7 rounded-xl bg-[#F1C40F]/10 flex items-center justify-center border border-[#F1C40F]/20"><Bot className="w-3.5 h-3.5 text-[#F1C40F]" /></div>
             </button>
-            <button onClick={() => { setActiveOverlay('ESTRATEGIA'); setQuickMenuOpen(false); }} className="flex items-center gap-3 bg-[#112B3C] border border-white/10 text-white p-2.5 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer group">
+            <button onClick={() => { setPestanaActiva('ESTRATEGIA'); setQuickMenuOpen(false); }} className="flex items-center gap-3 bg-[#112B3C] border border-white/10 text-white p-2.5 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer group">
               <span className="text-[8px] font-mono tracking-widest text-slate-400 group-hover:text-white uppercase font-black">Protocolos</span>
               <div className="w-7 h-7 rounded-xl bg-[#E5A93B]/10 flex items-center justify-center border border-[#E5A93B]/20"><ShieldCheck className="w-3.5 h-3.5 text-[#E5A93B]" /></div>
             </button>
@@ -1202,7 +1232,8 @@ export const ControlCentral: React.FC = () => {
                           { id: 'HOY', label: 'Hoy', icon: <Calendar className="w-4 h-4" /> },
                           { id: 'PRESUPUESTO', label: 'Límites', icon: <Settings className="w-4 h-4" /> },
                           { id: 'INFORMES', label: 'Distrib.', icon: <Activity className="w-4 h-4" /> },
-                          { id: 'TRANSACCIONES', label: 'Diario', icon: <BookOpen className="w-4 h-4" /> }
+                          { id: 'TRANSACCIONES', label: 'Diario', icon: <BookOpen className="w-4 h-4" /> },
+            { id: 'ESTRATEGIA', label: 'Estrategia', icon: <ShieldCheck className="w-4 h-4" /> }
                         ].map((tab) => (
                           <div 
                             key={tab.id}
@@ -1340,16 +1371,7 @@ export const ControlCentral: React.FC = () => {
         </div>
       )}
 
-      {/* Panel de Arquitectura Estratégica (Protocolos Operativos) */}
-      <PanelEstrategia
-        situacionBase={{
-          ingresosTotales: totalIngresosLiquidez,
-          gastosTotales: costoSupervivenciaMensualCalculado + gastosVariablesCalculado
-        }}
-        isOpen={activeOverlay === 'ESTRATEGIA'}
-        onClose={() => setActiveOverlay(null)}
-        onProtocoloChange={handleGuardarProtocolo}
-      />
+
 
       {/* Copiloto Estratégico IA */}
       <CopilotoEstrategico 
