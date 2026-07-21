@@ -150,7 +150,7 @@ export function CofresGamificacion({
                     </button>
                     <button 
                         onClick={() => setIsSimuladorAbierto(true)}
-                        className="flex-1 sm:flex-none text-xs px-6 py-4 bg-[#06b6d4] text-[#0D0E15] rounded-2xl shadow-[0_15px_30px_rgba(6,182,212,0.3)] hover:brightness-110 hover:scale-[1.02] transition-all font-black uppercase tracking-widest"
+                        className="flex-1 sm:flex-none text-xs px-6 py-4 bg-[#E5A93B] text-[#0D0E15] rounded-2xl shadow-[0_15px_30px_rgba(229, 169, 59, 0.3)] hover:brightness-110 hover:scale-[1.02] transition-all font-black uppercase tracking-widest"
                     >
                         Ejecutar Cierre
                     </button>
@@ -231,7 +231,7 @@ export function CofresGamificacion({
                         </button>
 
                         <div className="mb-10">
-                            <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#06b6d4] font-black mb-2">TARGET_EDITOR // ENTRY</p>
+                            <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#E5A93B] font-black mb-2">TARGET_EDITOR // ENTRY</p>
                             <h3 className="text-2xl font-serif font-bold text-white tracking-tight uppercase">
                                 {editingCofre?.id ? 'Configurar Cofre' : 'Generar Cofre'}
                             </h3>
@@ -241,7 +241,7 @@ export function CofresGamificacion({
                             <div className="space-y-2">
                                 <label className="text-[10px] font-sans font-black text-gray-500 mb-2 block uppercase tracking-widest pl-1">Identificador Público</label>
                                 <input 
-                                    className="w-full bg-black/40 border border-white/5 rounded-xl p-4 text-white font-bold outline-none focus:border-[#06b6d4] transition-all shadow-inner"
+                                    className="w-full bg-black/40 border border-white/5 rounded-xl p-4 text-white font-bold outline-none focus:border-[#E5A93B] transition-all shadow-inner"
                                     value={editingCofre?.nombre || ''}
                                     onChange={e => setEditingCofre({...editingCofre, nombre: e.target.value})}
                                     placeholder="Ej: Vacaciones"
@@ -252,7 +252,7 @@ export function CofresGamificacion({
                                     <label className="text-[10px] font-sans font-black text-gray-500 mb-2 block uppercase tracking-widest pl-1">Objetivo ($)</label>
                                     <input 
                                         type="number"
-                                        className="w-full bg-black/40 border border-white/5 rounded-xl p-4 text-white font-bold outline-none focus:border-[#06b6d4] transition-all shadow-inner"
+                                        className="w-full bg-black/40 border border-white/5 rounded-xl p-4 text-white font-bold outline-none focus:border-[#E5A93B] transition-all shadow-inner"
                                         value={editingCofre?.objetivo || ''}
                                         onChange={e => setEditingCofre({...editingCofre, objetivo: Number(e.target.value)})}
                                         placeholder="100000"
@@ -262,7 +262,7 @@ export function CofresGamificacion({
                                     <label className="text-[10px] font-sans font-black text-gray-500 mb-2 block uppercase tracking-widest pl-1">Base ($)</label>
                                     <input 
                                         type="number"
-                                        className="w-full bg-black/40 border border-white/5 rounded-xl p-4 text-white font-bold outline-none focus:border-[#06b6d4] transition-all shadow-inner"
+                                        className="w-full bg-black/40 border border-white/5 rounded-xl p-4 text-white font-bold outline-none focus:border-[#E5A93B] transition-all shadow-inner"
                                         value={editingCofre?.acumulado || 0}
                                         onChange={e => setEditingCofre({...editingCofre, acumulado: Number(e.target.value)})}
                                     />
@@ -275,7 +275,7 @@ export function CofresGamificacion({
                                         <button 
                                             key={key}
                                             onClick={() => setEditingCofre({...editingCofre, icono: key})}
-                                            className={`p-3 rounded-xl border transition-all ${editingCofre?.icono === key ? 'bg-[#06b6d4] border-transparent text-[#0D0E15] shadow-lg scale-110' : 'bg-white/5 border-white/5 text-white/40 hover:text-white hover:bg-white/10'}`}
+                                            className={`p-3 rounded-xl border transition-all ${editingCofre?.icono === key ? 'bg-[#E5A93B] border-transparent text-[#0D0E15] shadow-lg scale-110' : 'bg-white/5 border-white/5 text-white/40 hover:text-white hover:bg-white/10'}`}
                                         >
                                             {ICON_MAP[key]}
                                         </button>
@@ -286,7 +286,7 @@ export function CofresGamificacion({
                             <button 
                                 onClick={handleSaveCofre}
                                 disabled={loading}
-                                className="w-full py-5 mt-6 rounded-2xl bg-[#06b6d4] hover:brightness-110 text-[#0D0E15] font-black uppercase tracking-[0.2em] shadow-[0_15px_30px_rgba(6,182,212,0.3)] transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+                                className="w-full py-5 mt-6 rounded-2xl bg-[#E5A93B] hover:brightness-110 text-[#0D0E15] font-black uppercase tracking-[0.2em] shadow-[0_15px_30px_rgba(229, 169, 59, 0.3)] transition-all active:scale-[0.98] flex items-center justify-center gap-3"
                             >
                                 <Save className="w-5 h-5" />
                                 {loading ? 'SINCRONIZANDO...' : 'GUARDAR CONFIGURACIÓN'}
@@ -316,7 +316,7 @@ export function CofresGamificacion({
                             {haySobrante ? (
                                 <>
                                     <p className="text-sm font-medium text-slate-300 mb-8 leading-relaxed font-sans italic">
-                                        Excedente detectado de <strong className="text-[#06b6d4] font-black not-italic">${sobranteVirtual.toLocaleString('es-AR')}</strong>. <br/>Seleccione destino de inyección.
+                                        Excedente detectado de <strong className="text-[#E5A93B] font-black not-italic">${sobranteVirtual.toLocaleString('es-AR')}</strong>. <br/>Seleccione destino de inyección.
                                     </p>
                                     
                                     <div className="flex flex-col gap-3 mb-8 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar p-1">

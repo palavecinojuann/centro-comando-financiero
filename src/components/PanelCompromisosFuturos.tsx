@@ -84,7 +84,7 @@ export const PanelCompromisosFuturos = ({ transacciones }: PanelProps) => {
     }
     if (isPaid) {
        return { 
-          color: 'bg-[#06B6D4]/10 text-[#06B6D4] border-[#06B6D4]/20', 
+          color: 'bg-[#E5A93B]/10 text-[#E5A93B] border-[#E5A93B]/20', 
           icon: <CheckCircle2 className="w-3 h-3" />, 
           text: 'Al Día',
           glow: 'drop-shadow-[0_0_10px_rgba(0,240,255,0.3)]'
@@ -378,7 +378,7 @@ export const PanelCompromisosFuturos = ({ transacciones }: PanelProps) => {
     const isAtrasado = o._estado === 'ATRASADO';
     
     let borderColor = 'border-white/5';
-    let sideBarColor = 'bg-[#06B6D4]';
+    let sideBarColor = 'bg-[#E5A93B]';
     
     if (isPausado) {
         borderColor = 'border-amber-500/30';
@@ -432,7 +432,7 @@ export const PanelCompromisosFuturos = ({ transacciones }: PanelProps) => {
                     <button 
                       onClick={() => isCuota ? liquidarCuota(o, 1) : liquidarObligacion(o, 1)}
                       disabled={estaSaldada || isPaid || isPaying}
-                      className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-2xl text-[11px] font-black text-slate-200 hover:bg-[#06B6D4]/20 hover:text-[#06B6D4] transition-all disabled:opacity-30 uppercase tracking-widest"
+                      className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-2xl text-[11px] font-black text-slate-200 hover:bg-[#E5A93B]/20 hover:text-[#E5A93B] transition-all disabled:opacity-30 uppercase tracking-widest"
                     >
                       <CheckCircle2 className="w-4 h-4" />
                       Registrar Pago
@@ -480,11 +480,11 @@ export const PanelCompromisosFuturos = ({ transacciones }: PanelProps) => {
 
         <div className="flex justify-between items-center pr-24 mb-6">
           <div>
-            <h4 className="text-2xl font-black text-white/95 tracking-tight font-serif uppercase group-hover:text-[#06B6D4] transition-colors">{o._nombre}</h4>
+            <h4 className="text-2xl font-black text-white/95 tracking-tight font-serif uppercase group-hover:text-[#E5A93B] transition-colors">{o._nombre}</h4>
             {isCuota ? (
                 <p className="text-[9px] text-[#8B5CF6] uppercase tracking-[0.4em] font-black mt-1">ESTRATEGIA // BOLA DE NIEVE</p>
             ) : (
-                <p className="text-[9px] text-[#06B6D4] uppercase tracking-[0.4em] font-black mt-1">PASIVO // ESTRUCTURA FIJA</p>
+                <p className="text-[9px] text-[#E5A93B] uppercase tracking-[0.4em] font-black mt-1">PASIVO // ESTRUCTURA FIJA</p>
             )}
           </div>
         </div>
@@ -538,11 +538,11 @@ export const PanelCompromisosFuturos = ({ transacciones }: PanelProps) => {
               {isEditing ? (
                 <div className="flex items-center gap-3 w-full sm:w-auto">
                   <div className="relative flex-1 sm:w-44">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#06B6D4]/50 text-base font-black font-mono">$</span>
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#E5A93B]/50 text-base font-black font-mono">$</span>
                     <input
                       type="number"
                       autoFocus
-                      className="w-full bg-black/40 border border-[#06B6D4]/30 rounded-2xl py-2.5 pl-9 pr-4 text-white font-black font-mono focus:outline-none focus:ring-2 focus:ring-[#06B6D4]/30 transition-all shadow-inner"
+                      className="w-full bg-black/40 border border-[#E5A93B]/30 rounded-2xl py-2.5 pl-9 pr-4 text-white font-black font-mono focus:outline-none focus:ring-2 focus:ring-[#E5A93B]/30 transition-all shadow-inner"
                       value={editValue}
                       onChange={(e) => setEditValue(Number(e.target.value) || 0)}
                       onKeyDown={(e) => e.key === 'Enter' && saveEditing(o)}
@@ -550,9 +550,9 @@ export const PanelCompromisosFuturos = ({ transacciones }: PanelProps) => {
                   </div>
                   <button 
                     onClick={() => saveEditing(o)}
-                    className="w-11 h-11 rounded-2xl bg-[#06B6D4]/10 hover:bg-[#06B6D4]/20 border border-[#06B6D4]/30 flex items-center justify-center shrink-0 transition-all shadow-[0_0_15px_rgba(0,240,255,0.1)] active:scale-90"
+                    className="w-11 h-11 rounded-2xl bg-[#E5A93B]/10 hover:bg-[#E5A93B]/20 border border-[#E5A93B]/30 flex items-center justify-center shrink-0 transition-all shadow-[0_0_15px_rgba(0,240,255,0.1)] active:scale-90"
                   >
-                    <Check className="w-5 h-5 text-[#06B6D4]" />
+                    <Check className="w-5 h-5 text-[#E5A93B]" />
                   </button>
                 </div>
               ) : (
@@ -566,12 +566,12 @@ export const PanelCompromisosFuturos = ({ transacciones }: PanelProps) => {
                             disabled={isPaid || estaSaldada}
                             className="p-2.5 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 flex items-center justify-center transition-all group-hover:border-white/20 disabled:opacity-20"
                           >
-                            <Edit3 className="w-3.5 h-3.5 text-white/30 group-hover:text-[#06B6D4]" />
+                            <Edit3 className="w-3.5 h-3.5 text-white/30 group-hover:text-[#E5A93B]" />
                           </button>
                       </div>
                       {isCuota && (
                           <div className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mt-1.5 flex items-center gap-2">
-                            SALDO REMANENTE: <span className="text-[#06B6D4] font-mono">{formatCurrency(o._montoBase)}</span>
+                            SALDO REMANENTE: <span className="text-[#E5A93B] font-mono">{formatCurrency(o._montoBase)}</span>
                           </div>
                       )}
                   </div>
@@ -591,7 +591,7 @@ export const PanelCompromisosFuturos = ({ transacciones }: PanelProps) => {
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 1, ease: "easeOut" }}
-                className={`h-full rounded-full ${isPausado ? 'bg-amber-500/50' : 'bg-gradient-to-r from-[#8B5CF6] to-[#06B6D4]'}`}
+                className={`h-full rounded-full ${isPausado ? 'bg-amber-500/50' : 'bg-gradient-to-r from-[#8B5CF6] to-[#E5A93B]'}`}
                 />
             </div>
             </div>
@@ -604,7 +604,7 @@ export const PanelCompromisosFuturos = ({ transacciones }: PanelProps) => {
   return (
     <div className="w-full h-full bg-black/40 backdrop-blur-3xl p-6 md:p-12 text-white font-sans rounded-[2.5rem] border border-white/10 shadow-[0_40px_80px_rgba(0,0,0,0.6)] relative overflow-hidden group">
       {/* Background blurs */}
-      <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] bg-[#06B6D4]/10 rounded-full blur-[100px] pointer-events-none group-hover:bg-[#06B6D4]/15 transition-all duration-1000" />
+      <div className="absolute top-[-10%] right-[-10%] w-[400px] h-[400px] bg-[#E5A93B]/10 rounded-full blur-[100px] pointer-events-none group-hover:bg-[#E5A93B]/15 transition-all duration-1000" />
       <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-[#8B5CF6]/10 rounded-full blur-[100px] pointer-events-none group-hover:bg-[#8B5CF6]/15 transition-all duration-1000" />
 
       <header className="mb-10 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
@@ -619,7 +619,7 @@ export const PanelCompromisosFuturos = ({ transacciones }: PanelProps) => {
             <select
                 value={sortBy}
                 onChange={(e: any) => setSortBy(e.target.value)}
-                className="bg-[#161a23]/80 text-white font-black border border-white/5 rounded-xl outline-none px-4 py-2 text-[10px] uppercase tracking-widest transition-all focus:border-[#06B6D4]/50 cursor-pointer hover:bg-white/5"
+                className="bg-[#161a23]/80 text-white font-black border border-white/5 rounded-xl outline-none px-4 py-2 text-[10px] uppercase tracking-widest transition-all focus:border-[#E5A93B]/50 cursor-pointer hover:bg-white/5"
             >
                 <option value="fecha">Cronología</option>
                 <option value="monto">Impacto Capital</option>
@@ -681,7 +681,7 @@ export const PanelCompromisosFuturos = ({ transacciones }: PanelProps) => {
 
         {allObligations.length === 0 && (
             <div className="text-center py-24 bg-white/5 rounded-3xl border border-dashed border-white/10 animate-pulse">
-                <CheckCircle2 className="w-16 h-16 text-[#06B6D4]/30 mx-auto mb-6" />
+                <CheckCircle2 className="w-16 h-16 text-[#E5A93B]/30 mx-auto mb-6" />
                 <p className="text-slate-400 font-black tracking-[0.2em] text-xs uppercase">Terminal sin obligaciones pendientes</p>
             </div>
         )}

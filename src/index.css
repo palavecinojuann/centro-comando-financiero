@@ -6,19 +6,19 @@
   --font-serif: "Outfit", sans-serif;
   --font-display: "Outfit", sans-serif;
 
-  /* Deep Analytics Design Tokens (v3.8) - Imagen Sincro */
-  --color-bunker-bg: #071218;
-  --color-bunker-panel: rgba(14, 37, 49, 0.45);
-  --color-bunker-limon: #00D2FF;
-  --color-bunker-limonDim: rgba(0, 210, 255, 0.15);
+  /* Deep Analytics Design Tokens - Irish Cream / Whiskey Amber v4.0 */
+  --color-bunker-bg: #0D0E15;
+  --color-bunker-panel: rgba(22, 26, 35, 0.45);
+  --color-bunker-limon: #E5A93B;
+  --color-bunker-limonDim: rgba(229, 169, 59, 0.15);
   --color-bunker-texto: #FFFFFF;
-  --color-bunker-mutado: #6C7F8C;
+  --color-bunker-mutado: #8C8476;
 
   /* Semantic Accent Fallbacks */
-  --color-bg-dark: #071218;
-  --color-panel-glass: rgba(14, 37, 49, 0.4);
+  --color-bg-dark: #0D0E15;
+  --color-panel-glass: rgba(22, 26, 35, 0.4);
   --color-neon-pink: #D946EF;
-  --color-neon-blue: #00D2FF;
+  --color-neon-blue: #E5A93B;
   --color-gold: #FFD500;
   --color-violet: #8B5CF6;
 }
@@ -110,8 +110,8 @@ div[class*="rounded-full"] {
 }
 
 /* Neon Glows */
-.glow-cyan {
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.35) !important;
+.glow-amber {
+  box-shadow: 0 0 15px rgba(229, 169, 59, 0.35) !important;
 }
 
 .glow-gold {
@@ -127,8 +127,8 @@ div[class*="rounded-full"] {
 }
 
 /* Text Gradients */
-.text-gradient-cyan {
-  background: linear-gradient(135deg, #06B6D4 30%, #FFFFFF 100%);
+.text-gradient-amber {
+  background: linear-gradient(135deg, #E5A93B 30%, #FFFFFF 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

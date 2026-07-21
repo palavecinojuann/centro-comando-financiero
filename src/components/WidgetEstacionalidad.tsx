@@ -39,12 +39,12 @@ export function WidgetEstacionalidad() {
             <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-50" />
             
             <div className="relative z-10 flex items-center gap-3 mb-5 border-b border-white/10 pb-3">
-                <div className="p-2 rounded-none bg-[#06b6d4]/20 border border-[#06b6d4]/30 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
-                    <TrendingDown className="w-5 h-5 text-[#06b6d4]" />
+                <div className="p-2 rounded-none bg-[#E5A93B]/20 border border-[#E5A93B]/30 shadow-[0_0_15px_rgba(229, 169, 59, 0.3)]">
+                    <TrendingDown className="w-5 h-5 text-[#E5A93B]" />
                 </div>
                 <div>
                     <h3 className="text-white font-black tracking-tight">Aplanador de Curvas</h3>
-                    <p className="text-[10px] uppercase font-bold tracking-widest text-[#06b6d4]">Motor Estacional Activo</p>
+                    <p className="text-[10px] uppercase font-bold tracking-widest text-[#E5A93B]">Motor Estacional Activo</p>
                 </div>
             </div>
 
@@ -69,7 +69,7 @@ export function WidgetEstacionalidad() {
                                                 Pico de gasto detectado en <span className="font-bold text-amber-400">{alerta.mesesRestantes} meses</span> ({alerta.nombreEvento}).
                                             </p>
                                             <p className="text-gray-400 text-xs mt-1">
-                                                Sugerencia: Separar <span className="text-[#06b6d4] font-bold">{formatMoney(alerta.sugerenciaAhorroMensual)}</span> este mes para aplanar la curva.
+                                                Sugerencia: Separar <span className="text-[#E5A93B] font-bold">{formatMoney(alerta.sugerenciaAhorroMensual)}</span> este mes para aplanar la curva.
                                             </p>
                                         </div>
                                     </div>
@@ -77,7 +77,7 @@ export function WidgetEstacionalidad() {
                                     <button
                                         onClick={handleAprobarReserva}
                                         disabled={isSaving}
-                                        className="w-full relative py-3 bg-[#06b6d4] hover:bg-[#0891b2] text-[#0D0E15] rounded-none text-sm font-bold shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group overflow-hidden"
+                                        className="w-full relative py-3 bg-[#E5A93B] hover:bg-[#0891b2] text-[#0D0E15] rounded-none text-sm font-bold shadow-[0_0_20px_rgba(229, 169, 59, 0.4)] transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed group overflow-hidden"
                                     >
                                         {/* Brillo dinámico en el botón */}
                                         <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[150%] animate-[shimmer_2.5s_infinite] group-hover:block" />
@@ -106,7 +106,7 @@ export function WidgetEstacionalidad() {
                             className="w-full bg-emerald-500/10 border border-emerald-500/30 p-6 rounded-none flex flex-col items-center text-center gap-3 shadow-[0_0_30px_rgba(16,185,129,0.15)] relative overflow-hidden"
                         >
                             <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/20 blur-[40px] rounded-full pointer-events-none" />
-                            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#06b6d4]/20 blur-[40px] rounded-full pointer-events-none" />
+                            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-[#E5A93B]/20 blur-[40px] rounded-full pointer-events-none" />
                             
                             <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
                                 <CheckCircle2 className="w-6 h-6 text-emerald-400" />

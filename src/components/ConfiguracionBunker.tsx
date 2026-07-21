@@ -97,8 +97,8 @@ export const ConfiguracionBunker: React.FC<ConfiguracionProps> = ({
 
         {/* Estado de Transmisión Exitosa (Cian Neón) */}
         {notificacion && (
-          <div className="bg-[#06B6D4]/10 border border-[#06B6D4]/30 p-3 rounded-none text-center transition-all duration-300">
-            <p className="text-[10px] font-mono tracking-widest uppercase text-[#06B6D4] font-bold">
+          <div className="bg-[#E5A93B]/10 border border-[#E5A93B]/30 p-3 rounded-none text-center transition-all duration-300">
+            <p className="text-[10px] font-mono tracking-widest uppercase text-[#E5A93B] font-bold">
               &gt; CONFIG_OVERRIDE: MATRIZ RECALCULADA CON ÉXITO
             </p>
           </div>

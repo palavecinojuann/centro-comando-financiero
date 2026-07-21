@@ -253,7 +253,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
     <>
       <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
         <div className="bg-[#0D0E15]/95 w-full max-w-xl rounded-[40px] border border-white/10 shadow-[0_50px_100px_rgba(0,0,0,0.8)] overflow-hidden font-sans relative backdrop-blur-3xl animate-in zoom-in-95 duration-500 group">
-          <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-[#06B6D4]/10 rounded-full blur-[80px] pointer-events-none group-hover:bg-[#06B6D4]/20 transition-all duration-1000" />
+          <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-[#E5A93B]/10 rounded-full blur-[80px] pointer-events-none group-hover:bg-[#E5A93B]/20 transition-all duration-1000" />
           <div className="absolute bottom-[-10%] left-[-10%] w-64 h-64 bg-[#8B5CF6]/10 rounded-full blur-[80px] pointer-events-none group-hover:bg-[#8B5CF6]/20 transition-all duration-1000" />
           
           <div className="flex justify-between items-center p-10 border-b border-white/5 relative z-10 sticky top-0 bg-transparent backdrop-blur-md">
@@ -265,7 +265,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
                    <button 
                      type="button"
                      onClick={handleCameraClick}
-                     className="flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 text-[#06B6D4] rounded-2xl text-[9px] font-black tracking-[0.2em] transition-all shadow-lg border border-white/10 active:scale-95"
+                     className="flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 text-[#E5A93B] rounded-2xl text-[9px] font-black tracking-[0.2em] transition-all shadow-lg border border-white/10 active:scale-95"
                    >
                      <Camera className="w-4 h-4" />
                      ELEGIR ESCANEO
@@ -280,7 +280,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
           <div className="p-10 max-h-[75vh] overflow-y-auto relative z-10 custom-scrollbar">
             <div className="grid grid-cols-4 gap-4 mb-10">
               {[
-                { id: 'GASTO', icon: Activity, label: 'Gasto', color: '#06B6D4' },
+                { id: 'GASTO', icon: Activity, label: 'Gasto', color: '#E5A93B' },
                 { id: 'BIMONT', icon: Briefcase, label: 'Bimont', color: '#8B5CF6' },
                 { id: 'JANLU', icon: Zap, label: 'Janlu', color: '#D946EF' },
                 { id: 'DEUDA', icon: AlertTriangle, label: 'Deuda', color: '#FF7675' }
@@ -289,7 +289,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
                   key={item.id}
                   type="button"
                   onClick={() => handleTipoChange(item.id as any)} 
-                  className={`flex flex-col items-center justify-center py-5 rounded-3xl border transition-all duration-500 ${tipo === item.id ? 'bg-white/10 border-[#06b6d4]/40 shadow-[0_0_25px_rgba(6,182,212,0.15)] scale-105' : 'bg-white/5 border-transparent text-white/30 hover:text-slate-200 hover:bg-white/10'}`}
+                  className={`flex flex-col items-center justify-center py-5 rounded-3xl border transition-all duration-500 ${tipo === item.id ? 'bg-white/10 border-[#E5A93B]/40 shadow-[0_0_25px_rgba(229, 169, 59, 0.15)] scale-105' : 'bg-white/5 border-transparent text-white/30 hover:text-slate-200 hover:bg-white/10'}`}
                 >
                   <item.icon className="w-7 h-7 mb-3" style={{ color: tipo === item.id ? item.color : 'currentColor' }} />
                   <span className={`text-[9px] uppercase font-black tracking-widest ${tipo === item.id ? 'text-white' : ''}`}>{item.label}</span>
@@ -298,16 +298,16 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-8">
-              <div className="bg-white/5 p-8 rounded-[32px] border border-white/10 shadow-inner backdrop-blur-md group-focus-within:border-[#06b6d4]/50 transition-all">
+              <div className="bg-white/5 p-8 rounded-[32px] border border-white/10 shadow-inner backdrop-blur-md group-focus-within:border-[#E5A93B]/50 transition-all">
                 <label className="text-[9px] text-slate-500 font-black uppercase tracking-[0.3em] mb-4 block">Monto Total de Operación</label>
                 <div className="relative">
-                  <DollarSign className="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 text-[#06B6D4]/50" />
+                  <DollarSign className="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 text-[#E5A93B]/50" />
                   <input 
                     type="number" 
                     required
                     value={monto}
                     onChange={(e) => setMonto(e.target.value)}
-                    className="w-full bg-transparent border-b border-white/10 py-5 pl-10 pr-4 text-white text-4xl font-black placeholder-white/5 focus:outline-none focus:border-[#06B6D4] transition-all font-mono"
+                    className="w-full bg-transparent border-b border-white/10 py-5 pl-10 pr-4 text-white text-4xl font-black placeholder-white/5 focus:outline-none focus:border-[#E5A93B] transition-all font-mono"
                     placeholder="0.00"
                   />
                 </div>
@@ -324,7 +324,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
                         required
                         value={categoria}
                         onChange={(e) => setCategoria(e.target.value)}
-                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-sm appearance-none focus:outline-none focus:border-[#06B6D4] transition-all shadow-inner"
+                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-sm appearance-none focus:outline-none focus:border-[#E5A93B] transition-all shadow-inner"
                       >
                         <option value="" disabled className="bg-[#0D0E15]">Seleccione Destino...</option>
                         {dynamicCategories.map(cat => (
@@ -332,7 +332,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
                         ))}
                         <option value="Sostenimiento" className="bg-[#0D0E15] text-white">Sostenimiento (Varios)</option>
                       </select>
-                      <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#06B6D4] pointer-events-none group-hover/select:translate-y-[-40%] transition-transform" />
+                      <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#E5A93B] pointer-events-none group-hover/select:translate-y-[-40%] transition-transform" />
                     </div>
                   ) : (
                     <input 
@@ -340,7 +340,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
                       required={(tipo === 'GASTO' || tipo === 'DEUDA')}
                       value={categoria}
                       onChange={(e) => setCategoria(e.target.value)}
-                      className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-sm placeholder-white/20 focus:outline-none focus:border-[#06B6D4] transition-all shadow-inner uppercase tracking-widest"
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-sm placeholder-white/20 focus:outline-none focus:border-[#E5A93B] transition-all shadow-inner uppercase tracking-widest"
                       placeholder={tipo === 'GASTO' ? 'Ej. Alimentación' : 'Ej. Nómina Bimont'}
                     />
                   )}
@@ -355,7 +355,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
                       type="text" 
                       value={referencia}
                       onChange={(e) => setReferencia(e.target.value)}
-                      className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-sm placeholder-white/20 focus:outline-none focus:border-[#06B6D4] transition-all shadow-inner"
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-sm placeholder-white/20 focus:outline-none focus:border-[#E5A93B] transition-all shadow-inner"
                       placeholder="Detalle de la transacción"
                     />
                   </div>
@@ -373,12 +373,12 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
                         <select 
                           value={categoriaMacro}
                           onChange={(e) => setCategoriaMacro(e.target.value as any)}
-                          className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-[11px] uppercase tracking-widest appearance-none focus:outline-none focus:border-[#06B6D4] transition-all shadow-inner"
+                          className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-[11px] uppercase tracking-widest appearance-none focus:outline-none focus:border-[#E5A93B] transition-all shadow-inner"
                         >
                           <option value="COMPROMISOS_INDISPENSABLES" className="bg-[#0D0E15]">Compromisos Indispensables</option>
                           <option value="GASTOS_VARIABLES" className="bg-[#0D0E15]">Gastos Variables</option>
                         </select>
-                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#06B6D4] pointer-events-none" />
+                        <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#E5A93B] pointer-events-none" />
                       </div>
                     ) : (
                       <input 
@@ -388,7 +388,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
                         max={100}
                         value={interes}
                         onChange={(e) => setInteres(e.target.value)}
-                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-base font-mono focus:outline-none focus:border-[#06B6D4] transition-all shadow-inner"
+                        className="w-full bg-black/40 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-base font-mono focus:outline-none focus:border-[#E5A93B] transition-all shadow-inner"
                       />
                     )}
                   </div>
@@ -400,7 +400,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
                         id="recurrente"
                         checked={recurrente}
                         onChange={(e) => setRecurrente(e.target.checked)}
-                        className="w-6 h-6 rounded-lg border-white/20 bg-black/50 text-[#06B6D4] focus:ring-[#06B6D4] focus:ring-offset-0 transition-all cursor-pointer"
+                        className="w-6 h-6 rounded-lg border-white/20 bg-black/50 text-[#E5A93B] focus:ring-[#E5A93B] focus:ring-offset-0 transition-all cursor-pointer"
                       />
                       <label htmlFor="recurrente" className="text-[10px] text-slate-300 font-black uppercase tracking-widest cursor-pointer group-hover/check:text-white transition-colors">
                         Protocolo Recurrente
@@ -473,7 +473,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
                 </div>
               )}
 
-              <div className="bg-white/5 p-8 rounded-[32px] border border-white/10 backdrop-blur-md transition-all group-focus-within:border-[#06b6d4]/30">
+              <div className="bg-white/5 p-8 rounded-[32px] border border-white/10 backdrop-blur-md transition-all group-focus-within:border-[#E5A93B]/30">
                 <label className="text-[9px] text-slate-500 font-black uppercase tracking-[0.3em] mb-4 block">
                   {tipo === 'DEUDA' ? 'Cronograma de Vencimiento' : 'Registro Temporal (Opcional)'}
                 </label>
@@ -482,7 +482,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
                     type="date" 
                     value={fechaOperacion}
                     onChange={(e) => setFechaOperacion(e.target.value)}
-                    className="w-full bg-black/40 rounded-2xl py-4 px-6 text-white font-black text-sm border border-white/10 focus:outline-none focus:border-[#06B6D4] transition-all shadow-inner"
+                    className="w-full bg-black/40 rounded-2xl py-4 px-6 text-white font-black text-sm border border-white/10 focus:outline-none focus:border-[#E5A93B] transition-all shadow-inner"
                     style={{ colorScheme: 'dark' }}
                   />
                 </div>
@@ -498,7 +498,7 @@ export function ModalOperacion({ isOpen, onClose, transactionToEdit }: ModalProp
               <button 
                 type="submit" 
                 disabled={loading}
-                className="w-full mt-10 bg-gradient-to-r from-[#8B5CF6] to-[#06B6D4] hover:shadow-[0_20px_40px_rgba(0,240,255,0.2)] text-white font-black tracking-[0.4em] uppercase rounded-full py-5 transition-all flex items-center justify-center gap-4 active:scale-95 disabled:opacity-50 border border-white/10 relative z-20 group/submit"
+                className="w-full mt-10 bg-gradient-to-r from-[#8B5CF6] to-[#E5A93B] hover:shadow-[0_20px_40px_rgba(0,240,255,0.2)] text-white font-black tracking-[0.4em] uppercase rounded-full py-5 transition-all flex items-center justify-center gap-4 active:scale-95 disabled:opacity-50 border border-white/10 relative z-20 group/submit"
               >
                 {loading ? (
                   <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />

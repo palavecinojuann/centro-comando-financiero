@@ -85,7 +85,7 @@ export const PanelProyeccion: React.FC<PanelProyeccionProps> = ({
               min="3" max="36" step="3"
               value={nMeses}
               onChange={(e) => setNMeses(Number(e.target.value))}
-              className="w-full accent-[#06B6D4]"
+              className="w-full accent-[#E5A93B]"
             />
             <div className="flex justify-between text-xs text-slate-400">
               <span>3m</span>

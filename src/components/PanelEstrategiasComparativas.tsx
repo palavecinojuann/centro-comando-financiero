@@ -38,7 +38,7 @@ const strategies: Record<StrategyId, StrategyInfo> = {
     id: 'conservador',
     title: 'Plan Conservador (50/30/20)',
     icon: <Shield className="w-5 h-5" />,
-    color: '#06B6D4', // Cyan
+    color: '#E5A93B', // Cyan
     mechanics: 'Asigna automáticamente el excedente y reajusta presupuestos para mantener el equilibrio clásico: 50% Necesidades, 30% Estilo de Vida/Disfrute, y 20% Ahorro/Blindaje.',
     explanation: 'Ideal para meses de mantenimiento. Crece lento pero seguro, garantizando que el estilo de vida no se sacrifique.',
   },
@@ -191,8 +191,8 @@ export function PanelEstrategiasComparativas() {
         {/* Cabecera del Panel */}
         <header className="px-6 pt-10">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#161A23]/50 border border-white/10 mb-4">
-                <TrendingUp className="w-4 h-4 text-[#06B6D4]" />
-                <span className="text-[#06B6D4] text-[10px] font-bold uppercase tracking-widest">Motor de Simulación a Futuro</span>
+                <TrendingUp className="w-4 h-4 text-[#E5A93B]" />
+                <span className="text-[#E5A93B] text-[10px] font-bold uppercase tracking-widest">Motor de Simulación a Futuro</span>
             </div>
             <h2 className="text-3xl font-black tracking-tight mb-2">Simulador del Futuro</h2>
             <p className="text-slate-300 text-sm leading-relaxed max-w-2xl">

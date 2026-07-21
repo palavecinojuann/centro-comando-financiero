@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart, Bar, ResponsiveContainer, XAxis } from 'recharts';
+import { AreaChart, Area, ResponsiveContainer, XAxis, CartesianGrid, Tooltip } from 'recharts';
 import { Coffee, Shield, Home, BookOpen, Car, Zap, Coins, Briefcase, Gift, Settings, X, Plus, Trash2, Edit3, Save } from 'lucide-react';
 import { db } from '../firebase';
 import { doc, updateDoc, addDoc, collection, deleteDoc } from 'firebase/firestore';
@@ -20,9 +20,9 @@ const ICON_MAP: Record<string, React.ReactNode> = {
   'Home': <Home className="w-5 h-5 text-emerald-400" />,
   'BookOpen': <BookOpen className="w-5 h-5 text-blue-400" />,
   'Coffee': <Coffee className="w-5 h-5 text-amber-400" />,
-  'Car': <Car className="w-5 h-5 text-cyan-400" />,
+  'Car': <Car className="w-5 h-5 text-[#E5A93B]" />,
   'Zap': <Zap className="w-5 h-5 text-purple-400" />,
-  'Briefcase': <Briefcase className="w-5 h-5 text-[#00E5FF]" />,
+  'Briefcase': <Briefcase className="w-5 h-5 text-[#E5A93B]" />,
   'Gift': <Gift className="w-5 h-5 text-amber-400" />
 };
 
@@ -79,15 +79,17 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
   const totalIngresosReal = categoriasIngresos.reduce((sum, c) => sum + c.valor, 0);
 
   // Datos de minigráfico diario de gastos
-  const mockDailyData = [
-    { day: '1', amount: 1500 },
-    { day: '5', amount: 3500 },
-    { day: '10', amount: 1200 },
-    { day: '15', amount: 8000 },
-    { day: '20', amount: 4500 },
-    { day: '25', amount: 2000 },
-    { day: '30', amount: 6000 }
-  ];
+  const dateNow = new Date();
+  const daysInMonth = new Date(dateNow.getFullYear(), dateNow.getMonth() + 1, 0).getDate();
+  const dailyData = Array.from({ length: daysInMonth }, (_, i) => {
+    const day = i + 1;
+    const amount = gastos.filter(g => {
+      if (!g.fecha) return false;
+      const dateObj = g.fecha.seconds ? new Date(g.fecha.seconds * 1000) : new Date(g.fecha);
+      return dateObj.getDate() === day;
+    }).reduce((sum, g) => sum + g.monto, 0);
+    return { day: day.toString(), amount };
+  });
 
   // Handlers CRUD
   const handleSaveItem = async (e: React.FormEvent) => {
@@ -170,7 +172,7 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
           </select>
           <button 
             onClick={() => setIsEditModalOpen(true)}
-            className="p-1 text-bunker-mutado hover:text-[#00E5FF] transition-colors cursor-pointer" 
+            className="p-1 text-bunker-mutado hover:text-[#E5A93B] transition-colors cursor-pointer" 
             title="Configurar límites"
           >
             <Settings className="w-4 h-4" />
@@ -180,14 +182,35 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
 
       {/* Mini Gráfico de Barras */}
       <div className="px-4 mb-6">
-        <div className="bg-black/30 border border-white/5 p-4 rounded-3xl h-24 relative overflow-hidden flex flex-col justify-end">
+        <div className="bg-black/30 border border-white/5 p-4 rounded-3xl h-32 relative overflow-hidden flex flex-col justify-end">
           <div className="absolute top-2 left-4 text-[8px] font-mono tracking-widest text-bunker-mutado uppercase font-black">// HISTORIAL DIARIO DE CAUDALES</div>
-          <div className="w-full h-12">
+          <div className="w-full h-20">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={mockDailyData}>
-                <Bar dataKey="amount" fill="#00E5FF" radius={[2, 2, 0, 0]} />
-                <XAxis dataKey="day" hide />
-              </BarChart>
+              <AreaChart data={dailyData} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorDaily" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#E5A93B" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="transparent" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <XAxis dataKey="day" stroke="rgba(255,255,255,0.3)" tick={{ fontSize: 8, fill: 'rgba(255,255,255,0.3)' }} tickLine={false} axisLine={false} className="font-mono" />
+                <Tooltip 
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      return (
+                        <div className="bg-[#161a23]/90 border border-white/10 p-2 rounded-xl text-[10px] font-mono shadow-xl">
+                          <p className="text-white mb-1">Día {payload[0].payload.day}</p>
+                          <p className="text-[#E5A93B] font-black">{formatMoney(payload[0].value)}</p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
+                  cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1, strokeDasharray: '3 3' }}
+                />
+                <Area type="monotone" dataKey="amount" stroke="#E5A93B" strokeWidth={2} fillOpacity={1} fill="url(#colorDaily)" />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
@@ -223,9 +246,9 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
                 const pct = Math.min(100, ratio);
                 
                 // Color de la barra y texto según nivel de alerta (Burn Rate)
-                let barColor = "bg-[#06b6d4]"; // Cian - Normal
-                let glowColor = "shadow-[0_0_8px_rgba(6,182,212,0.3)]";
-                let textColor = "text-[#06b6d4]";
+                let barColor = "bg-[#E5A93B]"; // Cian - Normal
+                let glowColor = "shadow-[0_0_8px_rgba(229, 169, 59, 0.3)]";
+                let textColor = "text-[#E5A93B]";
                 
                 if (ratio > 90) {
                   barColor = "bg-[#ff007f]"; // Fucsia - Alerta/Emergencia
@@ -275,7 +298,7 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
         <section className="bg-bunker-panel/40 border border-white/5 p-5 rounded-3xl backdrop-blur-xl">
           <div className="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
             <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white">Ingresos Presupuestados</span>
-            <span className="text-[10px] font-black text-[#00E5FF] font-sans">{formatMoney(totalIngresosReal)}</span>
+            <span className="text-[10px] font-black text-[#E5A93B] font-sans">{formatMoney(totalIngresosReal)}</span>
           </div>
 
           {categoriasIngresos.length === 0 ? (
@@ -305,7 +328,7 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
                   
                   {/* Value */}
                   <div className="text-right font-sans">
-                    <span className="text-[#00E5FF] text-[11px] font-black font-sans">{formatMoney(cat.valor)}</span>
+                    <span className="text-[#E5A93B] text-[11px] font-black font-sans">{formatMoney(cat.valor)}</span>
                   </div>
                 </motion.div>
               ))}
@@ -320,7 +343,7 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
             <span className="text-white text-[10px] font-black uppercase mt-0.5">Suficiencia Presupuesto</span>
           </div>
           <div className="text-right flex flex-col items-end">
-            <span className="text-[#00E5FF] text-xs font-black font-sans">{formatMoney(totalIngresosReal - totalGastosReal)} Neto</span>
+            <span className="text-[#E5A93B] text-xs font-black font-sans">{formatMoney(totalIngresosReal - totalGastosReal)} Neto</span>
             <span className="text-[8px] font-mono text-bunker-mutado uppercase">Consumo de Caja</span>
           </div>
         </div>
@@ -353,7 +376,7 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
                   <button
                     key={tab.id}
                     onClick={() => { setActiveTab(tab.id as any); resetForm(); }}
-                    className={`flex-1 py-1.5 uppercase rounded-lg font-black transition-all cursor-pointer ${activeTab === tab.id ? 'bg-[#0E2531] text-[#00E5FF] border border-[#00E5FF]/20' : 'text-slate-400'}`}
+                    className={`flex-1 py-1.5 uppercase rounded-lg font-black transition-all cursor-pointer ${activeTab === tab.id ? 'bg-[#0E2531] text-[#E5A93B] border border-[#E5A93B]/20' : 'text-slate-400'}`}
                   >
                     {tab.label}
                   </button>
@@ -370,7 +393,7 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
                   value={newItemName}
                   onChange={e => setNewItemName(e.target.value)}
                   placeholder="Ej. Ropa, Servicios, Salidas..."
-                  className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#00E5FF]/50 font-sans"
+                  className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#E5A93B]/50 font-sans"
                   required
                 />
               </div>
@@ -384,7 +407,7 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
                   value={newItemLimit || ''}
                   onChange={e => setNewItemLimit(Number(e.target.value))}
                   placeholder="0"
-                  className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#00E5FF]/50 font-mono"
+                  className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#E5A93B]/50 font-mono"
                 />
               </div>
 
@@ -396,7 +419,7 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
                       key={iconName}
                       type="button"
                       onClick={() => setNewItemIcon(iconName)}
-                      className={`w-9 h-9 border rounded-xl flex items-center justify-center cursor-pointer transition-all ${newItemIcon === iconName ? 'bg-[#00E5FF]/10 border-[#00E5FF] text-[#00E5FF]' : 'border-white/5 bg-black/40 text-slate-400'}`}
+                      className={`w-9 h-9 border rounded-xl flex items-center justify-center cursor-pointer transition-all ${newItemIcon === iconName ? 'bg-[#E5A93B]/10 border-[#E5A93B] text-[#E5A93B]' : 'border-white/5 bg-black/40 text-slate-400'}`}
                     >
                       {ICON_MAP[iconName]}
                     </button>
@@ -416,7 +439,7 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
                 )}
                 <button 
                   type="submit"
-                  className="px-4 py-1.5 bg-[#00E5FF] text-black text-[9px] font-black uppercase tracking-widest rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-1.5 bg-[#E5A93B] text-black text-[9px] font-black uppercase tracking-widest rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   {editingItem ? 'Actualizar' : 'Añadir'}
@@ -445,7 +468,7 @@ export function VistaPresupuesto({ gastos, ingresosBimont, janluMesActual, categ
                     <div className="flex items-center gap-1.5">
                       <button 
                         onClick={() => handleEditClick(item)}
-                        className="p-1 border border-white/5 rounded-md hover:bg-[#00E5FF]/10 hover:border-[#00E5FF]/30 text-slate-400 hover:text-[#00E5FF] cursor-pointer"
+                        className="p-1 border border-white/5 rounded-md hover:bg-[#E5A93B]/10 hover:border-[#E5A93B]/30 text-slate-400 hover:text-[#E5A93B] cursor-pointer"
                         title="Editar"
                       >
                         <Edit3 className="w-3 h-3" />

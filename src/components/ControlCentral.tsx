@@ -580,17 +580,17 @@ export const ControlCentral: React.FC = () => {
       {/* Header móvil */}
       <header className="px-5 py-3 border-b border-white/5 flex items-center justify-between z-30 bg-[#0B1A28]/40 backdrop-blur-md shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-[#06B6D4]/10 border border-[#06B6D4]/20 flex items-center justify-center">
-            <span className="text-xs text-[#06B6D4] font-black">Eq</span>
+          <div className="w-6 h-6 rounded-lg bg-[#E5A93B]/10 border border-[#E5A93B]/20 flex items-center justify-center">
+            <span className="text-xs text-[#E5A93B] font-black">Eq</span>
           </div>
           <span className="font-serif text-sm tracking-[0.1em] font-black text-white uppercase">
-            Equilibra<span className="text-[#06B6D4]">.</span>
+            Equilibra<span className="text-[#E5A93B]">.</span>
           </span>
         </div>
         <button 
           onClick={() => setActiveOverlay('ESTRATEGIA')}
           className={`text-[8px] font-mono font-black tracking-widest px-2 py-0.5 border rounded-md uppercase cursor-pointer hover:opacity-85 transition-opacity focus:outline-none ${
-            protocoloId === 'BLINDAJE' ? 'bg-[#06B6D4]/10 text-[#06B6D4] border-[#06B6D4]/20 animate-pulse' :
+            protocoloId === 'BLINDAJE' ? 'bg-[#E5A93B]/10 text-[#E5A93B] border-[#E5A93B]/20 animate-pulse' :
             protocoloId === 'EXPANSION' ? 'bg-[#D946EF]/10 text-[#D946EF] border-[#D946EF]/20' :
             protocoloId === 'DISFRUTE' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' :
             protocoloId === 'TACTICO_LIBRE' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20' :
@@ -670,8 +670,8 @@ export const ControlCentral: React.FC = () => {
             onClick={() => setPestanaActiva(tab.id as PestanaBunker)}
             className="flex flex-col items-center gap-1 cursor-pointer py-1 px-2"
           >
-            <div className={pestanaActiva === tab.id ? 'text-[#06B6D4]' : 'text-slate-400'}>{tab.icon}</div>
-            <span className={`text-[8px] font-mono tracking-widest uppercase font-black ${pestanaActiva === tab.id ? 'text-[#06B6D4]' : 'text-slate-400'}`}>
+            <div className={pestanaActiva === tab.id ? 'text-[#E5A93B]' : 'text-slate-400'}>{tab.icon}</div>
+            <span className={`text-[8px] font-mono tracking-widest uppercase font-black ${pestanaActiva === tab.id ? 'text-[#E5A93B]' : 'text-slate-400'}`}>
               {tab.label}
             </span>
           </button>
@@ -688,11 +688,11 @@ export const ControlCentral: React.FC = () => {
       <aside className="w-64 border-r border-white/5 bg-white/[0.02] backdrop-blur-3xl p-6 flex flex-col justify-between shrink-0 select-none">
         <div className="space-y-8">
           <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded-lg bg-[#06B6D4]/10 border border-[#06B6D4]/20 flex items-center justify-center">
-              <span className="text-sm text-[#06B6D4] font-black">Eq</span>
+            <div className="w-7 h-7 rounded-lg bg-[#E5A93B]/10 border border-[#E5A93B]/20 flex items-center justify-center">
+              <span className="text-sm text-[#E5A93B] font-black">Eq</span>
             </div>
             <h1 className="font-serif text-lg tracking-[0.05em] text-white font-black uppercase leading-tight">
-              Equilibra<span className="text-[#06B6D4]">.</span>
+              Equilibra<span className="text-[#E5A93B]">.</span>
             </h1>
           </div>
 
@@ -712,7 +712,7 @@ export const ControlCentral: React.FC = () => {
                 onClick={() => setPestanaActiva(tab.id as PestanaBunker)}
                 className={`w-full text-left px-4 py-3 text-[9px] font-sans font-black tracking-[0.18em] uppercase transition-all duration-300 rounded-xl relative flex items-center gap-3 cursor-pointer ${
                   pestanaActiva === tab.id 
-                    ? 'bg-white/5 text-[#06B6D4] border border-[#06B6D4]/20 shadow-[0_4px_25px_rgba(6,182,212,0.1)]' 
+                    ? 'bg-white/5 text-[#E5A93B] border border-[#E5A93B]/20 shadow-[0_4px_25px_rgba(229, 169, 59, 0.1)]' 
                     : 'text-slate-400 hover:text-white hover:bg-white/[0.03]'
                 }`}
               >
@@ -725,7 +725,7 @@ export const ControlCentral: React.FC = () => {
 
         <div className="font-mono text-[8px] text-slate-500 tracking-widest border-t border-white/5 pt-4">
           <p>[ BÚNKER OS v3.10 ]</p>
-          <p className="uppercase mt-1 text-[#06B6D4] font-black">SISTEMA PC MULTI-COLUMNA</p>
+          <p className="uppercase mt-1 text-[#E5A93B] font-black">SISTEMA PC MULTI-COLUMNA</p>
         </div>
       </aside>
 
@@ -741,7 +741,7 @@ export const ControlCentral: React.FC = () => {
             >
               <span className="text-[9px] font-mono tracking-[0.2em] text-slate-500 uppercase">PROTOCOLO ACTIVO:</span>
               <span className={`px-2.5 py-0.5 rounded-full text-[8px] font-black tracking-widest border font-mono uppercase ${
-                protocoloId === 'BLINDAJE' ? 'bg-[#06B6D4]/10 text-[#06B6D4] border-[#06B6D4]/30 shadow-[0_0_10px_rgba(6,182,212,0.15)] animate-pulse' :
+                protocoloId === 'BLINDAJE' ? 'bg-[#E5A93B]/10 text-[#E5A93B] border-[#E5A93B]/30 shadow-[0_0_10px_rgba(229, 169, 59, 0.15)] animate-pulse' :
                 protocoloId === 'EXPANSION' ? 'bg-[#D946EF]/10 text-[#D946EF] border-[#D946EF]/30 shadow-[0_0_10px_rgba(217,70,239,0.15)]' :
                 protocoloId === 'DISFRUTE' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30 shadow-[0_0_10px_rgba(234,179,8,0.15)]' :
                 protocoloId === 'TACTICO_LIBRE' ? 'bg-purple-500/10 text-purple-400 border-purple-500/30 shadow-[0_0_10px_rgba(168,85,247,0.15)]' :
@@ -758,13 +758,13 @@ export const ControlCentral: React.FC = () => {
             <div className="bg-black/40 border border-white/10 p-1 rounded-xl flex items-center gap-1 font-mono text-[9px] text-slate-400 select-none">
               <button 
                 onClick={() => setIsMobileSimulator(false)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-black transition-all cursor-pointer ${!isMobileSimulator ? 'bg-white/5 text-[#06B6D4] border border-white/5 font-bold shadow-md' : 'hover:text-white'}`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-black transition-all cursor-pointer ${!isMobileSimulator ? 'bg-white/5 text-[#E5A93B] border border-white/5 font-bold shadow-md' : 'hover:text-white'}`}
               >
                 <Monitor className="w-3.5 h-3.5" /> VISTA PC
               </button>
               <button 
                 onClick={() => setIsMobileSimulator(true)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-black transition-all cursor-pointer ${isMobileSimulator ? 'bg-white/5 text-[#06B6D4] border border-white/5 font-bold shadow-md' : 'hover:text-white'}`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-black transition-all cursor-pointer ${isMobileSimulator ? 'bg-white/5 text-[#E5A93B] border border-white/5 font-bold shadow-md' : 'hover:text-white'}`}
               >
                 <Phone className="w-3.5 h-3.5" /> SIMULADOR MÓVIL
               </button>
@@ -897,7 +897,7 @@ export const ControlCentral: React.FC = () => {
               gastos={operacionesNormalizadas}
             />
             <div className="space-y-4 glass-premium neumorphic-dark-out p-6 rounded-[2rem] flex flex-col">
-              <h4 className="text-[11px] font-black tracking-widest text-[#06B6D4] uppercase font-serif">// FLUIDOS DE CAJA (SANKEY BI-FLUJO)</h4>
+              <h4 className="text-[11px] font-black tracking-widest text-[#E5A93B] uppercase font-serif">// FLUIDOS DE CAJA (SANKEY BI-FLUJO)</h4>
               <div className="mt-4">
                 <FlujoCapitalSankey 
                   bimont={ingresoBimont}
@@ -950,11 +950,11 @@ export const ControlCentral: React.FC = () => {
           <div className="flex flex-col items-end gap-2.5 mb-2 animate-in fade-in slide-in-from-bottom-5 duration-200">
             <button onClick={() => { handleOpenNuevaOperacion(); setQuickMenuOpen(false); }} className="flex items-center gap-3 bg-[#112B3C] border border-white/10 text-white p-2.5 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer group">
               <span className="text-[8px] font-mono tracking-widest text-slate-400 group-hover:text-white uppercase font-black">Registrar Operación</span>
-              <div className="w-7 h-7 rounded-xl bg-[#06B6D4]/10 flex items-center justify-center border border-[#06B6D4]/20"><Plus className="w-4 h-4 text-[#06B6D4]" /></div>
+              <div className="w-7 h-7 rounded-xl bg-[#E5A93B]/10 flex items-center justify-center border border-[#E5A93B]/20"><Plus className="w-4 h-4 text-[#E5A93B]" /></div>
             </button>
             <button onClick={handleGlobalScan} className="flex items-center gap-3 bg-[#112B3C] border border-white/10 text-white p-2.5 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer group disabled:opacity-50">
               <span className="text-[8px] font-mono tracking-widest text-slate-400 group-hover:text-white uppercase font-black">Barrer Gmail (OCR)</span>
-              <div className="w-7 h-7 rounded-xl bg-[#06B6D4]/10 flex items-center justify-center border border-[#06B6D4]/20"><RefreshCw className={`w-3.5 h-3.5 text-[#06B6D4] ${isGlobalScanningFacturas ? 'animate-spin' : ''}`} /></div>
+              <div className="w-7 h-7 rounded-xl bg-[#E5A93B]/10 flex items-center justify-center border border-[#E5A93B]/20"><RefreshCw className={`w-3.5 h-3.5 text-[#E5A93B] ${isGlobalScanningFacturas ? 'animate-spin' : ''}`} /></div>
             </button>
             <button onClick={() => { setActiveOverlay('SIMULADORES'); setQuickMenuOpen(false); }} className="flex items-center gap-3 bg-[#112B3C] border border-white/10 text-white p-2.5 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer group">
               <span className="text-[8px] font-mono tracking-widest text-slate-400 group-hover:text-white uppercase font-black">Bola de Nieve</span>
@@ -966,7 +966,7 @@ export const ControlCentral: React.FC = () => {
             </button>
             <button onClick={() => { setActiveOverlay('ESTRATEGIA'); setQuickMenuOpen(false); }} className="flex items-center gap-3 bg-[#112B3C] border border-white/10 text-white p-2.5 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer group">
               <span className="text-[8px] font-mono tracking-widest text-slate-400 group-hover:text-white uppercase font-black">Protocolos</span>
-              <div className="w-7 h-7 rounded-xl bg-[#06B6D4]/10 flex items-center justify-center border border-[#06B6D4]/20"><ShieldCheck className="w-3.5 h-3.5 text-[#06B6D4]" /></div>
+              <div className="w-7 h-7 rounded-xl bg-[#E5A93B]/10 flex items-center justify-center border border-[#E5A93B]/20"><ShieldCheck className="w-3.5 h-3.5 text-[#E5A93B]" /></div>
             </button>
             <button onClick={() => { setActiveOverlay('CONFIGURACION'); setQuickMenuOpen(false); }} className="flex items-center gap-3 bg-[#112B3C] border border-white/10 text-white p-2.5 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 cursor-pointer group">
               <span className="text-[8px] font-mono tracking-widest text-slate-400 group-hover:text-white uppercase font-black">Parámetros</span>
@@ -974,7 +974,7 @@ export const ControlCentral: React.FC = () => {
             </button>
           </div>
         )}
-        <button onClick={() => setQuickMenuOpen(!quickMenuOpen)} className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-2xl transition-all duration-300 border cursor-pointer glow-cyan ${quickMenuOpen ? 'bg-[#06B6D4] border-[#06B6D4]/50 text-black rotate-45 scale-105' : 'bg-[#112B3C] border-white/10 text-[#06B6D4] hover:border-[#06B6D4]/40'}`}>
+        <button onClick={() => setQuickMenuOpen(!quickMenuOpen)} className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-2xl transition-all duration-300 border cursor-pointer glow-amber ${quickMenuOpen ? 'bg-[#E5A93B] border-[#E5A93B]/50 text-black rotate-45 scale-105' : 'bg-[#112B3C] border-white/10 text-[#E5A93B] hover:border-[#E5A93B]/40'}`}>
           <Zap className="w-5 h-5" />
         </button>
       </div>
@@ -988,8 +988,8 @@ export const ControlCentral: React.FC = () => {
               <button onClick={() => setActiveOverlay(null)} className="p-1.5 border border-white/5 rounded-full text-slate-400 hover:text-white"><X className="w-4 h-4" /></button>
             </header>
             <div className="flex bg-black/60 p-1 border border-white/5 rounded-2xl font-mono text-[9px] w-full mb-4">
-              <button onClick={() => setSubSimuladorActivo('DEUDAS')} className={`flex-1 px-4 py-2.5 uppercase rounded-xl font-black transition-all cursor-pointer ${subSimuladorActivo === 'DEUDAS' ? 'bg-[#0B1A28] text-[#06B6D4] border border-[#06B6D4]/30 shadow-md' : 'text-slate-400 hover:text-white'}`}>Bola de Nieve</button>
-              <button onClick={() => setSubSimuladorActivo('EXCEDENTES')} className={`flex-1 px-4 py-2.5 uppercase rounded-xl font-black transition-all cursor-pointer ${subSimuladorActivo === 'EXCEDENTES' ? 'bg-[#0B1A28] text-[#06B6D4] border border-[#06B6D4]/30 shadow-md' : 'text-slate-400 hover:text-white'}`}>Excedentes</button>
+              <button onClick={() => setSubSimuladorActivo('DEUDAS')} className={`flex-1 px-4 py-2.5 uppercase rounded-xl font-black transition-all cursor-pointer ${subSimuladorActivo === 'DEUDAS' ? 'bg-[#0B1A28] text-[#E5A93B] border border-[#E5A93B]/30 shadow-md' : 'text-slate-400 hover:text-white'}`}>Bola de Nieve</button>
+              <button onClick={() => setSubSimuladorActivo('EXCEDENTES')} className={`flex-1 px-4 py-2.5 uppercase rounded-xl font-black transition-all cursor-pointer ${subSimuladorActivo === 'EXCEDENTES' ? 'bg-[#0B1A28] text-[#E5A93B] border border-[#E5A93B]/30 shadow-md' : 'text-slate-400 hover:text-white'}`}>Excedentes</button>
             </div>
             <div className="max-h-[60vh] overflow-y-auto pr-1 custom-scrollbar">
               {subSimuladorActivo === 'DEUDAS' ? <SimuladorExtincionDeudas deudas={deudas} /> : <SimuladorExcedentes excedenteBase={ingresoBimont - costoSupervivenciaMensualCalculado} />}
@@ -1050,7 +1050,7 @@ export const ControlCentral: React.FC = () => {
             {/* Header del Simulador en PC */}
             <div className="absolute top-4 left-6 right-6 flex justify-between items-center z-40 bg-[#0E2531]/40 backdrop-blur-xl border border-white/5 px-5 py-3 rounded-2xl max-w-7xl mx-auto w-[calc(100vw-3rem)]">
               <div>
-                <span className="text-[8px] font-mono tracking-[0.25em] text-[#06B6D4] font-black uppercase">ENTORNO DE PRUEBAS</span>
+                <span className="text-[8px] font-mono tracking-[0.25em] text-[#E5A93B] font-black uppercase">ENTORNO DE PRUEBAS</span>
                 <h2 className="text-sm font-serif font-black uppercase text-white">Laboratorio Multi-Terminal en Paralelo</h2>
               </div>
               
@@ -1059,13 +1059,13 @@ export const ControlCentral: React.FC = () => {
                 <div className="bg-black/40 border border-white/10 p-1 rounded-xl flex items-center gap-1 font-mono text-[9px] text-slate-400 select-none">
                   <button 
                     onClick={() => setIsMultiMobile(false)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-black transition-all cursor-pointer ${!isMultiMobile ? 'bg-white/5 text-[#06B6D4] border border-white/5 font-bold shadow-md' : 'hover:text-white'}`}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-black transition-all cursor-pointer ${!isMultiMobile ? 'bg-white/5 text-[#E5A93B] border border-white/5 font-bold shadow-md' : 'hover:text-white'}`}
                   >
                     <Smartphone className="w-3.5 h-3.5" /> SMARTPHONE ÚNICO
                   </button>
                   <button 
                     onClick={() => setIsMultiMobile(true)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-black transition-all cursor-pointer ${isMultiMobile ? 'bg-white/5 text-[#06B6D4] border border-white/5 font-bold shadow-md' : 'hover:text-white'}`}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-black transition-all cursor-pointer ${isMultiMobile ? 'bg-white/5 text-[#E5A93B] border border-white/5 font-bold shadow-md' : 'hover:text-white'}`}
                   >
                     <LayoutGrid className="w-3.5 h-3.5" /> CARRUSEL (5 PANTALLAS)
                   </button>
@@ -1073,7 +1073,7 @@ export const ControlCentral: React.FC = () => {
 
                 <button 
                   onClick={() => setIsMobileSimulator(false)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#06B6D4] text-black font-mono text-[9px] font-black rounded-xl hover:scale-105 transition-all shadow-lg shadow-[#06B6D4]/20 cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#E5A93B] text-black font-mono text-[9px] font-black rounded-xl hover:scale-105 transition-all shadow-lg shadow-[#E5A93B]/20 cursor-pointer"
                 >
                   <Monitor className="w-3.5 h-3.5" /> VOLVER A VISTA PC
                 </button>
@@ -1178,14 +1178,14 @@ export const ControlCentral: React.FC = () => {
                       {/* Header móvil */}
                       <header className="px-5 py-3 border-b border-white/5 flex items-center justify-between z-30 bg-[#0B1A28]/40 backdrop-blur-md shrink-0">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-lg bg-[#06B6D4]/10 border border-[#06B6D4]/20 flex items-center justify-center">
-                            <span className="text-xs text-[#06B6D4] font-black">Eq</span>
+                          <div className="w-6 h-6 rounded-lg bg-[#E5A93B]/10 border border-[#E5A93B]/20 flex items-center justify-center">
+                            <span className="text-xs text-[#E5A93B] font-black">Eq</span>
                           </div>
                           <span className="font-serif text-sm tracking-[0.1em] font-black text-white uppercase">
-                            Equilibra<span className="text-[#06B6D4]">.</span>
+                            Equilibra<span className="text-[#E5A93B]">.</span>
                           </span>
                         </div>
-                        <span className="text-[7px] font-mono font-black tracking-widest px-2 py-0.5 border border-[#06B6D4]/20 rounded-md text-[#06B6D4] bg-[#06B6D4]/5 uppercase">
+                        <span className="text-[7px] font-mono font-black tracking-widest px-2 py-0.5 border border-[#E5A93B]/20 rounded-md text-[#E5A93B] bg-[#E5A93B]/5 uppercase">
                           {disp.id}
                         </span>
                       </header>
@@ -1206,7 +1206,7 @@ export const ControlCentral: React.FC = () => {
                         ].map((tab) => (
                           <div 
                             key={tab.id}
-                            className={`flex flex-col items-center gap-1 py-1 px-2 transition-all ${disp.id === tab.id ? 'text-[#06B6D4] scale-105 font-black' : 'text-slate-500'}`}
+                            className={`flex flex-col items-center gap-1 py-1 px-2 transition-all ${disp.id === tab.id ? 'text-[#E5A93B] scale-105 font-black' : 'text-slate-500'}`}
                           >
                             <div>{tab.icon}</div>
                             <span className="text-[8px] font-mono tracking-widest uppercase">
@@ -1306,8 +1306,8 @@ export const ControlCentral: React.FC = () => {
 
       {/* Toast de notificaciones de OCR */}
       {scanNotification && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#112B3C]/95 backdrop-blur-xl border border-[#06B6D4]/20 px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 animate-in slide-in-from-top-4 duration-300">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#06B6D4] animate-pulse" />
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-[#112B3C]/95 backdrop-blur-xl border border-[#E5A93B]/20 px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 animate-in slide-in-from-top-4 duration-300">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#E5A93B] animate-pulse" />
           <span className="text-[9px] font-mono tracking-wider text-white uppercase">{scanNotification}</span>
         </div>
       )}
@@ -1315,9 +1315,9 @@ export const ControlCentral: React.FC = () => {
       {/* Modal de factura OCR interceptada */}
       {facturaEncontradaGlobal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#112B3C] border border-[#06B6D4]/20 rounded-3xl p-5 max-w-[280px] w-full shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200 text-center">
+          <div className="bg-[#112B3C] border border-[#E5A93B]/20 rounded-3xl p-5 max-w-[280px] w-full shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200 text-center">
             <h3 className="text-white text-xs font-serif uppercase tracking-wider mb-2 flex items-center justify-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-[#06B6D4]" /> Factura Encontrada
+              <Sparkles className="w-4 h-4 text-[#E5A93B]" /> Factura Encontrada
             </h3>
             <p className="text-[7px] font-mono text-slate-400 uppercase tracking-widest mb-4">// DETECTOR GMAIL OCR</p>
             
@@ -1334,7 +1334,7 @@ export const ControlCentral: React.FC = () => {
 
             <div className="flex gap-2">
               <button onClick={() => setFacturaEncontradaGlobal(null)} className="flex-1 py-2 rounded-lg border border-white/10 text-white font-sans text-[8px] font-black uppercase tracking-widest hover:bg-white/5">Ignorar</button>
-              <button onClick={handleIntegrarFacturaGlobal} className="flex-1 py-2 rounded-lg bg-gradient-to-r from-[#06B6D4] to-[#8B5CF6] text-white font-sans text-[8px] font-black uppercase tracking-widest shadow-lg hover:scale-105 active:scale-95">Integrar</button>
+              <button onClick={handleIntegrarFacturaGlobal} className="flex-1 py-2 rounded-lg bg-gradient-to-r from-[#E5A93B] to-[#8B5CF6] text-white font-sans text-[8px] font-black uppercase tracking-widest shadow-lg hover:scale-105 active:scale-95">Integrar</button>
             </div>
           </div>
         </div>

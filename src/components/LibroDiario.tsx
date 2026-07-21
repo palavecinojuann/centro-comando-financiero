@@ -179,7 +179,7 @@ export function LibroDiario({ operaciones, onEdit, onDelete, onPay, onToggleStat
                         {filas.map((fila) => {
                             let colorCantidad = "text-white";
                             if (fila.type === 'ingreso' || fila.type === 'janlu') {
-                                colorCantidad = "text-[#00D2FF]"; // Cian
+                                colorCantidad = "text-[#E5A93B]"; // Cian
                             } else if (fila.type === 'deuda') {
                                 colorCantidad = "text-[#FFD500]"; // Amarillo Oro
                             } else if (fila.type === 'gasto') {
@@ -240,7 +240,7 @@ export function LibroDiario({ operaciones, onEdit, onDelete, onPay, onToggleStat
                                             <button
                                                 title="Editar"
                                                 onClick={() => onEdit && onEdit(fila.id, fila.type)}
-                                                className="p-1 text-[#00D2FF] hover:text-[#00D2FF]/80 hover:bg-[#00D2FF]/10 rounded-lg transition-all cursor-pointer"
+                                                className="p-1 text-[#E5A93B] hover:text-[#E5A93B]/80 hover:bg-[#E5A93B]/10 rounded-lg transition-all cursor-pointer"
                                             >
                                                 <Edit className="w-3.5 h-3.5" />
                                             </button>
@@ -275,7 +275,7 @@ export function LibroDiario({ operaciones, onEdit, onDelete, onPay, onToggleStat
     };
 
     return (
-        <div className="flex flex-col h-full font-sans selection:bg-[#00D2FF] selection:text-black">
+        <div className="flex flex-col h-full font-sans selection:bg-[#E5A93B] selection:text-black">
             <div className="flex justify-between items-center mb-6 px-4">
                 <div>
                   <h3 className="text-white text-lg font-sans font-black uppercase tracking-widest">Libro Diario</h3>
@@ -283,10 +283,10 @@ export function LibroDiario({ operaciones, onEdit, onDelete, onPay, onToggleStat
                 </div>
                 <button 
                     onClick={() => setOrdenInverso(!ordenInverso)}
-                    className="flex items-center gap-2 px-3 py-2 bg-bunker-panel hover:border-[#00D2FF]/30 transition-all rounded-xl border border-white/5 text-bunker-texto text-[9px] font-black uppercase tracking-widest font-sans shadow-lg group cursor-pointer"
+                    className="flex items-center gap-2 px-3 py-2 bg-bunker-panel hover:border-[#E5A93B]/30 transition-all rounded-xl border border-white/5 text-bunker-texto text-[9px] font-black uppercase tracking-widest font-sans shadow-lg group cursor-pointer"
                 >
-                    {ordenInverso ? <ArrowUpAZ className="w-3.5 h-3.5 text-[#00D2FF]" /> : <ArrowDownAZ className="w-3.5 h-3.5 text-[#00D2FF]" />}
-                    <span className="group-hover:text-[#00D2FF] transition-colors">
+                    {ordenInverso ? <ArrowUpAZ className="w-3.5 h-3.5 text-[#E5A93B]" /> : <ArrowDownAZ className="w-3.5 h-3.5 text-[#E5A93B]" />}
+                    <span className="group-hover:text-[#E5A93B] transition-colors">
                         {ordenInverso ? 'Cronología ↓' : 'Cronología ↑'}
                     </span>
                 </button>

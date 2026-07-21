@@ -130,7 +130,7 @@ export function CopilotoEstrategico({ contexto, gastoSospechoso, onEjecutarAccio
                      </div>
                      <div className="bg-black/30 p-2 rounded-lg border border-white/5">
                         <span className="text-slate-400 text-[10px] uppercase font-bold">Excedente</span>
-                        <p className="text-[#06B6D4] font-bold text-sm text-right">${(contexto.excedente / 1000).toFixed(0)}k</p>
+                        <p className="text-[#E5A93B] font-bold text-sm text-right">${(contexto.excedente / 1000).toFixed(0)}k</p>
                      </div>
                      <div className="bg-black/30 p-2 rounded-lg border border-white/5">
                         <span className="text-slate-400 text-[10px] uppercase font-bold">Deuda</span>

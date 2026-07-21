@@ -81,8 +81,8 @@ export const OptimizadorPasivos: React.FC = () => {
           </div>
 
           {optimizacion.capitalLiberadoProximoMes > 0 && (
-            <div className="bg-gradient-to-br from-[#06B6D4]/10 to-[#06B6D4]/5 border border-[#06B6D4]/30 p-6 rounded-2xl font-sans shadow-[0_10px_20px_rgba(6,182,212,0.05)]">
-              <p className="text-[10px] tracking-widest uppercase text-[#06B6D4] font-black opacity-80">FLUJO REINYECTABLE PRÓXIMO CICLO</p>
+            <div className="bg-gradient-to-br from-[#E5A93B]/10 to-[#E5A93B]/5 border border-[#E5A93B]/30 p-6 rounded-2xl font-sans shadow-[0_10px_20px_rgba(229, 169, 59, 0.05)]">
+              <p className="text-[10px] tracking-widest uppercase text-[#E5A93B] font-black opacity-80">FLUJO REINYECTABLE PRÓXIMO CICLO</p>
               <p className="text-3xl font-black text-white mt-2 tracking-tighter">+${optimizacion.capitalLiberadoProximoMes.toLocaleString()}</p>
             </div>
           )}
@@ -110,7 +110,7 @@ export const OptimizadorPasivos: React.FC = () => {
                 </div>
                 <div className="text-left sm:text-right font-sans">
                   <p className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mb-1 opacity-60">Saldo Post-Impacto</p>
-                  <p className={`text-base font-black tracking-tight ${item.saldo === 0 ? 'text-[#06B6D4] drop-shadow-[0_0_8px_rgba(6,182,212,0.3)]' : 'text-slate-100'}`}>
+                  <p className={`text-base font-black tracking-tight ${item.saldo === 0 ? 'text-[#E5A93B] drop-shadow-[0_0_8px_rgba(229, 169, 59, 0.3)]' : 'text-slate-100'}`}>
                     {item.saldo === 0 ? '✓ EXTINGUIDA' : `$${item.saldo.toLocaleString()}`}
                   </p>
                 </div>

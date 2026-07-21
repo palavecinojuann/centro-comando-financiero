@@ -116,7 +116,7 @@ export const DetalleRama = ({ rama, transacciones, onVolver }: DetalleRamaProps)
              const monto = t.montoNeto || t.utilidad_neta || t.montoTotal || t.capitalOrig || 0;
              const desc = t.origen || t.nombreCompromiso || t.categoria || "Operación";
              return (
-               <div key={t.id} className="flex justify-between items-center p-4 bg-[#161A23]/50 border border-white/10 rounded-none hover:border-[#06B6D4]/50 transition-all">
+               <div key={t.id} className="flex justify-between items-center p-4 bg-[#161A23]/50 border border-white/10 rounded-none hover:border-[#E5A93B]/50 transition-all">
                   <div>
                     <p className="text-white font-medium">{desc}</p>
                     <p className="text-slate-400 text-xs mt-1">{fStr}</p>

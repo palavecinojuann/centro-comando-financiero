@@ -37,7 +37,7 @@ const CustomLink = (props: any) => {
     } = props;
 
     // Calculamos el color en base a la fuente para simular la herencia de color del caudal
-    const colorBase = payload?.source?.payload?.colorBase || '#06b6d4';
+    const colorBase = payload?.source?.payload?.colorBase || '#E5A93B';
     
     // Si la rama va a Peligro (Deudas), forzamos Rojo; si va a Blindaje, Verde
     let finalColor = colorBase;
@@ -96,7 +96,7 @@ const CustomNode = (props: any) => {
                 rx={4}
                 ry={4}
                 style={{
-                    filter: `drop-shadow(0 0 8px ${payload.colorBase || '#06b6d4'}80)`
+                    filter: `drop-shadow(0 0 8px ${payload.colorBase || '#E5A93B'}80)`
                 }}
             />
             <text
@@ -171,12 +171,12 @@ export function WidgetSankeyFluidos() {
             
             {/* Efectos de luces de fondo (Glows) */}
             <div className="absolute top-0 right-[-10%] w-[400px] h-[400px] bg-[#d946ef]/5 blur-[100px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-[#06b6d4]/5 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-[-10%] left-[-10%] w-[400px] h-[400px] bg-[#E5A93B]/5 blur-[100px] rounded-full pointer-events-none" />
             
             <header className="flex items-center justify-between mb-8 relative z-10">
                 <div>
                     <h2 className="text-2xl font-black tracking-tight text-[#E8DFD1] flex items-center gap-3">
-                        <Activity className="w-6 h-6 text-[#06b6d4]" />
+                        <Activity className="w-6 h-6 text-[#E5A93B]" />
                         Diagrama de Control por Fluidos
                     </h2>
                     <p className="text-[10px] font-bold tracking-widest uppercase text-[#8B735B] mt-1 ml-9">
@@ -204,7 +204,7 @@ export function WidgetSankeyFluidos() {
             
             <div className="flex flex-wrap justify-between items-center mt-6 relative z-10 px-2 gap-4">
                <div className="flex items-center gap-2">
-                   <div className="w-3 h-3 rounded-full bg-[#06b6d4] shadow-[0_0_8px_#06b6d4]" />
+                   <div className="w-3 h-3 rounded-full bg-[#E5A93B] shadow-[0_0_8px_#E5A93B]" />
                    <span className="text-xs text-white/70 font-bold tracking-widest uppercase">Bimont S.A.</span>
                </div>
                <div className="flex items-center gap-2">

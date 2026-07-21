@@ -31,7 +31,7 @@ const AnimatedCounter = ({ from, to, isDanger }: { from: number, to: number, isD
 
   const getColorClass = () => {
     if (isDanger) return "text-[#D946EF]";
-    if (displayValue >= 90) return "text-[#06B6D4]";
+    if (displayValue >= 90) return "text-[#E5A93B]";
     if (displayValue >= 70) return "text-white";
     return "text-slate-400";
   };
@@ -147,9 +147,9 @@ export function SimuladorWhatIf({ puntoEstabilidad }: { puntoEstabilidad?: numbe
             <div>
               <div className="flex justify-between items-center mb-2">
                 <label className="text-xs font-black uppercase text-slate-400 flex items-center gap-1.5">
-                  Ventas Janlu Velas <Zap className="w-3.5 h-3.5 text-[#06B6D4]" />
+                  Ventas Janlu Velas <Zap className="w-3.5 h-3.5 text-[#E5A93B]" />
                 </label>
-                <span className={`text-xs font-black font-contable ${ventasJanlu >= 0 ? 'text-[#06B6D4]' : 'text-[#D946EF]'}`}>
+                <span className={`text-xs font-black font-contable ${ventasJanlu >= 0 ? 'text-[#E5A93B]' : 'text-[#D946EF]'}`}>
                   {ventasJanlu > 0 ? '+' : ''}{ventasJanlu}%
                 </span>
               </div>
@@ -161,7 +161,7 @@ export function SimuladorWhatIf({ puntoEstabilidad }: { puntoEstabilidad?: numbe
                 onChange={(e) => setVentasJanlu(Number(e.target.value))}
                 onMouseUp={runSimulation}
                 onTouchEnd={runSimulation}
-                className="w-full h-1.5 bg-black/40 rounded-lg appearance-none cursor-pointer accent-[#06B6D4]"
+                className="w-full h-1.5 bg-black/40 rounded-lg appearance-none cursor-pointer accent-[#E5A93B]"
               />
               <div className="flex justify-between mt-2.5 text-[8px] text-slate-400 uppercase tracking-widest font-black">
                 <span>Caída Fuerte</span>
@@ -239,7 +239,7 @@ export function SimuladorWhatIf({ puntoEstabilidad }: { puntoEstabilidad?: numbe
                     ⚠️ Riesgo P.E.
                   </span>
                 ) : (
-                  <span className="text-[8px] text-[#06B6D4] flex items-center gap-1 font-black uppercase tracking-wide bg-[#06B6D4]/10 px-2.5 py-1 rounded border border-[#06B6D4]/20">
+                  <span className="text-[8px] text-[#E5A93B] flex items-center gap-1 font-black uppercase tracking-wide bg-[#E5A93B]/10 px-2.5 py-1 rounded border border-[#E5A93B]/20">
                     🛡️ Blindado
                   </span>
                 )}

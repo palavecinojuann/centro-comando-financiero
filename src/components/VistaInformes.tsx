@@ -44,7 +44,7 @@ export function VistaInformes({ gastos }: VistaInformesProps) {
   }
 
   // Colores de acento inspirados en la referencia
-  const COLORS = ['#00E5FF', '#FFD500', '#FF007F', '#10B981', '#8B5CF6', '#F59E0B', '#3B82F6'];
+  const COLORS = ['#E5A93B', '#FFD500', '#FF007F', '#10B981', '#8B5CF6', '#F59E0B', '#3B82F6'];
 
   const formatMoney = (amount: number) => {
     return new Intl.NumberFormat('es-AR', {
@@ -74,7 +74,7 @@ export function VistaInformes({ gastos }: VistaInformesProps) {
       <div className="px-4 mb-8">
         <div className="flex items-center justify-between p-3.5 bg-black/40 border border-white/5 rounded-2xl text-[10px] font-mono text-white/70">
           <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-[#00E5FF]" />
+            <Calendar className="w-4 h-4 text-[#E5A93B]" />
             <input 
               type="date" 
               value={fechaInicio} 

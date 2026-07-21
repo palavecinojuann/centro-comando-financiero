@@ -38,7 +38,7 @@ export const AnalisisFlujos: React.FC<AnalisisFlujosProps> = ({
 
     return [
       { name: 'SISTEMA CIMIENTO (🛡️)', value: totalCimiento, color: '#EAB308' },     // Dorado Imperial
-      { name: 'VECTORES ACELERADOR (🚀)', value: totalAcelerador, color: '#06B6D4' } // Cian Neón
+      { name: 'VECTORES ACELERADOR (🚀)', value: totalAcelerador, color: '#E5A93B' } // Cian Neón
     ];
   }, [gastos]);
 
@@ -57,7 +57,7 @@ export const AnalisisFlujos: React.FC<AnalisisFlujosProps> = ({
       nivel: k,
       Monto: nivelesMap[k],
       // Color dinámico según la criticidad del nivel (N1 y N2 en Dorado, N3 en Fucsia, N4 y N5 en Cian)
-      fill: k === 'N1' || k === 'N2' ? '#EAB308' : k === 'N3' ? '#D946EF' : '#06B6D4'
+      fill: k === 'N1' || k === 'N2' ? '#EAB308' : k === 'N3' ? '#D946EF' : '#E5A93B'
     })).reverse(); // Ordenar de N1 a N5
   }, [gastos]);
 
@@ -66,10 +66,10 @@ export const AnalisisFlujos: React.FC<AnalisisFlujosProps> = ({
       
       {/* GRÁFICO 1: DISTRIBUCIÓN ABSOLUTA DE CAJAS (GLASSMORPHISM PIE) */}
       <div className="bg-[#161A23]/60 backdrop-blur-xl border border-white/10 p-4 md:p-8 rounded-3xl shadow-2xl relative overflow-hidden w-full">
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#06B6D4]/40 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#E5A93B]/40 to-transparent" />
         
         <div className="mb-6 border-b border-white/5 pb-6">
-          <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#06B6D4] font-black mb-2">VISUAL_MATRIX // CORE_SPLIT</p>
+          <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#E5A93B] font-black mb-2">VISUAL_MATRIX // CORE_SPLIT</p>
           <h4 className="font-serif text-2xl tracking-normal text-white uppercase font-bold">Segmentación Bi-Flujo</h4>
         </div>
 
@@ -177,10 +177,10 @@ export const AnalisisFlujos: React.FC<AnalisisFlujosProps> = ({
 
       {/* DIAGRAMA SANKEY DE FLUJO DE CAPITAL (GLASSMORPHISM DE ANCHO COMPLETO) */}
       <div className="col-span-1 md:col-span-2 bg-[#161A23]/60 backdrop-blur-xl border border-white/10 p-4 md:p-8 rounded-[2rem] shadow-2xl relative overflow-hidden w-full">
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#06B6D4]/40 to-transparent" />
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#E5A93B]/40 to-transparent" />
         
         <div className="mb-6 border-b border-white/5 pb-6">
-          <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#06B6D4] font-black mb-2">VECTOR_FLUIDS // SANKEY_FLOW</p>
+          <p className="text-[10px] font-sans tracking-[0.3em] uppercase text-[#E5A93B] font-black mb-2">VECTOR_FLUIDS // SANKEY_FLOW</p>
           <h4 className="font-serif text-2xl tracking-normal text-white uppercase font-bold">Mapa de Caudales Financieros</h4>
         </div>
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Zap, Briefcase, Activity, ShoppingBag, ShieldCheck } from 'lucide-react';
 
@@ -12,6 +12,22 @@ interface SankeyProps {
 
 export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedente }: SankeyProps) {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 300, height: 400 });
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new ResizeObserver((entries) => {
+      for (let entry of entries) {
+        setDimensions({
+          width: entry.contentRect.width,
+          height: entry.contentRect.height,
+        });
+      }
+    });
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const formatNumber = (num: number) => 
     new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(num).replace('ARS', '$').trim();
@@ -31,11 +47,11 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
   // Flows proportional routing (Dorado = Cimiento, Fucsia = Acelerador, Cian = Liquidez/Excedentes)
   const flows = [
     { id: 'b-vit', from: 'bimont', to: 'vitales', value: bimont * (vitales / totalOutput), colorFrom: '#F1C40F', colorTo: '#F1C40F' },
-    { id: 'b-var', from: 'bimont', to: 'variables', value: bimont * (variables / totalOutput), colorFrom: '#F1C40F', colorTo: '#06B6D4' },
-    { id: 'b-exc', from: 'bimont', to: 'excedente', value: bimont * (excedente / totalOutput), colorFrom: '#F1C40F', colorTo: '#06B6D4' },
+    { id: 'b-var', from: 'bimont', to: 'variables', value: bimont * (variables / totalOutput), colorFrom: '#F1C40F', colorTo: '#E5A93B' },
+    { id: 'b-exc', from: 'bimont', to: 'excedente', value: bimont * (excedente / totalOutput), colorFrom: '#F1C40F', colorTo: '#E5A93B' },
     { id: 'j-vit', from: 'janlu', to: 'vitales', value: janlu * (vitales / totalOutput), colorFrom: '#D946EF', colorTo: '#F1C40F' },
-    { id: 'j-var', from: 'janlu', to: 'variables', value: janlu * (variables / totalOutput), colorFrom: '#D946EF', colorTo: '#06B6D4' },
-    { id: 'j-exc', from: 'janlu', to: 'excedente', value: janlu * (excedente / totalOutput), colorFrom: '#D946EF', colorTo: '#06B6D4' },
+    { id: 'j-var', from: 'janlu', to: 'variables', value: janlu * (variables / totalOutput), colorFrom: '#D946EF', colorTo: '#E5A93B' },
+    { id: 'j-exc', from: 'janlu', to: 'excedente', value: janlu * (excedente / totalOutput), colorFrom: '#D946EF', colorTo: '#E5A93B' },
   ].filter(f => f.value > 0);
 
   const maxFlow = Math.max(...flows.map(f => f.value), 1);
@@ -78,8 +94,8 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
         </div>
 
         {/* SVG Flow Container */}
-        <div className="flex-1 h-full relative z-0 mx-[-5px] sm:mx-[-10px] pointer-events-none drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]">
-            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <div ref={containerRef} className="flex-1 h-full relative z-0 mx-[-5px] sm:mx-[-10px] pointer-events-none drop-shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+            <svg className="absolute inset-0 w-full h-full">
                <defs>
                   {flows.map((flow) => (
                      <linearGradient key={`grad-${flow.id}`} id={`grad-${flow.id}`} x1="0" y1="0" x2="1" y2="0">
@@ -89,9 +105,9 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
                   ))}
                </defs>
                {flows.map((flow) => {
-                  const y1 = yPos[flow.from as keyof typeof yPos];
-                  const y2 = yPos[flow.to as keyof typeof yPos];
-                  const path = `M 0 ${y1} C 50 ${y1}, 50 ${y2}, 100 ${y2}`;
+                  const y1 = (yPos[flow.from as keyof typeof yPos] / 100) * dimensions.height;
+                  const y2 = (yPos[flow.to as keyof typeof yPos] / 100) * dimensions.height;
+                  const path = `M 0 ${y1} C ${dimensions.width / 2} ${y1}, ${dimensions.width / 2} ${y2}, ${dimensions.width} ${y2}`;
                   const strokeWidth = Math.max(2, (flow.value / maxFlow) * 15); 
 
                   return (
@@ -102,7 +118,6 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
                         stroke={`url(#grad-${flow.id})`}
                         strokeWidth={strokeWidth}
                         strokeLinecap="round"
-                        vectorEffect="non-scaling-stroke"
                         initial={{ pathLength: 0, opacity: 0 }}
                         animate={{ pathLength: 1, opacity: getOpacity(flow) }}
                         transition={{ duration: 1.5, ease: "easeOut" }}
@@ -130,7 +145,7 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
               id="variables" 
               title="Variables" 
               amount={variables} 
-              color="#06B6D4" 
+              color="#E5A93B" 
               icon={<ShoppingBag />}
               pos={yPos.variables} 
               isHovered={hoveredNode === 'variables'}
@@ -141,7 +156,7 @@ export function FlujoCapitalSankey({ bimont, janlu, vitales, variables, excedent
               id="excedente" 
               title="Excedente" 
               amount={excedente} 
-              color="#06B6D4" 
+              color="#E5A93B" 
               icon={<ShieldCheck />}
               pos={yPos.excedente} 
               isHovered={hoveredNode === 'excedente'}

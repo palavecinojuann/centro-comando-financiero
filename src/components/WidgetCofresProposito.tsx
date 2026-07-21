@@ -90,18 +90,18 @@ export function WidgetCofresProposito() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                        className="absolute -top-[140px] left-0 right-0 z-50 p-5 rounded-none bg-[#0D0E15]/95 backdrop-blur-3xl border border-[#06b6d4]/50 shadow-[0_30px_60px_rgba(6,182,212,0.25)] flex flex-col gap-4 overflow-hidden"
+                        className="absolute -top-[140px] left-0 right-0 z-50 p-5 rounded-none bg-[#0D0E15]/95 backdrop-blur-3xl border border-[#E5A93B]/50 shadow-[0_30px_60px_rgba(229, 169, 59, 0.25)] flex flex-col gap-4 overflow-hidden"
                     >
-                        <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-[#06b6d4]/10 rounded-full blur-[50px] pointer-events-none" />
+                        <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-[#E5A93B]/10 rounded-full blur-[50px] pointer-events-none" />
                         
                         <div className="relative z-10 flex gap-4">
-                            <div className="w-14 h-14 rounded-full bg-[#06b6d4]/20 border border-[#06b6d4]/50 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
-                                <Star className="w-7 h-7 text-[#06b6d4]" />
+                            <div className="w-14 h-14 rounded-full bg-[#E5A93B]/20 border border-[#E5A93B]/50 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(229, 169, 59, 0.3)]">
+                                <Star className="w-7 h-7 text-[#E5A93B]" />
                             </div>
                             <div className="flex-1 text-white">
                                 <h4 className="font-black text-xl leading-tight text-white tracking-tight">Victoria Táctica</h4>
                                 <p className="text-[15px] text-gray-400 mt-1.5 leading-snug">
-                                    {alertaSobrante.mensajeAlerta} ¿Desean enviar este sobrante al Cofre <span className="font-bold text-[#06b6d4] underline decoration-[#06b6d4]/40 underline-offset-2">Vacaciones en Familia</span>?
+                                    {alertaSobrante.mensajeAlerta} ¿Desean enviar este sobrante al Cofre <span className="font-bold text-[#E5A93B] underline decoration-[#E5A93B]/40 underline-offset-2">Vacaciones en Familia</span>?
                                 </p>
                             </div>
                         </div>
@@ -109,7 +109,7 @@ export function WidgetCofresProposito() {
                         <div className="relative z-10 flex items-center gap-3 mt-1">
                             <button 
                                 onClick={() => handleTransferir('viaje_familiar')}
-                                className="flex-1 bg-[#06b6d4] hover:bg-[#0891b2] text-[#0D0E15] font-black py-3 rounded-none shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all flex items-center justify-center gap-2 active:scale-95"
+                                className="flex-1 bg-[#E5A93B] hover:bg-[#0891b2] text-[#0D0E15] font-black py-3 rounded-none shadow-[0_0_20px_rgba(229, 169, 59, 0.4)] transition-all flex items-center justify-center gap-2 active:scale-95"
                             >
                                 <Coins className="w-5 h-5" />
                                 Transferir al Cofre
@@ -189,7 +189,7 @@ export function WidgetCofresProposito() {
                             transition={{ duration: 0.8, ease: "easeOut" }}
                             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none"
                         >
-                            <div className="p-4 bg-gradient-to-tr from-[#06b6d4] to-[#0891b2] rounded-full shadow-[0_0_80px_#06b6d4]">
+                            <div className="p-4 bg-gradient-to-tr from-[#E5A93B] to-[#0891b2] rounded-full shadow-[0_0_80px_#E5A93B]">
                                 <Coins className="w-12 h-12 text-[#0D0E15]" />
                             </div>
                         </motion.div>

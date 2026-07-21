@@ -46,15 +46,15 @@ export const ProyeccionBoveda: React.FC<ProyeccionBovedaProps> = ({ costoSupervi
   return (
     <div className="max-w-6xl mx-auto bg-black/40 backdrop-blur-3xl border border-white/10 p-6 md:p-10 rounded-3xl shadow-[0_40px_80px_rgba(0,0,0,0.6)] relative overflow-hidden text-slate-200">
       {/* Contorno luminoso superior Cian Neón (Liquidez / Crecimiento) */}
-      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#06B6D4]/30 to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#E5A93B]/30 to-transparent" />
       
       {/* GLOW AMBIENTAL PROYECTADO */}
-      <div className="absolute -left-24 -top-24 w-56 h-56 bg-[#06B6D4]/10 blur-[100px] pointer-events-none" />
+      <div className="absolute -left-24 -top-24 w-56 h-56 bg-[#E5A93B]/10 blur-[100px] pointer-events-none" />
 
       {/* Encabezado Técnico */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-white/5 pb-10 mb-12 gap-8">
         <div>
-          <p className="text-[9px] font-black tracking-[0.4em] uppercase text-[#06B6D4] mb-3 opacity-70">
+          <p className="text-[9px] font-black tracking-[0.4em] uppercase text-[#E5A93B] mb-3 opacity-70">
             FORECAST_ENGINE // FINANCIAL_ACCELERATOR
           </p>
           <h3 className="font-serif text-3xl md:text-5xl tracking-tight text-white uppercase font-black">
@@ -80,20 +80,20 @@ export const ProyeccionBoveda: React.FC<ProyeccionBovedaProps> = ({ costoSupervi
                 step="25000"
                 value={excedenteMensualAcelerador || ''} 
                 onChange={(e) => setExcedenteMensualAcelerador(Number(e.target.value))}
-                className="w-full bg-black/40 border border-white/10 p-4 rounded-2xl font-sans text-base text-white focus:outline-none focus:border-[#06B6D4] transition-all shadow-inner"
+                className="w-full bg-black/40 border border-white/10 p-4 rounded-2xl font-sans text-base text-white focus:outline-none focus:border-[#E5A93B] transition-all shadow-inner"
               />
             </div>
 
             <div>
               <div className="flex justify-between text-[9px] font-black tracking-[0.3em] text-slate-400 uppercase mb-4">
                 <span>Horizonte Temporal</span>
-                <span className="text-[#06B6D4] font-black">{horizonteMeses} Meses</span>
+                <span className="text-[#E5A93B] font-black">{horizonteMeses} Meses</span>
               </div>
               <input 
                 type="range" min="6" max="36" step="6"
                 value={horizonteMeses} 
                 onChange={(e) => setHorizonteMeses(Number(e.target.value))}
-                className="w-full accent-[#06B6D4] bg-black/40 h-2 cursor-pointer rounded-full"
+                className="w-full accent-[#E5A93B] bg-black/40 h-2 cursor-pointer rounded-full"
               />
             </div>
 
@@ -105,18 +105,18 @@ export const ProyeccionBoveda: React.FC<ProyeccionBovedaProps> = ({ costoSupervi
                 type="number" 
                 value={tasaRetornoAnual} 
                 onChange={(e) => setTasaRetornoAnual(Number(e.target.value))}
-                className="w-full bg-black/40 border border-white/10 p-4 rounded-2xl font-sans text-base text-[#06B6D4] focus:outline-none focus:border-[#06B6D4] transition-all shadow-inner"
+                className="w-full bg-black/40 border border-white/10 p-4 rounded-2xl font-sans text-base text-[#E5A93B] focus:outline-none focus:border-[#E5A93B] transition-all shadow-inner"
               />
             </div>
           </div>
 
           {/* VEREDICTO MATRICIAL DE COBERTURA */}
-          <div className="bg-[#161A23]/80 border border-[#06B6D4]/20 p-8 rounded-3xl text-sm space-y-4 shadow-2xl relative overflow-hidden group">
+          <div className="bg-[#161A23]/80 border border-[#E5A93B]/20 p-8 rounded-3xl text-sm space-y-4 shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-2 opacity-10">
-                <Sparkles className="w-12 h-12 text-[#06B6D4]" />
+                <Sparkles className="w-12 h-12 text-[#E5A93B]" />
             </div>
             <div className="text-[9px] font-black tracking-[0.3em] text-slate-500 uppercase">&gt; ESTATUS DE BÓVEDA PROYECTADO:</div>
-            <div className="text-4xl font-black text-[#06B6D4] drop-shadow-[0_0_15px_rgba(6,182,212,0.4)] tracking-tighter font-mono">
+            <div className="text-4xl font-black text-[#E5A93B] drop-shadow-[0_0_15px_rgba(229, 169, 59, 0.4)] tracking-tighter font-mono">
               ${capitalFinalSimulado.toLocaleString()}
             </div>
             <p className="text-[13px] text-slate-400 leading-relaxed font-medium">
@@ -139,8 +139,8 @@ export const ProyeccionBoveda: React.FC<ProyeccionBovedaProps> = ({ costoSupervi
               <AreaChart data={datosProyeccion} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorCapital" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.4}/>
-                    <stop offset="95%" stopColor="#06B6D4" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#E5A93B" stopOpacity={0.4}/>
+                    <stop offset="95%" stopColor="#E5A93B" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <XAxis 
@@ -164,10 +164,10 @@ export const ProyeccionBoveda: React.FC<ProyeccionBovedaProps> = ({ costoSupervi
                     padding: '16px'
                   }}
                   itemStyle={{ fontFamily: 'Outfit, sans-serif', fontSize: '15px', color: '#FFF', fontWeight: 'bold' }}
-                  labelStyle={{ fontFamily: 'Cinzel, serif', fontSize: '11px', color: '#06B6D4', marginBottom: '8px', fontWeight: 'black', letterSpacing: '0.1em' }}
-                  cursor={{ stroke: '#06B6D4', strokeWidth: 1, strokeDasharray: '4 4' }}
+                  labelStyle={{ fontFamily: 'Cinzel, serif', fontSize: '11px', color: '#E5A93B', marginBottom: '8px', fontWeight: 'black', letterSpacing: '0.1em' }}
+                  cursor={{ stroke: '#E5A93B', strokeWidth: 1, strokeDasharray: '4 4' }}
                 />
-                <Area type="monotone" dataKey="Capital" stroke="#06B6D4" strokeWidth={5} fillOpacity={1} fill="url(#colorCapital)" animationDuration={3000} />
+                <Area type="monotone" dataKey="Capital" stroke="#E5A93B" strokeWidth={5} fillOpacity={1} fill="url(#colorCapital)" animationDuration={3000} />
               </AreaChart>
             </ResponsiveContainer>
           </div>

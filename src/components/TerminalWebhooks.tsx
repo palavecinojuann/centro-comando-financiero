@@ -7,8 +7,8 @@ interface TerminalWebhooksProps {
 export const TerminalWebhooks: React.FC<TerminalWebhooksProps> = ({ alertasCL }) => {
   // Datos simulados de los últimos webhooks capturados en segundo plano
   const [logs] = useState([
-    { id: 'l1', time: '12:14:02', origen: 'MERCADO_PAGO_API', desc: 'COTO DIGITAL SUK.', monto: 45200, status: 'CONSOLIDADO_N5', color: '#06B6D4' },
-    { id: 'l2', time: '10:45:18', origen: 'VISA_STREAM_INTEGRATION', desc: 'YPF ACASSUSO', monto: 35000, status: 'CONSOLIDADO_N5', color: '#06B6D4' },
+    { id: 'l1', time: '12:14:02', origen: 'MERCADO_PAGO_API', desc: 'COTO DIGITAL SUK.', monto: 45200, status: 'CONSOLIDADO_N5', color: '#E5A93B' },
+    { id: 'l2', time: '10:45:18', origen: 'VISA_STREAM_INTEGRATION', desc: 'YPF ACASSUSO', monto: 35000, status: 'CONSOLIDADO_N5', color: '#E5A93B' },
     { id: 'l3', time: '08:22:10', origen: 'STRIPE_WEBHOOK_NODE', desc: 'NETFLIX TOKYO', monto: 8900, status: 'CONSOLIDADO_N3', color: '#8B5CF6' },
   ]);
 
@@ -16,19 +16,19 @@ export const TerminalWebhooks: React.FC<TerminalWebhooksProps> = ({ alertasCL })
     <div className="max-w-4xl mx-auto bg-black/40 backdrop-blur-2xl border border-white/10 p-6 md:p-10 rounded-3xl shadow-[0_40px_80px_rgba(0,0,0,0.6)] relative overflow-hidden text-slate-200 group">
       
       {/* GLOW DE PUERTO ACTIVO CIAN */}
-      <div className="absolute -left-20 -bottom-20 w-44 h-44 bg-[#06B6D4]/10 blur-[80px] pointer-events-none group-hover:bg-[#06B6D4]/15 transition-all duration-1000" />
+      <div className="absolute -left-20 -bottom-20 w-44 h-44 bg-[#E5A93B]/10 blur-[80px] pointer-events-none group-hover:bg-[#E5A93B]/15 transition-all duration-1000" />
 
       {/* Encabezado del Terminal */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-white/5 pb-8 mb-10 gap-6">
         <div>
-          <p className="text-[9px] font-black tracking-[0.4em] uppercase text-[#06B6D4] mb-3 opacity-70">
+          <p className="text-[9px] font-black tracking-[0.4em] uppercase text-[#E5A93B] mb-3 opacity-70">
             NETWORK_STREAM // PASIVE_CAPTURE
           </p>
           <h3 className="font-serif text-3xl md:text-4xl tracking-tight text-white uppercase font-black">
             Alertas de Terminal
           </h3>
         </div>
-        <div className="bg-[#161a23]/80 border border-[#06B6D4]/30 px-6 py-3 rounded-2xl font-mono text-[9px] text-[#06B6D4] tracking-[0.2em] font-black uppercase shadow-[0_0_20px_rgba(6,182,212,0.1)]">
+        <div className="bg-[#161a23]/80 border border-[#E5A93B]/30 px-6 py-3 rounded-2xl font-mono text-[9px] text-[#E5A93B] tracking-[0.2em] font-black uppercase shadow-[0_0_20px_rgba(229, 169, 59, 0.1)]">
           GATEWAY: SECURE_LISTENING
         </div>
       </div>
@@ -44,7 +44,7 @@ export const TerminalWebhooks: React.FC<TerminalWebhooksProps> = ({ alertasCL })
             {alertasCL.map((alerta) => {
               const esCritica = alerta.severidad === 'CRITICA';
               const esAlta = alerta.severidad === 'ALTA';
-              const color = esCritica ? '#ff007f' : esAlta ? '#EAB308' : '#06B6D4';
+              const color = esCritica ? '#ff007f' : esAlta ? '#EAB308' : '#E5A93B';
               return (
                 <div key={alerta.id} className="font-mono text-[11px] leading-relaxed border-b border-white/5 pb-4 last:border-none">
                   <div className="flex justify-between items-start gap-4 flex-wrap mb-1">
@@ -56,7 +56,7 @@ export const TerminalWebhooks: React.FC<TerminalWebhooksProps> = ({ alertasCL })
                   <div className="text-white font-bold text-xs uppercase mb-1">{alerta.titulo}</div>
                   <div className="text-slate-400 text-[11px] mb-2">{alerta.mensaje}</div>
                   {alerta.accion && (
-                    <div className="text-[9px] text-[#06B6D4] bg-[#06B6D4]/5 border border-[#06B6D4]/15 px-3 py-1.5 rounded-lg inline-block">
+                    <div className="text-[9px] text-[#E5A93B] bg-[#E5A93B]/5 border border-[#E5A93B]/15 px-3 py-1.5 rounded-lg inline-block">
                       <span className="font-bold">DECRETO C.L. REQUERIDO:</span> {alerta.accion}
                     </div>
                   )}
@@ -70,7 +70,7 @@ export const TerminalWebhooks: React.FC<TerminalWebhooksProps> = ({ alertasCL })
       {/* Lista de Intercepciones en Tiempo Real */}
       <div className="space-y-6">
         <p className="text-[9px] font-black tracking-[0.3em] uppercase text-slate-500 mb-6 flex items-center gap-3">
-          <span className="w-8 h-[1px] bg-[#06b6d4]/30"></span>
+          <span className="w-8 h-[1px] bg-[#E5A93B]/30"></span>
           Ingesta de Datos Reciente // RT_SYNC
         </p>
 
@@ -80,9 +80,9 @@ export const TerminalWebhooks: React.FC<TerminalWebhooksProps> = ({ alertasCL })
               <div className="flex items-center gap-5 flex-wrap font-sans">
                  <div className="flex flex-col">
                   <span className="text-slate-600 font-mono text-[10px] tracking-widest">[{log.time}]</span>
-                  <span className="text-[#06B6D4] font-black text-[9px] tracking-[0.1em] uppercase mt-0.5">{log.origen}</span>
+                  <span className="text-[#E5A93B] font-black text-[9px] tracking-[0.1em] uppercase mt-0.5">{log.origen}</span>
                  </div>
-                <span className="text-white font-black text-sm uppercase tracking-tight group-hover:text-[#06B6D4] transition-colors">{log.desc}</span>
+                <span className="text-white font-black text-sm uppercase tracking-tight group-hover:text-[#E5A93B] transition-colors">{log.desc}</span>
               </div>
               <div className="flex items-center gap-5 self-stretch sm:self-auto justify-between sm:justify-end">
                 <span className="text-white font-black tracking-tighter text-lg font-mono">${log.monto.toLocaleString()}</span>

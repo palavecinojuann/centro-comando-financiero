@@ -32,7 +32,7 @@ export class MotorSankey {
     public generarDataFlujo(datos: AgrupadoInput): SankeyData {
         // Nodos con sus colores tácticos
         const nodes: SankeyNode[] = [
-            { name: 'Bimont S.A.', category: 'ingreso_bimont', colorBase: '#06b6d4' },  // 0 - Cian
+            { name: 'Bimont S.A.', category: 'ingreso_bimont', colorBase: '#E5A93B' },  // 0 - Cian
             { name: 'Janlu Velas', category: 'ingreso_janlu', colorBase: '#d946ef' },   // 1 - Fucsia Neon
             { name: 'Caudal Total', category: 'caudal_total', colorBase: '#E8DFD1' },   // 2 - Crema
             { name: 'Gastos Vitales', category: 'vitales', colorBase: '#8B735B' },      // 3 - Madera

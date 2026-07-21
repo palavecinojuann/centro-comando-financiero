@@ -31,7 +31,7 @@ export function ExplicacionCopiloto({ situacionBase }: ExplicacionCopilotoProps)
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#8B5CF6]/20 blur-[50px] rounded-full mix-blend-screen pointer-events-none"></div>
             
             <div className="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
-                <div className="w-10 h-10 rounded-xl bg-[#8B5CF6]/20 flex items-center justify-center border border-[#8B5CF6]/40 text-cyan-300">
+                <div className="w-10 h-10 rounded-xl bg-[#8B5CF6]/20 flex items-center justify-center border border-[#8B5CF6]/40 text-[#E5A93B]">
                     <Bot className="w-6 h-6" />
                 </div>
                 <div>
@@ -39,7 +39,7 @@ export function ExplicacionCopiloto({ situacionBase }: ExplicacionCopilotoProps)
                         Auditor Cognitivo
                         <span className="bg-[#8B5CF6] px-2 py-0.5 rounded-full text-[10px] uppercase font-black tracking-wider text-white animate-pulse">Online</span>
                     </h3>
-                    <p className="text-cyan-300 text-xs font-medium">Análisis Táctico de IA</p>
+                    <p className="text-[#E5A93B] text-xs font-medium">Análisis Táctico de IA</p>
                 </div>
             </div>
 
@@ -66,11 +66,11 @@ export function ExplicacionCopiloto({ situacionBase }: ExplicacionCopilotoProps)
 
                 <div className="flex items-start gap-3">
                     <div className="mt-1 flex-shrink-0">
-                        <CheckCircle2 className="w-4 h-4 text-cyan-300" />
+                        <CheckCircle2 className="w-4 h-4 text-[#E5A93B]" />
                     </div>
                     <div>
-                        <p className="text-cyan-300/70 text-[10px] uppercase font-bold tracking-widest mb-0.5">3. Acción Sugerida</p>
-                        <p className="text-cyan-300 text-sm font-bold">{accionSugerida}</p>
+                        <p className="text-[#E5A93B]/70 text-[10px] uppercase font-bold tracking-widest mb-0.5">3. Acción Sugerida</p>
+                        <p className="text-[#E5A93B] text-sm font-bold">{accionSugerida}</p>
                     </div>
                 </div>
 

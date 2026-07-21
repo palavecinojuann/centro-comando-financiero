@@ -89,7 +89,7 @@ export const ScannerTicket: React.FC<ScannerTicketProps> = ({ onAnalisisCompleto
             <div className="font-mono text-[11px] space-y-1.5 border-b border-white/5 pb-3">
               <p className="text-slate-500">&gt; COMERCIO: <span className="text-white font-bold">{veredicto.comercio}</span></p>
               <p className="text-slate-500">&gt; IMPORTE TOTAL: <span className="text-white font-bold">${veredicto.montoTotal?.toLocaleString()}</span></p>
-              <p className="text-slate-500">&gt; REPARTO SUGERIDO CIMIENTO: <span className="text-[#06B6D4] font-bold">{veredicto.porcentajeCimiento}%</span></p>
+              <p className="text-slate-500">&gt; REPARTO SUGERIDO CIMIENTO: <span className="text-[#E5A93B] font-bold">{veredicto.porcentajeCimiento}%</span></p>
             </div>
 
             <div className="p-3 bg-[#8B5CF6]/5 border border-[#8B5CF6]/10 text-[10px] font-mono text-slate-400 leading-normal">

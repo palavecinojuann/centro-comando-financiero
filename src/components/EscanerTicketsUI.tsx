@@ -122,7 +122,7 @@ export function EscanerTicketsUI({ onClose, onConfirm }: EscanerTicketsUIProps) 
               </p>
 
               <div className="space-y-3 w-full">
-                <label className="w-full flex items-center justify-center gap-2 bg-[#06B6D4]/10 text-[#06B6D4] py-4 rounded-none border border-[#06B6D4]/20 cursor-pointer hover:bg-[#06B6D4]/20 transition-colors font-bold">
+                <label className="w-full flex items-center justify-center gap-2 bg-[#E5A93B]/10 text-[#E5A93B] py-4 rounded-none border border-[#E5A93B]/20 cursor-pointer hover:bg-[#E5A93B]/20 transition-colors font-bold">
                   <Camera className="w-5 h-5" />
                   Tomar Foto
                   <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handleCapture} />
@@ -154,17 +154,17 @@ export function EscanerTicketsUI({ onClose, onConfirm }: EscanerTicketsUIProps) 
               )}
               
             {/* Área de enfoque / Scanner Bounding Box */}
-            <div className="absolute inset-x-8 top-24 bottom-32 border border-[#06B6D4]/30 rounded-none pointer-events-none overflow-hidden flex items-center justify-center">
-                <div className="absolute inset-0 bg-[#06B6D4]/10 animate-pulse" />
-                <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-[#06B6D4] rounded-tl-3xl" />
-                <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-[#06B6D4] rounded-tr-3xl" />
-                <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-[#06B6D4] rounded-bl-3xl" />
-                <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-[#06B6D4] rounded-br-3xl" />
+            <div className="absolute inset-x-8 top-24 bottom-32 border border-[#E5A93B]/30 rounded-none pointer-events-none overflow-hidden flex items-center justify-center">
+                <div className="absolute inset-0 bg-[#E5A93B]/10 animate-pulse" />
+                <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-[#E5A93B] rounded-tl-3xl" />
+                <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-[#E5A93B] rounded-tr-3xl" />
+                <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-[#E5A93B] rounded-bl-3xl" />
+                <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-[#E5A93B] rounded-br-3xl" />
                 
                 {/* Láser Scanner */}
                 <div className="absolute inset-0 overflow-hidden">
                   <div 
-                    className="w-full h-1 bg-gradient-to-r from-transparent via-[#D946EF] to-[#06B6D4] shadow-[0_0_15px_#D946EF,0_0_30px_#06B6D4] absolute animate-bounce"
+                    className="w-full h-1 bg-gradient-to-r from-transparent via-[#D946EF] to-[#E5A93B] shadow-[0_0_15px_#D946EF,0_0_30px_#E5A93B] absolute animate-bounce"
                     style={{ top: '10%' }}
                   />
                 </div>
@@ -173,7 +173,7 @@ export function EscanerTicketsUI({ onClose, onConfirm }: EscanerTicketsUIProps) 
               {/* Mensaje flotante */}
               <div className="relative z-20 flex flex-col items-center">
                 <div className="w-16 h-16 rounded-none bg-[#161A23]/50 border border-white/10 backdrop-blur-xl flex items-center justify-center mb-6 relative overflow-hidden">
-                   <div className="absolute inset-0 opacity-20 border-[3px] border-[#06B6D4] rounded-none -m-1 animate-ping" />
+                   <div className="absolute inset-0 opacity-20 border-[3px] border-[#E5A93B] rounded-none -m-1 animate-ping" />
                    <Camera className="w-6 h-6 text-white animate-pulse" />
                 </div>
                 
@@ -191,11 +191,11 @@ export function EscanerTicketsUI({ onClose, onConfirm }: EscanerTicketsUIProps) 
         {scannerState === 'RESULT' && scanResult && (
           <div 
             key="result"
-            className="flex-1 flex flex-col items-center justify-center p-6 bg-gradient-to-b from-transparent to-[#06B6D4]/5 animate-in fade-in slide-in-from-bottom-8 zoom-in-95 duration-500 ease-out"
+            className="flex-1 flex flex-col items-center justify-center p-6 bg-gradient-to-b from-transparent to-[#E5A93B]/5 animate-in fade-in slide-in-from-bottom-8 zoom-in-95 duration-500 ease-out"
           >
                <div className="w-full bg-[#161A23]/50 backdrop-blur-2xl border border-white/10 rounded-none p-6 shadow-2xl relative overflow-hidden mb-6 animate-in slide-in-from-bottom-4 duration-700 ease-out delay-150 fill-mode-both">
                  {/* Efecto de luz */}
-                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-[#06B6D4]/20 blur-[50px] rounded-full pointer-events-none" />
+                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-[#E5A93B]/20 blur-[50px] rounded-full pointer-events-none" />
                  
                  <div className="text-center relative z-10">
                    <p className="text-white/50 text-xs font-bold uppercase tracking-widest mb-1">Monto Detectado</p>
@@ -232,7 +232,7 @@ export function EscanerTicketsUI({ onClose, onConfirm }: EscanerTicketsUIProps) 
                     categoria: scanResult.categoria,
                     sugerenciaMacro: scanResult.sugerenciaMacro 
                   })}
-                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#06B6D4] to-[#00B894] text-black font-black py-4 rounded-none hover:brightness-110 transition-all shadow-[0_0_20px_rgba(0,240,255,0.3)] shadow-[#06B6D4]/20"
+                  className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#E5A93B] to-[#00B894] text-black font-black py-4 rounded-none hover:brightness-110 transition-all shadow-[0_0_20px_rgba(0,240,255,0.3)] shadow-[#E5A93B]/20"
                  >
                    <Check className="w-5 h-5" />
                    Confirmar y Cargar

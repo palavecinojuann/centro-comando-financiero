@@ -40,7 +40,7 @@ export function GraficoEstabilidadOndas({ porcentaje = 0, sobrante = 0 }: Grafic
           {/* Curva de Progreso */}
           <path 
             d={`M 20 130 A ${radius} ${radius} 0 0 1 180 130`}
-            stroke={isSurplus ? "#06B6D4" : "url(#colorGradient)"}
+            stroke={isSurplus ? "#E5A93B" : "url(#colorGradient)"}
             strokeWidth={strokeWidth} 
             fill="none" 
             strokeDasharray={arcLength} 
@@ -61,7 +61,7 @@ export function GraficoEstabilidadOndas({ porcentaje = 0, sobrante = 0 }: Grafic
         <div className="absolute top-10 flex flex-col items-center justify-center text-center w-full">
           {isSurplus ? (
             <>
-              <span className="text-[#06B6D4]/80 text-[10px] font-black uppercase tracking-widest mb-1 drop-shadow-sm">
+              <span className="text-[#E5A93B]/80 text-[10px] font-black uppercase tracking-widest mb-1 drop-shadow-sm">
                 EXCEDENTE A FAVOR
               </span>
               <span className="text-white text-3xl font-black tracking-tighter drop-shadow-md">
@@ -84,7 +84,7 @@ export function GraficoEstabilidadOndas({ porcentaje = 0, sobrante = 0 }: Grafic
 
       {/* Badge inferior de éxito si se superó o igualó el 100% */}
       {isSurplus && (
-        <div className="mt-6 flex items-center justify-center bg-[#06B6D4]/10 border border-[#06B6D4]/30 text-[#06B6D4] px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(0,240,255,0.15)]">
+        <div className="mt-6 flex items-center justify-center bg-[#E5A93B]/10 border border-[#E5A93B]/30 text-[#E5A93B] px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(0,240,255,0.15)]">
           <span className="text-[10px] font-black uppercase tracking-widest">
             ✓ Mes Asegurado (100%)
           </span>

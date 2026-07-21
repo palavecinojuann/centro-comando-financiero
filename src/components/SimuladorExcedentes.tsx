@@ -48,9 +48,9 @@ export function SimuladorExcedentes({
   const remanente2 = remanente1 - deudas;
 
   return (
-    <div className="w-full max-w-lg mx-auto glass-premium neumorphic-dark-out p-6 rounded-[2rem] font-sans relative overflow-hidden selection:bg-[#06B6D4]/30 selection:text-white">
+    <div className="w-full max-w-lg mx-auto glass-premium neumorphic-dark-out p-6 rounded-[2rem] font-sans relative overflow-hidden selection:bg-[#E5A93B]/30 selection:text-white">
         {/* Decoración de fondo (Luces) */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#06B6D4]/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#E5A93B]/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
 
         <div className="relative z-10 space-y-6">
             {/* 1. Cabecera del Simulador */}
@@ -63,7 +63,7 @@ export function SimuladorExcedentes({
                 )}
                 <div className="flex flex-col items-center justify-center my-4">
                     <span className="text-slate-400 text-[10px] font-black uppercase tracking-[0.25em] mb-1 font-sans">Capital Libre Sin Asignar</span>
-                    <span className={`text-3xl font-black tracking-tighter transition-colors font-contable ${capitalSinAsignar === 0 ? 'text-[#06B6D4]' : 'text-white'}`}>
+                    <span className={`text-3xl font-black tracking-tighter transition-colors font-contable ${capitalSinAsignar === 0 ? 'text-[#E5A93B]' : 'text-white'}`}>
                         {formatCurrency(capitalSinAsignar)}
                     </span>
                 </div>
@@ -121,7 +121,7 @@ export function SimuladorExcedentes({
                 {/* Slider 3: Expansión Janlu (Cian) */}
                 <div className="flex flex-col gap-2 group">
                     <div className="flex justify-between items-end">
-                        <span className="text-[10px] font-black uppercase tracking-[0.25em] text-[#06B6D4] flex items-center gap-1.5 relative group/tooltip">
+                        <span className="text-[10px] font-black uppercase tracking-[0.25em] text-[#E5A93B] flex items-center gap-1.5 relative group/tooltip">
                             <Zap className="w-4 h-4" /> Expansión Janlu
                             <Info size={14} className="text-slate-400 cursor-help" />
                             <div className="absolute bottom-full left-0 mb-2 hidden group-hover/tooltip:block w-48 bg-black border border-white/5 p-2 rounded-lg text-[9px] normal-case tracking-normal z-20 shadow-xl">
@@ -137,7 +137,7 @@ export function SimuladorExcedentes({
                         step="1000"
                         value={expansion}
                         onChange={(e) => handleSliderChange(setExpansion, Number(e.target.value), expansion)}
-                        className="w-full h-1.5 bg-black/40 rounded-lg appearance-none cursor-pointer accent-[#06B6D4]"
+                        className="w-full h-1.5 bg-black/40 rounded-lg appearance-none cursor-pointer accent-[#E5A93B]"
                     />
                 </div>
 
@@ -160,7 +160,7 @@ export function SimuladorExcedentes({
                         step="1000"
                         value={disfrute}
                         onChange={(e) => handleSliderChange(setDisfrute, Number(e.target.value), disfrute)}
-                        className="w-full h-1.5 bg-black/40 rounded-lg appearance-none cursor-pointer accent-[#06B6D4]"
+                        className="w-full h-1.5 bg-black/40 rounded-lg appearance-none cursor-pointer accent-[#E5A93B]"
                     />
                 </div>
             </div>
@@ -173,7 +173,7 @@ export function SimuladorExcedentes({
                     className="w-full px-4 py-4 flex items-center justify-between hover:bg-white/5 transition-colors focus:outline-none cursor-pointer"
                 >
                     <div className="flex items-center gap-2">
-                        <Calculator className="w-4 h-4 text-[#06B6D4]" />
+                        <Calculator className="w-4 h-4 text-[#E5A93B]" />
                         <span className="text-[10px] font-bold uppercase tracking-widest text-white">Desglose Matemático (Greedy)</span>
                     </div>
                     <motion.div animate={{ rotate: showDesglose ? 180 : 0 }}>
@@ -215,17 +215,17 @@ export function SimuladorExcedentes({
                                     <span>= Saldo Remanente 2</span>
                                     <span>{formatCurrency(remanente2)}</span>
                                 </div>
-                                <div className="flex justify-between text-[#06B6D4]">
+                                <div className="flex justify-between text-[#E5A93B]">
                                     <span>(-) Fase 3: Expansión Janlu</span>
                                     <span>{formatCurrency(expansion)}</span>
                                 </div>
-                                <div className="flex justify-between text-[#06B6D4] pb-2 border-b border-white/5 mb-2">
+                                <div className="flex justify-between text-[#E5A93B] pb-2 border-b border-white/5 mb-2">
                                     <span>(-) Fase 3: Disfrute Libre</span>
                                     <span>{formatCurrency(disfrute)}</span>
                                 </div>
                                 <div className="flex justify-between text-white font-bold pt-2">
                                     <span>= Capital Sin Asignar</span>
-                                    <span className={capitalSinAsignar === 0 ? "text-[#06B6D4]" : "text-white"}>
+                                    <span className={capitalSinAsignar === 0 ? "text-[#E5A93B]" : "text-white"}>
                                         {formatCurrency(capitalSinAsignar)}
                                     </span>
                                 </div>
@@ -263,11 +263,11 @@ export function SimuladorExcedentes({
                 <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-white text-xs font-black uppercase tracking-wide">⚡ Showroom Janlu</span>
-                        <span className="text-[#06B6D4] text-xs font-black font-contable">{(expansion / META_EXPANSION * 100).toFixed(1)}%</span>
+                        <span className="text-[#E5A93B] text-xs font-black font-contable">{(expansion / META_EXPANSION * 100).toFixed(1)}%</span>
                     </div>
                     <div className="w-full h-1.5 bg-black rounded-full overflow-hidden">
                         <motion.div 
-                            className="h-full bg-[#06B6D4] shadow-[0_0_10px_#06B6D4]"
+                            className="h-full bg-[#E5A93B] shadow-[0_0_10px_#E5A93B]"
                             initial={{ width: 0 }}
                             animate={{ width: `${Math.min((expansion / META_EXPANSION) * 100, 100)}%` }}
                             transition={{ type: 'spring', stiffness: 100, damping: 20 }}

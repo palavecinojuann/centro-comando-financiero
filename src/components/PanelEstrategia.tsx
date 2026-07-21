@@ -28,7 +28,7 @@ interface PanelEstrategiaProps {
 const mapearIcono = (id: TipoProtocolo) => {
   switch (id) {
     case "BLINDAJE":
-      return <ShieldCheck className="w-5 h-5 text-cyan-300" />;
+      return <ShieldCheck className="w-5 h-5 text-[#E5A93B]" />;
     case "EXPANSION":
       return <TrendingUp className="w-5 h-5 text-[#ff007f]" />;
     case "DISFRUTE":
@@ -110,20 +110,20 @@ export function PanelEstrategia({
       <div className="w-full max-w-4xl h-full bg-[#0D0E15]/95 backdrop-blur-3xl border-l border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.8)] flex flex-col animate-in slide-in-from-right duration-700 ease-out overflow-y-auto overflow-x-hidden p-6 md:p-12 rounded-l-[40px] md:rounded-l-[60px] relative">
         
         {/* Luces volumétricas de fondo */}
-        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-[#06B6D4]/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/4 -left-20 w-80 h-80 bg-[#E5A93B]/5 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-[#ff007f]/5 rounded-full blur-[100px] pointer-events-none" />
 
         {/* Header Modal */}
         <div className="flex justify-between items-center mb-12 pb-6 border-b border-white/5 sticky top-0 bg-transparent z-20 backdrop-blur-md">
           <div className="flex items-center gap-5">
-            <div className="w-14 h-14 rounded-2xl bg-[#8B5CF6]/10 flex items-center justify-center border border-[#8B5CF6]/30 text-[#06B6D4] shadow-[0_0_20px_rgba(139,92,246,0.2)]">
+            <div className="w-14 h-14 rounded-2xl bg-[#8B5CF6]/10 flex items-center justify-center border border-[#8B5CF6]/30 text-[#E5A93B] shadow-[0_0_20px_rgba(139,92,246,0.2)]">
               <Sparkles className="w-7 h-7" />
             </div>
             <div>
               <h2 className="text-white font-serif font-black text-2xl tracking-tight uppercase">
                 Arquitectura Estratégica
               </h2>
-              <p className="text-[#06B6D4] text-[9px] font-black tracking-[0.3em] uppercase opacity-70">
+              <p className="text-[#E5A93B] text-[9px] font-black tracking-[0.3em] uppercase opacity-70">
                 Protocolos de Operación // Equilibra OS
               </p>
             </div>
@@ -140,10 +140,10 @@ export function PanelEstrategia({
           <div className="flex flex-col gap-8 w-full xl:w-2/3">
             {/* Cabecera del Panel */}
             <div className="flex flex-col gap-2">
-              <h2 className="text-[#06B6D4] text-[9px] font-black uppercase tracking-[0.4em] flex items-center justify-between">
+              <h2 className="text-[#E5A93B] text-[9px] font-black uppercase tracking-[0.4em] flex items-center justify-between">
                 <span>SIMULADOR DE RITMO OPERATIVO</span>
                 <div
-                  className={`px-4 py-1.5 rounded-full text-[9px] font-black tracking-widest ${balance >= 0 ? "bg-[#06b6d4]/10 text-[#06b6d4] border border-[#06b6d4]/30" : "bg-red-500/10 text-red-400 border border-red-500/30"}`}
+                  className={`px-4 py-1.5 rounded-full text-[9px] font-black tracking-widest ${balance >= 0 ? "bg-[#E5A93B]/10 text-[#E5A93B] border border-[#E5A93B]/30" : "bg-red-500/10 text-red-400 border border-red-500/30"}`}
                 >
                   {balance >= 0 ? "SUPERÁVIT DETECTADO" : "DÉFICIT DETECTADO"}
                 </div>
@@ -159,12 +159,12 @@ export function PanelEstrategia({
                 Protocolo en Ejecución
               </p>
               <div className="bg-white/5 backdrop-blur-xl p-8 md:p-10 rounded-[32px] shadow-2xl border border-white/10 relative overflow-hidden transition-all duration-500 group">
-                <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-[#06b6d4] to-[#8B5CF6] shadow-[0_0_15px_#06B6D4]"></div>
+                <div className="absolute top-0 left-0 w-2 h-full bg-gradient-to-b from-[#E5A93B] to-[#8B5CF6] shadow-[0_0_15px_#E5A93B]"></div>
 
                 {/* Etiqueta Sugerido por IA */}
                 {escenarioActivo.id === protocoloRecomendado && (
                   <div className="absolute top-6 right-6 flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-md shadow-lg">
-                    <Sparkles className="w-3.5 h-3.5 text-[#06B6D4]" />
+                    <Sparkles className="w-3.5 h-3.5 text-[#E5A93B]" />
                     <span className="text-[9px] font-black text-white tracking-[0.2em] uppercase font-sans">
                       Sugerencia IA
                     </span>
@@ -189,7 +189,7 @@ export function PanelEstrategia({
                       {mapearDescripcionAmigable(escenarioActivo.id)}
                     </p>
                     <div className="mt-8 bg-black/40 rounded-2xl px-6 py-5 border border-white/5 shadow-inner">
-                      <p className="text-[#06B6D4] text-sm font-black leading-relaxed tracking-wide font-sans italic opacity-90">
+                      <p className="text-[#E5A93B] text-sm font-black leading-relaxed tracking-wide font-sans italic opacity-90">
                         ➤ {escenarioActivo.resultadoProyectado}
                       </p>
                     </div>
@@ -199,11 +199,11 @@ export function PanelEstrategia({
                 {escenarioActivo.id === "TACTICO_LIBRE" && (
                   <div className="mt-10 pt-10 border-t border-white/5 space-y-8 animate-in fade-in slide-in-from-top-4 duration-700">
                     <div className="flex justify-between items-center px-1">
-                      <span className="text-[10px] font-black text-[#06b6d4] uppercase tracking-[0.3em]">
+                      <span className="text-[10px] font-black text-[#E5A93B] uppercase tracking-[0.3em]">
                         Asignación de Recursos Manual
                       </span>
                       <span
-                        className={`text-base font-black font-mono ${Object.values(porcentajesManuales).reduce((a: number, b: number) => a + b, 0) === 100 ? "text-[#06b6d4]" : "text-[#ff007f]"}`}
+                        className={`text-base font-black font-mono ${Object.values(porcentajesManuales).reduce((a: number, b: number) => a + b, 0) === 100 ? "text-[#E5A93B]" : "text-[#ff007f]"}`}
                       >
                         {Object.values(porcentajesManuales).reduce(
                           (a: number, b: number) => a + b,
@@ -218,7 +218,7 @@ export function PanelEstrategia({
                         <div key={nivel} className="space-y-4">
                           <div className="flex justify-between items-center text-[11px] font-black text-white uppercase tracking-wider">
                             <span>{nivel === 'indispensables' ? 'Supervivencia' : 'Estilo de Vida'}</span>
-                            <span className="text-[#06b6d4]">{perc}%</span>
+                            <span className="text-[#E5A93B]">{perc}%</span>
                           </div>
                           <input
                             type="range"
@@ -260,18 +260,18 @@ export function PanelEstrategia({
                   <button
                     key={escenario.id}
                     onClick={() => manejarSeleccion(escenario.id)}
-                    className="text-left relative bg-white/5 backdrop-blur-md px-8 py-6 rounded-3xl border border-white/5 hover:border-[#06B6D4]/30 hover:bg-white/10 transition-all duration-300 group"
+                    className="text-left relative bg-white/5 backdrop-blur-md px-8 py-6 rounded-3xl border border-white/5 hover:border-[#E5A93B]/30 hover:bg-white/10 transition-all duration-300 group"
                   >
                     {/* IA Tag en alternativas */}
                     {escenario.id === protocoloRecomendado && (
                       <div className="absolute top-4 right-6 flex items-center gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity">
-                        <Sparkles className="w-3 h-3 text-[#06B6D4]" />
+                        <Sparkles className="w-3 h-3 text-[#E5A93B]" />
                         <span className="text-[8px] font-black text-white tracking-widest uppercase">IA</span>
                       </div>
                     )}
 
                     <div className="flex items-center gap-6">
-                      <div className="w-14 h-14 flex-shrink-0 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-center group-hover:scale-110 transition-all duration-500 group-hover:border-[#06b6d4]/50">
+                      <div className="w-14 h-14 flex-shrink-0 rounded-2xl bg-black/40 border border-white/5 flex items-center justify-center group-hover:scale-110 transition-all duration-500 group-hover:border-[#E5A93B]/50">
                         {React.cloneElement(
                           mapearIcono(escenario.id) as React.ReactElement,
                           {
@@ -281,13 +281,13 @@ export function PanelEstrategia({
                         )}
                       </div>
                       <div className="flex flex-col pr-8 font-sans">
-                        <h5 className="text-white font-black text-xl group-hover:text-[#06b6d4] transition-colors tracking-tight uppercase font-serif">
+                        <h5 className="text-white font-black text-xl group-hover:text-[#E5A93B] transition-colors tracking-tight uppercase font-serif">
                           {escenario.nombre}
                         </h5>
                         <p className="text-slate-500 text-sm font-medium mt-1 mb-3 leading-relaxed group-hover:text-slate-300 transition-colors">
                           {mapearDescripcionAmigable(escenario.id)}
                         </p>
-                        <p className="text-[#06b6d4] text-[10px] font-black leading-relaxed uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">
+                        <p className="text-[#E5A93B] text-[10px] font-black leading-relaxed uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">
                           PROYECCIÓN: {escenario.resultadoProyectado}
                         </p>
                       </div>

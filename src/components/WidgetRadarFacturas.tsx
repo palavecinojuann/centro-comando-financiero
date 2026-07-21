@@ -83,7 +83,7 @@ export function WidgetRadarFacturas({ idHogar, onFacturaIntegrada }: WidgetRadar
             
             <div className="relative z-10">
                 <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-[#06b6d4] font-black tracking-tight flex items-center gap-2">
+                    <h3 className="text-[#E5A93B] font-black tracking-tight flex items-center gap-2">
                         <Radar className={`w-5 h-5 ${isScanning ? 'animate-spin opacity-80' : ''}`} />
                         Radar de Facturas
                     </h3>
@@ -108,8 +108,8 @@ export function WidgetRadarFacturas({ idHogar, onFacturaIntegrada }: WidgetRadar
                                 className="flex flex-col items-center justify-center space-y-2"
                             >
                                 <div className="relative flex items-center justify-center">
-                                    <div className="absolute w-12 h-12 rounded-full border-2 border-[#06b6d4]/30 animate-ping" />
-                                    <Radar className="w-6 h-6 text-[#06b6d4] animate-pulse" />
+                                    <div className="absolute w-12 h-12 rounded-full border-2 border-[#E5A93B]/30 animate-ping" />
+                                    <Radar className="w-6 h-6 text-[#E5A93B] animate-pulse" />
                                 </div>
                                 <p className="text-xs text-slate-300 font-medium">Escaneando bandeja de entrada...</p>
                             </motion.div>
@@ -176,7 +176,7 @@ export function WidgetRadarFacturas({ idHogar, onFacturaIntegrada }: WidgetRadar
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-sm text-white font-medium mb-1 leading-tight">
-                                            Nueva factura de <span className="font-bold text-[#06b6d4]">{facturaReciente.proveedor}</span> detectada.
+                                            Nueva factura de <span className="font-bold text-[#E5A93B]">{facturaReciente.proveedor}</span> detectada.
                                         </p>
                                         <p className="text-xs text-gray-400 flex items-center gap-2">
                                             <span className="font-mono font-bold text-white">{formatMoney(facturaReciente.montoTotal)}</span>

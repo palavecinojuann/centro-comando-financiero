@@ -120,12 +120,12 @@ export const DashboardFinanciero: React.FC<DashboardProps> = ({
                 ? 'text-[#ff007f]' 
                 : esAlta 
                   ? 'text-[#EAB308]' 
-                  : 'text-[#06B6D4]';
+                  : 'text-[#E5A93B]';
               const bgCol = esCritica 
                 ? 'bg-[#ff007f]/5' 
                 : esAlta 
                   ? 'bg-[#EAB308]/5' 
-                  : 'bg-[#06B6D4]/5';
+                  : 'bg-[#E5A93B]/5';
 
               return (
                 <div 
@@ -136,7 +136,7 @@ export const DashboardFinanciero: React.FC<DashboardProps> = ({
                     <span className={`text-[10px] font-mono tracking-widest font-black uppercase ${titleCol}`}>
                       [{alerta.categoria}] // {alerta.severidad}
                     </span>
-                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: esCritica ? '#ff007f' : esAlta ? '#EAB308' : '#06B6D4' }} />
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: esCritica ? '#ff007f' : esAlta ? '#EAB308' : '#E5A93B' }} />
                   </div>
                   <h3 className="text-white text-sm font-black tracking-tight mb-1 uppercase font-sans">
                     {alerta.titulo}
@@ -154,7 +154,7 @@ export const DashboardFinanciero: React.FC<DashboardProps> = ({
             })}
           </div>
         ) : (
-          <div className="p-5 rounded-2xl border border-[#06B6D4]/20 bg-[#06B6D4]/5 backdrop-blur-xl flex items-center gap-3">
+          <div className="p-5 rounded-2xl border border-[#E5A93B]/20 bg-[#E5A93B]/5 backdrop-blur-xl flex items-center gap-3">
             <span className="text-lg">🛡️</span>
             <span className="text-xs font-mono tracking-wide text-slate-300">
               Sistema estable. No se detectan anomalías de flujo de caja en el Cimiento familiar.

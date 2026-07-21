@@ -150,7 +150,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
         {/* Botón (+) Circular en Cian */}
         <button
           onClick={onOpenCargar}
-          className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-tr from-[#00E5FF] to-[#00B0FF] text-black flex items-center justify-center shadow-[0_0_15px_rgba(0,229,255,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer focus:outline-none animate-pulse"
+          className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-tr from-[#E5A93B] to-[#00B0FF] text-black flex items-center justify-center shadow-[0_0_15px_rgba(229, 169, 59, 0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer focus:outline-none animate-pulse"
           title="Nuevo Registro"
         >
           <Plus className="w-6 h-6 md:w-7 md:h-7 stroke-[3px]" />
@@ -166,7 +166,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
               <span className="text-[10px] font-serif font-black uppercase tracking-[0.25em] text-white">Objetivos</span>
               <button 
                 onClick={() => setIsEditModalOpen(true)}
-                className="p-1 text-bunker-mutado hover:text-[#00E5FF] transition-colors cursor-pointer"
+                className="p-1 text-bunker-mutado hover:text-[#E5A93B] transition-colors cursor-pointer"
                 title="Configurar objetivos"
               >
                 <Settings className="w-3.5 h-3.5" />
@@ -182,12 +182,12 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
                 <div key={obj.id} className="flex flex-col gap-2">
                   <div className="flex justify-between items-center text-xs">
                     <span className="text-white font-bold tracking-wide uppercase text-[10px]">{obj.nombre}</span>
-                    <span className="text-[#00E5FF] font-black font-mono font-contable">{formatMoney(obj.actual)} / {formatMoney(obj.meta)}</span>
+                    <span className="text-[#E5A93B] font-black font-mono font-contable">{formatMoney(obj.actual)} / {formatMoney(obj.meta)}</span>
                   </div>
                   {/* Barra de progreso en cian */}
                   <div className="w-full h-1.5 bg-black/50 rounded-full overflow-hidden border border-white/5">
                     <div 
-                      className="h-full bg-gradient-to-r from-[#00E5FF] to-[#00B0FF] rounded-full shadow-[0_0_8px_#00E5FF]" 
+                      className="h-full bg-gradient-to-r from-[#E5A93B] to-[#00B0FF] rounded-full shadow-[0_0_8px_#E5A93B]" 
                       style={{ width: `${porcentaje}%` }} 
                     />
                   </div>
@@ -237,7 +237,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
                       key={op.id}
                       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
                       onClick={() => onEditTransaction(op.id, op.type)}
-                      className="flex justify-between items-center p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-[#00D2FF]/20 transition-all cursor-pointer"
+                      className="flex justify-between items-center p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-[#E5A93B]/20 transition-all cursor-pointer"
                     >
                       <div className="flex flex-col gap-0.5">
                         <span className="text-white font-black text-xs uppercase tracking-wide">{op.concepto}</span>
@@ -246,7 +246,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
                       {/* Badge de cantidad destacado en color plano */}
                       <div className={`px-3 py-1 rounded-xl font-black font-contable text-[11px] tracking-tight ${
                         op.type === 'ingreso' || op.type === 'janlu' 
-                          ? 'bg-[#00D2FF] text-black' 
+                          ? 'bg-[#E5A93B] text-black' 
                           : op.concepto.toLowerCase().includes('transferencia') || op.categoria.toLowerCase().includes('transferencia')
                             ? 'bg-white text-black'
                             : 'bg-[#FFD500] text-black'
@@ -282,7 +282,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
                       key={op.id}
                       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
                       onClick={() => onEditTransaction(op.id, op.type)}
-                      className="flex justify-between items-center p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-[#00D2FF]/20 transition-all cursor-pointer"
+                      className="flex justify-between items-center p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-[#E5A93B]/20 transition-all cursor-pointer"
                     >
                       <div className="flex flex-col gap-0.5">
                         <span className="text-white font-black text-xs uppercase tracking-wide truncate max-w-[150px]">{op.concepto}</span>
@@ -329,7 +329,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
                   value={newItemName}
                   onChange={e => setNewItemName(e.target.value)}
                   placeholder="Ej. Fondo de Emergencia, Viaje..."
-                  className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#00E5FF]/50 font-sans"
+                  className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#E5A93B]/50 font-sans"
                   required
                 />
               </div>
@@ -342,7 +342,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
                     value={newItemAccumulated || ''}
                     onChange={e => setNewItemAccumulated(Number(e.target.value))}
                     placeholder="0"
-                    className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#00E5FF]/50 font-mono"
+                    className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#E5A93B]/50 font-mono"
                   />
                 </div>
 
@@ -353,7 +353,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
                     value={newItemTarget || ''}
                     onChange={e => setNewItemTarget(Number(e.target.value))}
                     placeholder="0"
-                    className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#00E5FF]/50 font-mono"
+                    className="w-full bg-black/50 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#E5A93B]/50 font-mono"
                   />
                 </div>
               </div>
@@ -370,7 +370,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
                 )}
                 <button 
                   type="submit"
-                  className="px-4 py-1.5 bg-[#00E5FF] text-black text-[9px] font-black uppercase tracking-widest rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-1.5 bg-[#E5A93B] text-black text-[9px] font-black uppercase tracking-widest rounded-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 cursor-pointer"
                 >
                   <Save className="w-3.5 h-3.5" />
                   {editingItem ? 'Actualizar' : 'Añadir'}
@@ -396,7 +396,7 @@ export function VistaHoy({ operaciones, onOpenCargar, onEditTransaction, objetiv
                     <div className="flex items-center gap-1.5">
                       <button 
                         onClick={() => handleEditClick(item)}
-                        className="p-1 border border-white/5 rounded-md hover:bg-[#00E5FF]/10 hover:border-[#00E5FF]/30 text-slate-400 hover:text-[#00E5FF] cursor-pointer"
+                        className="p-1 border border-white/5 rounded-md hover:bg-[#E5A93B]/10 hover:border-[#E5A93B]/30 text-slate-400 hover:text-[#E5A93B] cursor-pointer"
                         title="Editar"
                       >
                         <Edit3 className="w-3 h-3" />
